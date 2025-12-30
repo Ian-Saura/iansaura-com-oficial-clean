@@ -1,0 +1,171 @@
+[
+  {
+    "slug": "de-8-semanas",
+    "title": "Bootcamp de Fundamentos de Data Engineering (8 semanas)",
+    "duration": "8 semanas",
+    "capacity": 10,
+    "cohort": {
+      "status": "preinscripcion_abierta",
+      "label": "🔥 Early Bird - Ahorra $100"
+    },
+    "cta": {
+      "primary": {
+        "label": "🔥 Asegurar mi lugar - $400 USD",
+        "href": "https://onei.la/ihw",
+        "external": true
+      },
+      "secondary": {
+        "label": "💬 Quiero pagar en 2 cuotas",
+        "href": "/waitlist"
+      }
+    },
+    "pricing": {
+      "price": "~~$500 USD~~ $400 USD",
+      "earlyBirdDeadline": "3 de Enero 2025",
+      "regularPrice": "$500 USD",
+      "paymentOptions": [
+        "💳 Pago único: $400 USD (Early Bird - ahorrás $100)",
+        "📅 2 pagos de $200 USD (coordinamos vía WhatsApp)",
+        "⏰ Después del 3 Enero: $500 USD (precio regular)"
+      ],
+      "includes": [
+        "8 clases EN VIVO (lunes 18:00-20:00 hs ARG/URY)",
+        "Acceso de por vida a grabaciones y materiales",
+        "Feedback personalizado sobre tu proyecto cada semana",
+        "Comunidad privada Discord (acceso permanente)",
+        "Sesiones 1:1 si te atrasás o tenés dudas específicas",
+        "Contenido que podés revisar en cualquier etapa de tu carrera (Jr a Sr)"
+      ]
+    },
+    "schedule": [
+      {
+        "name": "Cohorte Enero 2025",
+        "startDate": "Lunes 13 de Enero, 18:00 hs",
+        "classes": "Lunes 18:00-20:00 hs (Argentina/Uruguay)",
+        "capacity": "10 lugares disponibles"
+      }
+    ],
+    "audience": [
+      "Desarrolladores que quieren transicionar a Data Engineering sin tirar su tiempo en tutoriales dispersos",
+      "Analistas que buscan skills técnicos para duplicar su salario y trabajar remoto",
+      "Profesionales que ya \"hacen que funcione\" pero quieren entender el PORQUÉ detrás de cada decisión",
+      "Gente que aprende mejor CON feedback directo que leyendo documentación sola"
+    ],
+    "outcomes": [
+      "Construir pipelines production-ready con código que VOS entendés (no copy-paste de Stack Overflow)",
+      "Criterio técnico propio para defender cada decisión en code reviews y entrevistas",
+      "Un proyecto completo que podés usar para tu portfolio, tu trabajo actual, o un cliente real",
+      "Fundamentos sólidos que te sirven desde Junior hasta Senior (no solo \"recetas mágicas\")",
+      "Confianza para dejar de dudar si \"lo estás haciendo bien\" cada vez que escribís código"
+    ],
+    "projectTitle": "Tu Proyecto Real (No un tutorial genérico)",
+    "projectSummary": "La diferencia de este bootcamp: NO hacés un proyecto que todos hacen igual. Construís tu proyecto, con tus datos, resolviendo problemas que vos elegís.",
+    "project": [
+      "💼 Usá un proyecto del TRABAJO: mejorá un pipeline existente o automatizá algo manual",
+      "👨‍💼 Traé un proyecto de CLIENTE: construí algo que podés cobrar después del bootcamp",
+      "🎯 Diseñalo DESDE CERO: te ayudamos a elegir un caso de uso que sume a tu portfolio",
+      "📈 Adaptable a tu NIVEL: arrancás simple y lo complejizás clase a clase aplicando lo nuevo"
+    ],
+    "projectNote": "💡 Esto NO es un proyecto genérico que todos hacen igual. Es tu proyecto, con tus datos, resolviendo problemas que vos elegís. Así el aprendizaje se pega de verdad y tenés algo ÚTIL al finalizar.",
+    "syllabus": [
+      {
+        "week": 1,
+        "title": "Introducción al ecosistema de datos",
+        "points": [
+          "Qué hace un Data Engineer vs Analyst vs Scientist",
+          "Arquitectura moderna de datos y casos de uso reales",
+          "Herramientas clave del ecosistema y tipos de pipelines",
+          "Planificar tu proyecto final desde el día 1"
+        ]
+      },
+      {
+        "week": 2,
+        "title": "SQL aplicado para Data Engineering",
+        "points": [
+          "CTEs, window functions y optimización de queries",
+          "Joins complejos, subqueries y buenas prácticas",
+          "Modelado dimensional y normalización",
+          "Proyecto: consultas reales sobre datasets complejos"
+        ]
+      },
+      {
+        "week": 3,
+        "title": "Python para pipelines de datos",
+        "points": [
+          "Pandas avanzado: transformaciones y optimizaciones",
+          "Limpieza, validación y merge de datasets grandes",
+          "Manejo de APIs y diferentes formatos de datos",
+          "Proyecto: script robusto para ETL completo"
+        ]
+      },
+      {
+        "week": 4,
+        "title": "Automatización y orquestación",
+        "points": [
+          "Scripts automáticos y manejo de errores",
+          "Cron jobs y ejecución programada",
+          "Logging, monitoreo y alertas",
+          "Proyecto: pipeline automatizado con validaciones"
+        ]
+      },
+      {
+        "week": 5,
+        "title": "Arquitectura moderna de datos",
+        "points": [
+          "Data Lakes vs Data Warehouses: cuándo usar cada uno",
+          "Arquitectura por capas: bronze, silver, gold",
+          "Formatos optimizados: Parquet, Delta Lake",
+          "Casos reales de arquitectura en empresas"
+        ]
+      },
+      {
+        "week": 6,
+        "title": "Calidad y validación de datos",
+        "points": [
+          "Tipos de errores comunes y cómo detectarlos",
+          "Tests automáticos para pipelines de datos",
+          "Métricas de calidad y alertas proactivas",
+          "Proyecto: sistema de validaciones automáticas"
+        ]
+      },
+      {
+        "week": 7,
+        "title": "Preparación para producción",
+        "points": [
+          "Versionado de código y Git para Data Engineers",
+          "Estructura de proyectos y documentación",
+          "Buenas prácticas de logging y debugging",
+          "Cómo presentar y defender tu pipeline técnicamente"
+        ]
+      },
+      {
+        "week": 8,
+        "title": "Proyecto final y revisión",
+        "points": [
+          "Integración completa: SQL + Python + automatización + validaciones",
+          "Revisión grupal de proyectos y feedback entre pares",
+          "Presentación de tu proyecto final",
+          "Próximos pasos en tu carrera como Data Engineer"
+        ]
+      }
+    ],
+    "faq": [
+      {
+        "question": "¿Qué nivel de Python y SQL necesito?",
+        "answer": "Necesitas conocimientos básicos: saber escribir consultas SELECT con WHERE y JOIN, y scripts básicos en Python con pandas. Si puedes hacer un DataFrame y una consulta simple, estás listo."
+      },
+      {
+        "question": "¿Cuántas horas por semana requiere?",
+        "answer": "Entre 6-10 horas semanales: 1 hora de clase en vivo + 5-9 horas de práctica y proyecto. Es intensivo pero manejable si te organizas."
+      },
+      {
+        "question": "¿Qué incluye exactamente?",
+        "answer": "8 clases en vivo, acceso de por vida a grabaciones y materiales, Discord privado, 2 sesiones 1:1 personalizadas, y contenido extra exclusivo."
+      },
+      {
+        "question": "¿Hay certificado al finalizar?",
+        "answer": "Más importante que un certificado: tendrás un proyecto real y completo en tu GitHub que puedes mostrar en entrevistas. Eso vale más que cualquier papel."
+      }
+    ]
+  }
+]

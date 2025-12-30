@@ -1,0 +1,67 @@
+/**
+ * FASE 6: Unity Catalog
+ * 8 pasos para dominar governance de datos
+ */
+
+import { DatabricksPhase } from '../types';
+
+export const PHASE_6_UNITY_CATALOG: DatabricksPhase = {
+  id: 'db-phase-6',
+  number: 6,
+  title: { es: 'Unity Catalog', en: 'Unity Catalog', pt: 'Unity Catalog' },
+  subtitle: { es: 'Governance centralizada de datos', en: 'Centralized data governance', pt: 'Governance centralizada de dados' },
+  description: { es: 'Unity Catalog es el sistema de governance de Databricks. Controla accesos, audita uso, y gestiona datos de forma centralizada. ⚠️ Nota: Unity Catalog no está disponible en Community Edition. Practica con los labs gratuitos de Databricks Academy o el trial de 14 días.', en: 'Unity Catalog is Databricks governance system. Control access, audit usage, and manage data centrally. ⚠️ Note: Unity Catalog is not available in Community Edition. Practice with free Databricks Academy labs or 14-day trial.', pt: 'Unity Catalog é o sistema de governance do Databricks. Controle acessos, audite uso e gerencie dados de forma centralizada. ⚠️ Nota: Unity Catalog não está disponível no Community Edition. Pratique com os labs gratuitos do Databricks Academy ou trial de 14 dias.' },
+  icon: '🔐',
+  color: 'purple',
+  estimatedDays: '4-5 días',
+  steps: [
+    { id: 'db-6-1', title: { es: 'Introducción a Unity Catalog', en: 'Introduction to Unity Catalog', pt: 'Introdução ao Unity Catalog' }, description: { es: 'Qué es Unity Catalog y por qué es importante para governance.', en: 'What is Unity Catalog and why its important for governance.', pt: 'O que é Unity Catalog e por que é importante para governance.' },
+      theory: { es: 'Unity Catalog proporciona namespace de 3 niveles (catalog.schema.table), governance centralizada, linaje de datos, auditoría y data discovery.', en: 'Unity Catalog provides 3-level namespace (catalog.schema.table), centralized governance, data lineage, audit and data discovery.', pt: 'Unity Catalog fornece namespace de 3 níveis (catalog.schema.table), governance centralizada, linhagem de dados, auditoria e data discovery.' },
+      practicalTips: [{ es: 'Unity Catalog reemplaza al Hive Metastore legacy.', en: 'Unity Catalog replaces the legacy Hive Metastore.', pt: 'Unity Catalog substitui o Hive Metastore legado.' }],
+      externalLinks: [{ title: 'Unity Catalog', url: 'https://docs.databricks.com/data-governance/unity-catalog/index.html', type: 'docs' }],
+      checkpoint: { es: '¿Entendés la diferencia entre metastore, catalog y schema?', en: 'Do you understand the difference between metastore, catalog and schema?', pt: 'Você entende a diferença entre metastore, catalog e schema?' },
+      xpReward: 20, estimatedMinutes: 20 },
+    { id: 'db-6-2', title: { es: 'Crear Catálogos y Schemas', en: 'Create Catalogs and Schemas', pt: 'Criar Catálogos e Schemas' }, description: { es: 'Organiza tus datos con catálogos y schemas.', en: 'Organize your data with catalogs and schemas.', pt: 'Organize seus dados com catálogos e schemas.' },
+      theory: { es: 'Usa CREATE CATALOG y CREATE SCHEMA para organizar tus datos. Los catálogos agrupan schemas relacionados.', en: 'Use CREATE CATALOG and CREATE SCHEMA to organize your data. Catalogs group related schemas.', pt: 'Use CREATE CATALOG e CREATE SCHEMA para organizar seus dados. Catálogos agrupam schemas relacionados.' },
+      practicalTips: [{ es: 'Usa un catálogo por ambiente: dev, staging, prod.', en: 'Use one catalog per environment: dev, staging, prod.', pt: 'Use um catálogo por ambiente: dev, staging, prod.' }],
+      externalLinks: [{ title: 'Create Catalog', url: 'https://docs.databricks.com/data-governance/unity-catalog/create-catalogs.html', type: 'docs' }],
+      checkpoint: { es: '¿Creaste tu primer catálogo con schemas?', en: 'Did you create your first catalog with schemas?', pt: 'Você criou seu primeiro catálogo com schemas?' },
+      xpReward: 25, estimatedMinutes: 25 },
+    { id: 'db-6-3', title: { es: 'Permisos y Grants', en: 'Permissions and Grants', pt: 'Permissões e Grants' }, description: { es: 'Controla quién puede acceder a qué datos.', en: 'Control who can access what data.', pt: 'Controle quem pode acessar quais dados.' },
+      theory: { es: 'Usa GRANT y REVOKE para gestionar permisos. Puedes dar acceso a nivel de catalog, schema o tabla.', en: 'Use GRANT and REVOKE to manage permissions. You can give access at catalog, schema or table level.', pt: 'Use GRANT e REVOKE para gerenciar permissões. Você pode dar acesso em nível de catalog, schema ou tabela.' },
+      practicalTips: [{ es: 'Sigue el principio de mínimo privilegio.', en: 'Follow the principle of least privilege.', pt: 'Siga o princípio de mínimo privilégio.' }],
+      externalLinks: [{ title: 'Privileges', url: 'https://docs.databricks.com/data-governance/unity-catalog/manage-privileges/privileges.html', type: 'docs' }],
+      checkpoint: { es: '¿Configuraste permisos para diferentes usuarios?', en: 'Did you configure permissions for different users?', pt: 'Você configurou permissões para diferentes usuários?' },
+      xpReward: 30, estimatedMinutes: 30 },
+    { id: 'db-6-4', title: { es: 'External Locations y Storage Credentials', en: 'External Locations and Storage Credentials', pt: 'External Locations e Storage Credentials' }, description: { es: 'Conecta datos externos de forma segura.', en: 'Connect external data securely.', pt: 'Conecte dados externos de forma segura.' },
+      theory: { es: 'External Locations permiten acceder a datos en cloud storage de forma gobernada.', en: 'External Locations allow accessing cloud storage data in a governed way.', pt: 'External Locations permitem acessar dados em cloud storage de forma governada.' },
+      practicalTips: [{ es: 'Crea storage credentials antes de external locations.', en: 'Create storage credentials before external locations.', pt: 'Crie storage credentials antes de external locations.' }],
+      externalLinks: [{ title: 'External Locations', url: 'https://docs.databricks.com/data-governance/unity-catalog/manage-external-locations-and-credentials.html', type: 'docs' }],
+      checkpoint: { es: '¿Conectaste una ubicación externa de S3 o ADLS?', en: 'Did you connect an external S3 or ADLS location?', pt: 'Você conectou uma localização externa de S3 ou ADLS?' },
+      xpReward: 30, estimatedMinutes: 30 },
+    { id: 'db-6-5', title: { es: 'Linaje de Datos', en: 'Data Lineage', pt: 'Linhagem de Dados' }, description: { es: 'Visualiza de dónde vienen tus datos.', en: 'Visualize where your data comes from.', pt: 'Visualize de onde seus dados vêm.' },
+      theory: { es: 'Unity Catalog captura automáticamente el linaje cuando ejecutas queries o jobs de Spark.', en: 'Unity Catalog automatically captures lineage when you run Spark queries or jobs.', pt: 'Unity Catalog captura automaticamente a linhagem quando você executa queries ou jobs de Spark.' },
+      practicalTips: [{ es: 'El linaje ayuda en impact analysis y debugging.', en: 'Lineage helps in impact analysis and debugging.', pt: 'A linhagem ajuda em impact analysis e debugging.' }],
+      externalLinks: [{ title: 'Data Lineage', url: 'https://docs.databricks.com/data-governance/unity-catalog/data-lineage.html', type: 'docs' }],
+      checkpoint: { es: '¿Exploraste el linaje de una tabla transformada?', en: 'Did you explore the lineage of a transformed table?', pt: 'Você explorou a linhagem de uma tabela transformada?' },
+      xpReward: 25, estimatedMinutes: 20 },
+    { id: 'db-6-6', title: { es: 'Auditoría y Logs', en: 'Audit and Logs', pt: 'Auditoria e Logs' }, description: { es: 'Rastrea quién accede a qué datos.', en: 'Track who accesses what data.', pt: 'Rastreie quem acessa quais dados.' },
+      theory: { es: 'Los audit logs capturan todas las operaciones: quién, qué, cuándo, desde dónde.', en: 'Audit logs capture all operations: who, what, when, from where.', pt: 'Os audit logs capturam todas as operações: quem, o quê, quando, de onde.' },
+      practicalTips: [{ es: 'Configura alertas para accesos a datos sensibles.', en: 'Set up alerts for sensitive data access.', pt: 'Configure alertas para acessos a dados sensíveis.' }],
+      externalLinks: [{ title: 'Audit Logs', url: 'https://docs.databricks.com/administration-guide/account-settings/audit-logs.html', type: 'docs' }],
+      checkpoint: { es: '¿Revisaste los audit logs de tu workspace?', en: 'Did you review your workspace audit logs?', pt: 'Você revisou os audit logs do seu workspace?' },
+      xpReward: 25, estimatedMinutes: 25 },
+    { id: 'db-6-7', title: { es: 'Tags y Documentación', en: 'Tags and Documentation', pt: 'Tags e Documentação' }, description: { es: 'Documenta y clasifica tus datos.', en: 'Document and classify your data.', pt: 'Documente e classifique seus dados.' },
+      theory: { es: 'Usa tags para clasificar datos (PII, confidencial) y comments para documentar.', en: 'Use tags to classify data (PII, confidential) and comments to document.', pt: 'Use tags para classificar dados (PII, confidencial) e comments para documentar.' },
+      practicalTips: [{ es: 'Tags ayudan a encontrar y proteger datos sensibles.', en: 'Tags help find and protect sensitive data.', pt: 'Tags ajudam a encontrar e proteger dados sensíveis.' }],
+      externalLinks: [{ title: 'Data Classification', url: 'https://docs.databricks.com/data-governance/unity-catalog/tags.html', type: 'docs' }],
+      checkpoint: { es: '¿Agregaste tags y documentación a tus tablas?', en: 'Did you add tags and documentation to your tables?', pt: 'Você adicionou tags e documentação às suas tabelas?' },
+      xpReward: 20, estimatedMinutes: 20 },
+    { id: 'db-6-8', title: { es: 'Proyecto: Governance Completo', en: 'Project: Complete Governance', pt: 'Projeto: Governance Completo' }, description: { es: 'Implementa una estrategia de governance completa.', en: 'Implement a complete governance strategy.', pt: 'Implemente uma estratégia de governance completa.' },
+      theory: { es: 'En este proyecto configurarás catálogos, permisos, clasificación de datos y auditoría.', en: 'In this project you will configure catalogs, permissions, data classification and audit.', pt: 'Neste projeto você configurará catálogos, permissões, classificação de dados e auditoria.' },
+      practicalTips: [{ es: 'Documenta tu estrategia de governance para tu portfolio.', en: 'Document your governance strategy for your portfolio.', pt: 'Documente sua estratégia de governance para seu portfólio.' }],
+      externalLinks: [{ title: 'Unity Catalog Best Practices', url: 'https://docs.databricks.com/data-governance/unity-catalog/best-practices.html', type: 'docs' }],
+      checkpoint: { es: '¿Implementaste todos los componentes de governance?', en: 'Did you implement all governance components?', pt: 'Você implementou todos os componentes de governance?' },
+      xpReward: 50, estimatedMinutes: 60 }
+  ]
+};
