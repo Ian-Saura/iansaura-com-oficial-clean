@@ -512,7 +512,7 @@ function getTrialExpiringTemplate($name, $daysLeft) {
             
             <div style="background:#10b98120;border:1px solid #10b98150;border-radius:12px;padding:20px;margin:20px 0;">
                 <p style="color:#10b981;margin:0;font-size:18px;font-weight:600;">
-                    💰 Solo $20 USD/mes
+                    💰 Solo $30 USD/mes
                 </p>
                 <p style="color:#94a3b8;margin:10px 0 0;font-size:14px;">
                     Acceso ilimitado • Sin compromiso

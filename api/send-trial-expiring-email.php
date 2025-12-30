@@ -197,7 +197,7 @@ try {
                     <!-- CTA Button -->
                     <div style='text-align: center; margin: 30px 0;'>
                         <a href='https://iansaura.com/suscripcion' style='display: inline-block; background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 12px; font-weight: bold; font-size: 16px;'>
-                            Suscribirme por \$20/mes
+                            Suscribirme por \$30/mes
                         </a>
                     </div>
                     

@@ -854,8 +854,8 @@ function getStats($db) {
     $stmt = $db->query("SELECT COUNT(*) as count FROM subscribers WHERE status = 'cancelled' AND updated_at >= DATE_FORMAT(NOW(), '%Y-%m-01')");
     $stats['cancellations_this_month'] = (int)$stmt->fetch()['count'];
     
-    // Ingresos estimados (solo suscriptores pagos * $20)
-    $stats['estimated_mrr'] = $stats['active_subscribers'] * 20;
+    // Ingresos estimados (solo suscriptores pagos * $30)
+    $stats['estimated_mrr'] = $stats['active_subscribers'] * 30;
     
     // Usuarios registrados últimos 7 días
     $stmt = $db->query("SELECT COUNT(*) as count FROM users WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)");
@@ -3205,7 +3205,7 @@ Que incluye?
 ACCEDE AHORA: https://iansaura.com/members
 
 Tu acceso gratuito vence el {$trialEndFormatted}
-Despues de esa fecha, podes continuar con la suscripcion por solo \$20 USD/mes.
+Despues de esa fecha, podes continuar con la suscripcion por solo \$30 USD/mes.
 
 Si tenes alguna duda, responde este email directamente. Leo todos los mensajes.
 
