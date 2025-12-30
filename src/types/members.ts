@@ -300,9 +300,10 @@ export interface Specialization {
   description: LocalizedContent;
   icon: string;
   color: string;
-  status: 'available' | 'coming_soon';
+  status: 'available' | 'coming_soon' | 'beta';
   isNext?: boolean; // Si es la próxima en lanzarse (para destacar)
   isHidden?: boolean; // Si está oculta
+  betaOnly?: boolean; // Si solo está disponible para beta testers
   releaseDate?: string; // Fecha formateada para mostrar
   releaseDateISO?: string; // Fecha ISO para countdown (ej: '2025-01-01T00:00:00')
   prerequisites: string[];

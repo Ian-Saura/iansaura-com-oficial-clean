@@ -13,6 +13,7 @@ interface SpecializationCountdownProps {
   specialization: Specialization;
   onNotifyMe?: (email: string, specId: string) => void;
   compact?: boolean;
+  isBeta?: boolean;
 }
 
 const calculateTimeLeft = (targetDate: string): CountdownValues => {
@@ -33,7 +34,8 @@ const calculateTimeLeft = (targetDate: string): CountdownValues => {
 export const SpecializationCountdown: React.FC<SpecializationCountdownProps> = ({
   specialization,
   onNotifyMe,
-  compact = false
+  compact = false,
+  isBeta = false
 }) => {
   const { language } = useLanguage();
   const [timeLeft, setTimeLeft] = useState<CountdownValues>(
@@ -145,7 +147,7 @@ export const SpecializationCountdown: React.FC<SpecializationCountdownProps> = (
   }
 
   return (
-    <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-xl p-6 border border-slate-700/50">
+    <div className={`bg-gradient-to-br ${isBeta ? 'from-purple-900/30 to-slate-900/80 border-purple-500/30' : 'from-slate-800/80 to-slate-900/80 border-slate-700/50'} rounded-xl p-6 border`}>
       {/* Header */}
       <div className="flex items-center gap-3 mb-4">
         <span className="text-4xl">{specialization.icon}</span>
@@ -157,7 +159,11 @@ export const SpecializationCountdown: React.FC<SpecializationCountdownProps> = (
             {specialization.subtitle[language]}
           </p>
         </div>
-        {specialization.isNext && (
+        {isBeta ? (
+          <span className="ml-auto bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+            <span>🧪</span> Beta
+          </span>
+        ) : specialization.isNext && (
           <span className="ml-auto bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-xs font-semibold">
             {labels.comingSoon[language]}
           </span>
@@ -199,8 +205,21 @@ export const SpecializationCountdown: React.FC<SpecializationCountdownProps> = (
         </div>
       )}
 
-      {/* Countdown - ALWAYS show if there's a release date and not launched */}
-      {specialization.releaseDate && (
+      {/* Beta Access Banner */}
+      {isBeta && (
+        <div className="mb-4 bg-gradient-to-r from-purple-500/10 to-violet-500/10 rounded-xl p-4 border border-purple-500/20">
+          <div className="text-sm text-purple-400 mb-2 flex items-center gap-2 font-semibold">
+            <span>🎉</span>
+            <span>{({ es: '¡Tenés acceso anticipado!', en: 'You have early access!', pt: 'Você tem acesso antecipado!' } as any)[language]}</span>
+          </div>
+          <p className="text-xs text-slate-400">
+            {({ es: 'Como beta tester, podés explorar esta especialización antes que nadie.', en: 'As a beta tester, you can explore this specialization before anyone else.', pt: 'Como beta tester, você pode explorar esta especialização antes de todos.' } as any)[language]}
+          </p>
+        </div>
+      )}
+
+      {/* Countdown - ALWAYS show if there's a release date and not launched (hide for beta) */}
+      {specialization.releaseDate && !isBeta && (
         <div className="mb-4 bg-gradient-to-r from-orange-500/10 to-amber-500/10 rounded-xl p-4 border border-orange-500/20">
           <div className="text-sm text-orange-400 mb-3 flex items-center gap-2 font-semibold">
             <span>🚀</span>
@@ -235,8 +254,16 @@ export const SpecializationCountdown: React.FC<SpecializationCountdownProps> = (
         </div>
       )}
 
+      {/* Beta CTA Button */}
+      {isBeta && (
+        <button className="w-full py-3 rounded-lg bg-gradient-to-r from-purple-500 to-violet-600 text-white font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+          <span>🚀</span>
+          {({ es: 'Comenzar Especialización', en: 'Start Specialization', pt: 'Iniciar Especialização' } as any)[language]}
+        </button>
+      )}
+
       {/* Notify Me Form */}
-      {!isLaunched && !isSubscribed && (
+      {!isLaunched && !isSubscribed && !isBeta && (
         <form onSubmit={handleNotifyMe} className="flex gap-2">
           <input
             type="email"
