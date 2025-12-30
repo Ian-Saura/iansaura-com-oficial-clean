@@ -1360,6 +1360,7 @@ const Members: React.FC<MembersProps> = ({ user }) => {
             energySystem={energySystem}
             onPositionChange={handlePositionChange}
             onLevelComplete={checkLevelCompletion}
+            userEmail={user?.email}
           />}
           {activeTab === 'proyectos' && (isFreeUser ? <LockedContentPreview title={translateKey('locked.projects.title')} description={translateKey('locked.projects.description')} features={[translateKey('locked.projects.feature1'), translateKey('locked.projects.feature2'), translateKey('locked.projects.feature3'), translateKey('locked.projects.feature4')]} userEmail={user?.email} /> : <ExtractedProyectosTab progress={progress} />)}
           {activeTab === 'datasets' && <ExtractedDatasetsTab userEmail={user?.email || ''} isFreeUser={isFreeUser} />}

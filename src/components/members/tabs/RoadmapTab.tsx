@@ -10,6 +10,7 @@ import { useUserProgress } from '../../../hooks/useUserProgress';
 import { useCelebration } from '../../../hooks/useCelebration';
 import { useEnergySystem } from '../../../hooks/useEnergySystem';
 import { roadmapLevels, getLevelStepIds, specializations } from '../../../data/roadmapData';
+import { hasBetaAccess } from '../../../config/beta';
 import { projects } from '../../../data/projectsData';
 import { DISCORD_INVITE_LINK } from '../../../data/videosData';
 import { ResourceButton, TabType, renderMarkdown } from '../MembersUtils';
@@ -27,7 +28,8 @@ const RoadmapTab: React.FC<{
   onPositionChange?: (position: { level: number; phaseIndex: number; stepId?: string }) => void;
   energySystem?: ReturnType<typeof useEnergySystem>;
   onLevelComplete?: (stepId: string) => void;
-}> = ({ progress, setActiveTab, celebration, isFreeUser = false, onPositionChange, energySystem, onLevelComplete }) => {
+  userEmail?: string;
+}> = ({ progress, setActiveTab, celebration, isFreeUser = false, onPositionChange, energySystem, onLevelComplete, userEmail }) => {
   const { language } = useLanguage();
   const t = (content: LC | string): string => tLocalized(content, language);
   
@@ -941,26 +943,57 @@ const RoadmapTab: React.FC<{
 
         {/* 🚀 Coming Soon with Countdown - Next specializations */}
         {(() => {
-          const nextSpecs = specializations.filter(s => s.isNext && !s.isHidden);
-          if (nextSpecs.length > 0) {
-            return (
-              <div className="mb-6">
-                <h4 className="text-sm font-semibold text-orange-400 mb-3 flex items-center gap-2">
-                  <span>🚀</span> {t({ es: 'Próximamente', en: 'Coming Soon', pt: 'Em breve' })}
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {nextSpecs.map(spec => (
-                    <SpecializationCountdown key={spec.id} specialization={spec} />
-                  ))}
+          // Filter specializations: show beta ones only to beta testers
+          const visibleSpecs = specializations.filter(s => {
+            if (s.betaOnly && !hasBetaAccess(s.id, userEmail)) return false;
+            return true;
+          });
+          
+          const nextSpecs = visibleSpecs.filter(s => s.isNext && !s.isHidden && s.status !== 'beta');
+          const betaSpecs = visibleSpecs.filter(s => s.status === 'beta' && !s.isHidden);
+          
+          return (
+            <>
+              {/* Beta Features Section - Only visible to beta testers */}
+              {betaSpecs.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="text-sm font-semibold text-purple-400 mb-3 flex items-center gap-2">
+                    <span>🧪</span> {t({ es: 'Beta - Acceso Anticipado', en: 'Beta - Early Access', pt: 'Beta - Acesso Antecipado' })}
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {betaSpecs.map(spec => (
+                      <SpecializationCountdown key={spec.id} specialization={{...spec, status: 'available'}} isBeta />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            );
-          }
-          return null;
+              )}
+              
+              {/* Coming Soon Section */}
+              {nextSpecs.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="text-sm font-semibold text-orange-400 mb-3 flex items-center gap-2">
+                    <span>🚀</span> {t({ es: 'Próximamente', en: 'Coming Soon', pt: 'Em breve' })}
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {nextSpecs.map(spec => (
+                      <SpecializationCountdown key={spec.id} specialization={spec} />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          );
         })()}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {specializations.filter(spec => !spec.isHidden && !spec.isNext).map((spec) => (
+          {specializations.filter(spec => {
+            if (spec.isHidden || spec.isNext) return false;
+            // Hide beta specs from this section (they're shown above)
+            if (spec.status === 'beta') return false;
+            // Hide beta-only specs from non-beta testers
+            if (spec.betaOnly && !hasBetaAccess(spec.id, userEmail)) return false;
+            return true;
+          }).map((spec) => (
             <div 
               key={spec.id}
               className={`relative overflow-hidden rounded-xl border transition-all ${
