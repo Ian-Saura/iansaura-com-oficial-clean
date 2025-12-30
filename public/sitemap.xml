@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+    
+    <!-- Homepage - Main Landing -->
+    <url>
+        <loc>https://www.iansaura.com/</loc>
+        <lastmod>2025-11-27</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+        <image:image>
+            <image:loc>https://www.iansaura.com/ian-saura-profile.jpg</image:loc>
+            <image:title>Ian Saura - Data Engineer y Educador</image:title>
+            <image:caption>Ian Saura, Data Engineer profesional y mentor de Data Engineering en español</image:caption>
+        </image:image>
+    </url>
+    
+    <!-- Bootcamps Page - High Priority -->
+    <url>
+        <loc>https://www.iansaura.com/bootcamps</loc>
+        <lastmod>2025-11-27</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.95</priority>
+        <image:image>
+            <image:loc>https://www.iansaura.com/portada.png</image:loc>
+            <image:title>Bootcamp Fundamentos de Data Engineering</image:title>
+            <image:caption>Bootcamp intensivo de 8 semanas para aprender Data Engineering en español</image:caption>
+        </image:image>
+    </url>
+    
+    <!-- Subscription Page - High Priority -->
+    <url>
+        <loc>https://www.iansaura.com/suscripcion</loc>
+        <lastmod>2025-11-27</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.95</priority>
+    </url>
+    
+    <!-- Mentorías Page -->
+    <url>
+        <loc>https://www.iansaura.com/mentorias</loc>
+        <lastmod>2025-11-27</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.85</priority>
+    </url>
+    
+    <!-- Capacitaciones Empresariales -->
+    <url>
+        <loc>https://www.iansaura.com/capacitaciones-empresariales</loc>
+        <lastmod>2025-11-27</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.75</priority>
+    </url>
+    
+    <!-- Auth/Login Page -->
+    <url>
+        <loc>https://www.iansaura.com/auth</loc>
+        <lastmod>2025-11-27</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.4</priority>
+    </url>
+    
+    <!-- Red Flags Lead Magnet -->
+    <url>
+        <loc>https://www.iansaura.com/red-flags</loc>
+        <lastmod>2025-11-27</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <!-- Store Page -->
+    <url>
+        <loc>https://www.iansaura.com/store</loc>
+        <lastmod>2025-11-27</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    
+    <!-- Guía Data Engineering - SEO Content Page -->
+    <url>
+        <loc>https://www.iansaura.com/guia-data-engineering</loc>
+        <lastmod>2025-11-27</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.8; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .content { background: #ffffff; padding: 30px; }
+        .code-block { background: #f3f4f6; padding: 15px; font-family: monospace; margin: 15px 0; border-left: 4px solid #ef4444; }
+        .highlight { background: #dbeafe; padding: 15px; border-left: 4px solid #2563eb; margin: 20px 0; }
+        .footer { text-align: left; padding: 20px 0; color: #666; font-size: 14px; border-top: 1px solid #e5e7eb; margin-top: 30px; }
+        a { color: #2563eb; text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <div class='content'>
+            <p>Hola! <strong>Historia real</strong> de un equipo que mentoré:</p>
+            
+            <p>Pipeline en prod. Todo funcionando. Un día, el vendor cambia el formato de 1 columna en el CSV que consumen.</p>
+            
+            <p>Pipeline explota. Data corrupta. 3 días arreglando + rollback.</p>
+            
+            <p>¿El problema? <strong>Zero validación de inputs</strong>.</p>
+            
+            <div class='code-block'>
+❌ LO QUE HACÍAN:<br><br>
+df = pd.read_csv(file)<br>
+# Asumían que el CSV tenía las columnas correctas<br>
+df['amount'].sum()  # 💥 KeyError cuando cambió el schema
+            </div>
+            
+            <div class='code-block'>
+✅ EL FIX:<br><br>
+expected_columns = ['id', 'date', 'amount']<br>
+df = pd.read_csv(file)<br><br>
+if not all(col in df.columns for col in expected_columns):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;raise ValueError(f"Missing columns: {set(expected_columns) - set(df.columns)}")<br><br>
+# Ahora sí, procesar<br>
+df['amount'].sum()
+            </div>
+            
+            <p>Validar inputs no es paranoia. Es la diferencia entre <strong>dormir tranquilo</strong> y que te llamen a las 2am porque la data está rota.</p>
+            
+            <p>Un cambio en el source no debería tumbar todo tu sistema. Tu código tiene que ser resiliente.</p>
+            
+            <p>¿Tu código valida antes de procesar?</p>
+            
+            <div class='highlight'>
+                <p style='margin: 0;'><strong>El bootcamp DE Fundamentals arranca el 13 de enero a las 18hs.</strong><br><br>
+                8 semanas para construir fundamentos sólidos y un data warehouse production-ready.<br><br>
+                El lanzamiento oficial es el 30 de diciembre, pero si querés asegurar tu lugar antes, respondé este email.</p>
+            </div>
+            
+            <p>— Ian</p>
+            
+            <div class='footer'>
+                <p style='margin: 0;'><strong>Ian Saura</strong><br>
+                Data Engineering Mentor<br>
+                <a href='https://iansaura.com'>iansaura.com</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

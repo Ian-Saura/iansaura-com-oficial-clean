@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Compra Exitosa! - Fundamentos Python | Ian Saura</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #3776ab 0%, #ffd43b 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .success-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: bounce 0.6s ease-out;
+        }
+        
+        .checkmark {
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+        }
+        
+        @keyframes bounce {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #3776ab, #ffd43b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        
+        .book-info {
+            background: linear-gradient(135deg, #fff7e6, #e6f7ff);
+            border: 2px solid #3776ab;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        
+        .book-title {
+            color: #3776ab;
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .book-description {
+            color: #555;
+            font-size: 1em;
+            line-height: 1.6;
+        }
+        
+        .email-form {
+            margin: 30px 0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #3776ab;
+            box-shadow: 0 0 0 3px rgba(55, 118, 171, 0.1);
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #3776ab, #ffd43b);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(55, 118, 171, 0.3);
+        }
+        
+        .download-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .loading {
+            display: none;
+            margin: 20px 0;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3776ab;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .message {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .help-text {
+            color: #888;
+            font-size: 0.9em;
+            margin: 15px 0;
+            font-style: italic;
+        }
+        
+        .contact-info {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            border: 1px solid #e9ecef;
+        }
+        
+        .contact-info h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .contact-info p {
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .contact-info a {
+            color: #3776ab;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-icon">
+            <div class="checkmark">✓</div>
+        </div>
+        
+        <h1>¡Compra Exitosa!</h1>
+        <p class="subtitle">Gracias por tu compra. Para recibir tu libro de Python, por favor ingresa tu email de compra:</p>
+        
+        <div class="book-info">
+            <div class="book-title">🐍 Fundamentos Prácticos de Python</div>
+            <div class="book-description">
+                Nivel 1: De Cero a Scripts Profesionales. 
+                Tu primera guía completa para dominar Python desde cero.
+            </div>
+        </div>
+        
+        <div class="email-form">
+            <div class="form-group">
+                <label for="email">📧 Email de compra:</label>
+                <input type="email" id="email" placeholder="ejemplo@email.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="name">👤 Tu nombre:</label>
+                <input type="text" id="name" placeholder="Tu nombre completo">
+            </div>
+            
+            <button class="download-btn" onclick="requestPDF()">
+                🐍 Recibir mi Libro Python
+            </button>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Procesando tu solicitud...</p>
+            </div>
+            
+            <div class="message" id="message"></div>
+            
+            <p class="help-text">
+                💡 Usa el mismo email que utilizaste al comprar
+            </p>
+        </div>
+
+        <div class="contact-info">
+            <h3>¿Necesitas ayuda?</h3>
+            <p>Contacta a: <a href="mailto:info@iansaura.com">info@iansaura.com</a></p>
+            <p>Respuesta en menos de 24 horas</p>
+        </div>
+    </div>
+
+    <script>
+        function requestPDF() {
+            const email = document.getElementById('email').value;
+            const name = document.getElementById('name').value || 'Cliente';
+            const messageDiv = document.getElementById('message');
+            const loadingDiv = document.getElementById('loading');
+            const button = document.querySelector('.download-btn');
+            
+            // Validate email
+            if (!email || !email.includes('@')) {
+                showMessage('Por favor ingresa un email válido', 'error');
+                return;
+            }
+            
+            // Show loading
+            button.disabled = true;
+            loadingDiv.style.display = 'block';
+            messageDiv.style.display = 'none';
+            
+            // Generate token for Python book (uses existing delivery system)
+            const token = 'manual_python_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            
+            // Call existing PDF delivery API (uses the same system as the current Python book)
+            const apiUrl = '/api/pdf-delivery.php';
+            const params = new URLSearchParams({
+                token: token,
+                email: email,
+                name: name
+            });
+            
+            fetch(`${apiUrl}?${params}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showMessage('¡Perfecto! 📧 Revisa tu email, tu libro Python llegará en unos minutos.', 'success');
+                        button.textContent = '✅ Libro enviado';
+                        button.style.background = '#28a745';
+                    } else {
+                        showMessage(`Error: ${data.error || 'Algo salió mal'}`, 'error');
+                        button.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage('Error de conexión. Por favor intenta nuevamente o contacta a info@iansaura.com', 'error');
+                    button.disabled = false;
+                })
+                .finally(() => {
+                    loadingDiv.style.display = 'none';
+                });
+        }
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+        }
+        
+        // Auto-focus email field
+        document.getElementById('email').focus();
+        
+        // Enter key support
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                requestPDF();
+            }
+        });
+    </script>
+</body>
+</html> 

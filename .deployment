@@ -1,0 +1,28 @@
+[config]
+# Deployment configuration for Ian Saura Data Engineering Hub
+# This file configures how the application is deployed
+
+# Build command to run before deployment
+command = npm run build
+
+# Source directory (where built files are located)
+project = build/
+
+# Target deployment directory on server
+# The hosting provider will deploy to public_html/ by default
+# If you need a specific subdirectory, uncomment and modify:
+# path = public_html/folder/subfolder
+
+# Files to exclude from deployment
+exclude = node_modules/
+exclude = src/
+exclude = .git/
+exclude = *.md
+exclude = package-lock.json
+exclude = .env*
+exclude = database/
+exclude = deploy.sh
+
+# Include these essential files
+include = build/
+include = package.json 

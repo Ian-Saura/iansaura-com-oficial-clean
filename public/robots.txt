@@ -1,0 +1,46 @@
+# Robots.txt for Ian Saura Data Engineering Hub
+# https://www.iansaura.com
+# Last updated: 2025-11-27
+
+User-agent: *
+Allow: /
+Allow: /bootcamps
+Allow: /suscripcion
+Allow: /mentorias
+Allow: /capacitaciones-empresariales
+Allow: /red-flags
+Allow: /store
+Disallow: /api/
+Disallow: /auth
+Disallow: /login
+Disallow: /subscribe.php
+Disallow: /*.php$
+Disallow: /static/js/
+Disallow: /static/css/
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://www.iansaura.com/sitemap.xml
+
+# Specific rules for major search engines
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+Disallow: /auth
+Crawl-delay: 0
+
+User-agent: Googlebot-Image
+Allow: /ian-saura-profile.jpg
+Allow: /portada.png
+Allow: /portada_SQL.png
+
+User-agent: Bingbot  
+Allow: /
+Disallow: /api/
+Disallow: /auth
+Crawl-delay: 1
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot

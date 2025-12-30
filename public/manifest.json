@@ -1,0 +1,84 @@
+{
+  "short_name": "Ian Saura",
+  "name": "Ian Saura - Data Engineering Academy",
+  "description": "La mejor plataforma de Data Engineering en español. Aprende SQL, Python, dbt, Airflow y más.",
+  "icons": [
+    {
+      "src": "/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#0f172a",
+  "background_color": "#0f172a",
+  "categories": ["education", "productivity", "developer tools"],
+  "lang": "es",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Ver tu progreso y estadísticas",
+      "url": "/members?tab=dashboard&source=pwa",
+      "icons": [{"src": "/icon-192.svg", "sizes": "192x192"}]
+    },
+    {
+      "name": "Práctica SQL",
+      "short_name": "SQL",
+      "description": "Ejercicios interactivos de SQL",
+      "url": "/members?tab=practica&source=pwa",
+      "icons": [{"src": "/icon-192.svg", "sizes": "192x192"}]
+    },
+    {
+      "name": "Práctica Python",
+      "short_name": "Python",
+      "description": "Ejercicios interactivos de Python",
+      "url": "/members?tab=python&source=pwa",
+      "icons": [{"src": "/icon-192.svg", "sizes": "192x192"}]
+    },
+    {
+      "name": "Roadmap",
+      "short_name": "Roadmap",
+      "description": "Tu camino a Data Engineer",
+      "url": "/members?tab=roadmap&source=pwa",
+      "icons": [{"src": "/icon-192.svg", "sizes": "192x192"}]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/ian-saura-profile.jpg",
+      "sizes": "400x400",
+      "type": "image/jpeg",
+      "label": "Ian Saura - Data Engineering Academy"
+    }
+  ],
+  "related_applications": [],
+  "handle_links": "preferred",
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
+}

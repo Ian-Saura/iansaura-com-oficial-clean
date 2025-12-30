@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.8; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .content { background: #ffffff; padding: 30px; }
+        .code-block { background: #f3f4f6; padding: 15px; font-family: monospace; margin: 15px 0; border-left: 4px solid #ef4444; }
+        .highlight { background: #f3f4f6; padding: 15px; border-left: 4px solid #2563eb; margin: 20px 0; }
+        .footer { text-align: left; padding: 20px 0; color: #666; font-size: 14px; border-top: 1px solid #e5e7eb; margin-top: 30px; }
+        a { color: #2563eb; text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <div class='content'>
+            <p>Hola! Red Flag más común que veo: <strong>logging inexistente o mal hecho</strong>.</p>
+            
+            <p>Cuando algo falla en producción y no tenés logs estructurados, estás adivinando. Perdés horas (o días) buscando el problema.</p>
+            
+            <p>Un ejemplo que veo todo el tiempo:</p>
+            
+            <div class='code-block'>
+❌ INCORRECTO:<br><br>
+print(f"Procesando {archivo}")<br>
+print(f"Error: {e}")<br>
+            </div>
+            
+            <div class='code-block'>
+✅ CORRECTO:<br><br>
+import logging<br><br>
+logging.info("process_started", extra={<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"file": archivo,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"timestamp": datetime.now(),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"expected_rows": 1000<br>
+})<br><br>
+logging.error("process_failed", extra={<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"error": str(e),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"file": archivo<br>
+})<br>
+            </div>
+            
+            <p>La diferencia: cuando falla, sabés exactamente qué, dónde y cuándo. No adivinás. No perdés horas.</p>
+            
+            <p>Logs estructurados = poder filtrar, agregar métricas, y alertar. Es la base del debugging profesional.</p>
+            
+            <div class='highlight'>
+                <p style='margin: 0;'>En el bootcamp dedicamos una sesión entera a logging, monitoring y observabilidad. Porque el código que no se puede debuggear, no es código profesional.</p>
+            </div>
+            
+            <p>¿Vos cómo estás manejando logs ahora mismo?</p>
+            
+            <p>— Ian</p>
+            
+            <p style='font-size: 14px; color: #666;'>PD: En 3 días te cuento sobre el Red Flag #5 (validación de inputs) que le costó a un equipo 3 días de rollback.</p>
+            
+            <div class='footer'>
+                <p style='margin: 0;'><strong>Ian Saura</strong><br>
+                Data Engineering Mentor<br>
+                <a href='https://iansaura.com'>iansaura.com</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

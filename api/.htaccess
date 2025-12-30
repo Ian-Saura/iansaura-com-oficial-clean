@@ -1,0 +1,55 @@
+RewriteEngine On
+
+# Block access to sensitive files
+<FilesMatch "\.(env|config|ini|log|sh|sql|bak|backup|old)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Block access to hidden files and config files
+<FilesMatch "^\.">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Block access to specific sensitive files
+<FilesMatch "(secure-config|db-config|secrets|\.db-credentials)\.php$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Block access to setup/migration scripts (should only run once)
+<FilesMatch "^(setup-|migrate-|create-).*\.php$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Block view-logs specifically
+<FilesMatch "^view-logs\.php$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Block access to debug and test files
+<FilesMatch "(debug-|test-).*\.php$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Handle CORS for API requests
+Header always set Access-Control-Allow-Origin "https://iansaura.com"
+Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+Header always set Access-Control-Allow-Headers "Content-Type, Authorization"
+
+# Security headers
+Header always set X-Content-Type-Options "nosniff"
+Header always set X-Frame-Options "DENY"
+Header always set X-XSS-Protection "1; mode=block"
+
+# Handle preflight OPTIONS requests
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ - [R=200,L]
+
+# Route API requests to appropriate PHP files
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
