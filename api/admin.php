@@ -1077,7 +1077,7 @@ function getUsers($db) {
         FROM users u
         LEFT JOIN subscribers s ON (u.email = s.email OR u.email = s.secondary_email)
         ORDER BY u.created_at DESC
-        LIMIT 500";
+        LIMIT 2000";
     
     $stmt = $db->query($sql);
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);

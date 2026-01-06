@@ -148,13 +148,13 @@ Databricks introduziu o conceito de **Lakehouse**, que combina:
           type: 'docs'
         },
         {
-          title: 'What is a Lakehouse? (Official Video)',
-          url: 'https://www.youtube.com/watch?v=wKEYuaNr-S0',
-          type: 'video'
+          title: 'What is a Data Lakehouse? (Official Docs)',
+          url: 'https://www.databricks.com/glossary/data-lakehouse',
+          type: 'docs'
         },
         {
-          title: 'Gartner Magic Quadrant - Databricks',
-          url: 'https://www.databricks.com/blog/databricks-named-leader-2023-gartner-magic-quadrant',
+          title: 'The Data Lakehouse Architecture',
+          url: 'https://www.databricks.com/product/data-lakehouse',
           type: 'article'
         }
       ],

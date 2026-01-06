@@ -4,7 +4,7 @@ import { Specialization } from '../../types/members';
 // import { DATABRICKS_STATS, DATABRICKS_PREVIEW } from '../specializations/databricks';
 
 export const specializations: Specialization[] = [
-  // 1. DATABRICKS - 🔥 PRÓXIMAMENTE 1 DE ENERO 2025
+  // 1. DATABRICKS - 🚀 DISPONIBLE - Lanzado Enero 2025
   {
     id: 'spec-databricks',
     title: { es: 'Especialización en Databricks', en: 'Databricks Specialization', pt: 'Especialização em Databricks' },
@@ -12,12 +12,11 @@ export const specializations: Specialization[] = [
     description: { es: 'Domina Databricks desde cero hasta la certificación DE Associate. 12 fases, 100+ pasos, notebooks descargables, simulador de examen, certificado verificable con badge LinkedIn, y casos de uso reales LATAM. Practica con Community Edition (gratis) + Databricks Academy.', en: 'Master Databricks from zero to DE Associate certification. 12 phases, 100+ steps, downloadable notebooks, exam simulator, verifiable certificate with LinkedIn badge, and real LATAM use cases. Practice with Community Edition (free) + Databricks Academy.', pt: 'Domine Databricks do zero à certificação DE Associate. 12 fases, 100+ passos, notebooks baixáveis, simulador de exame, certificado verificável com badge LinkedIn, e casos de uso reais LATAM. Pratique com Community Edition (grátis) + Databricks Academy.' },
     icon: '🔶',
     color: 'orange',
-    status: 'beta', // Changed from 'coming_soon' - only visible to beta testers
-    isNext: true, // Primera en lanzarse
-    isHidden: false, // Mostrar en tab especialziaciones
-    betaOnly: true, // Only visible to beta testers (check config/beta.ts)
-    releaseDate: '1 de Enero 2026',
-    releaseDateISO: '2026-01-01T00:00:00',
+    status: 'available', // 🚀 LANZADO - Enero 2025
+    isNext: false, // Ya está disponible
+    isHidden: false,
+    isNew: true, // Mostrar badge de nuevo
+    releaseDate: 'Disponible ahora',
     prerequisites: ['level-2'],
     duration: '8-12 semanas',
     skills: [

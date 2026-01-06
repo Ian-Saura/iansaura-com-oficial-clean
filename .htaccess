@@ -93,8 +93,8 @@ Header always set X-XSS-Protection "1; mode=block"
 Header always set Referrer-Policy "strict-origin-when-cross-origin"
 Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
 
-# Content Security Policy - Allow YouTube embeds, SQL.js, Pyodide, and workers
-Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://accounts.google.com https://www.youtube.com https://sql.js.org https://cdn.jsdelivr.net https://static.cloudflareinsights.com blob:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: i.ytimg.com img.youtube.com; connect-src 'self' https://iansaura.com https://sql.js.org https://cdn.jsdelivr.net; frame-src https://www.youtube.com https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'"
+# Content Security Policy - Allow YouTube embeds, SQL.js, Pyodide, workers, and Google Sign-In
+Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://accounts.google.com https://www.gstatic.com https://www.youtube.com https://sql.js.org https://cdn.jsdelivr.net https://static.cloudflareinsights.com blob:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: i.ytimg.com img.youtube.com *.googleusercontent.com; connect-src 'self' https://iansaura.com https://accounts.google.com https://oauth2.googleapis.com https://www.googleapis.com https://sql.js.org https://cdn.jsdelivr.net; frame-src https://accounts.google.com https://www.youtube.com https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'"
 
 # HSTS for HTTPS - ENABLED for production security
 Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"

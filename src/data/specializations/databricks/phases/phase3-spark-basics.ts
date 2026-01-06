@@ -30,124 +30,255 @@ export const PHASE_3_SPARK_BASICS: DatabricksPhase = {
     {
       id: 'db-3-1',
       title: { es: '¿Qué es Apache Spark?', en: 'What is Apache Spark?', pt: 'O que é Apache Spark?' },
-      description: { es: 'Historia, arquitectura y por qué Spark cambió el Big Data.', en: 'History, architecture and why Spark changed Big Data.', pt: 'História, arquitetura e por que Spark mudou o Big Data.' },
+      description: { es: 'Historia, arquitectura y por qué Spark revolucionó el procesamiento de Big Data.', en: 'History, architecture and why Spark revolutionized Big Data processing.', pt: 'História, arquitetura e por que Spark revolucionou o processamento de Big Data.' },
       theory: {
-        es: `## Apache Spark
+        es: `## Apache Spark: El Motor de Big Data más Poderoso
 
-### Historia
-- 2009: Creado en UC Berkeley
-- 2014: Récord mundial de ordenamiento de datos
-- 2023: El framework más usado para Big Data
+Apache Spark es una **plataforma de procesamiento de datos distribuido** que ha revolucionado la forma en que las empresas manejan Big Data. Creado por los mismos fundadores de Databricks, Spark se ha convertido en el estándar de la industria para procesar grandes volúmenes de datos.
 
-### ¿Por qué Spark?
+### Historia y Evolución
 
-**Antes de Spark (MapReduce):**
+**2009 - El Nacimiento:**
+Spark fue creado en el AMPLab de UC Berkeley por Matei Zaharia. El objetivo era superar las limitaciones de MapReduce, el framework dominante en ese momento.
+
+**2010 - Open Source:**
+El proyecto se libera como código abierto, permitiendo que la comunidad contribuya y lo mejore.
+
+**2013 - Apache Foundation:**
+Spark se convierte en proyecto de Apache, ganando credibilidad empresarial.
+
+**2014 - Récord Mundial:**
+Spark estableció el récord mundial de ordenamiento de datos, procesando 100TB en 23 minutos (3x más rápido que el récord anterior con Hadoop).
+
+**2023 - Dominancia Total:**
+Más del 80% de las empresas Fortune 500 usan Spark. Es el framework #1 en Gartner Magic Quadrant para Data Science y ML.
+
+### ¿Por qué Spark es 100x más Rápido que MapReduce?
+
+El secreto está en el **procesamiento en memoria (in-memory computing)**.
+
+**MapReduce (Hadoop) - El Problema:**
 \`\`\`
-Disco → Proceso → Disco → Proceso → Disco
-        (lento)        (lento)
-\`\`\`
+   PASO 1          PASO 2          PASO 3
+┌─────────┐    ┌─────────┐    ┌─────────┐
+│  Leer   │ →  │ Escribir│ →  │  Leer   │ →  ...
+│  Disco  │    │  Disco  │    │  Disco  │
+└─────────┘    └─────────┘    └─────────┘
+     ↓              ↓              ↓
+   LENTO         LENTO          LENTO
+   (I/O)         (I/O)          (I/O)
 
-**Con Spark:**
-\`\`\`
-Disco → Memoria → Proceso → Proceso → Disco
-              (100x más rápido)
-\`\`\`
-
-### Componentes de Spark:
-- **Spark Core**: Motor base
-- **Spark SQL**: Consultas SQL
-- **Spark Streaming**: Datos en tiempo real
-- **MLlib**: Machine Learning
-- **GraphX**: Procesamiento de grafos
-
-### Arquitectura:
-\`\`\`
-Driver Program (tu código)
-       ↓
-Cluster Manager (gestiona recursos)
-       ↓
-Worker Nodes (ejecutan tareas)
-\`\`\``,
-        en: `## Apache Spark
-
-### History
-- 2009: Created at UC Berkeley
-- 2014: World record for data sorting
-- 2023: Most used Big Data framework
-
-### Why Spark?
-
-**Before Spark (MapReduce):**
-\`\`\`
-Disk → Process → Disk → Process → Disk
-       (slow)         (slow)
+Cada paso intermedio escribe a disco = MUY LENTO
 \`\`\`
 
-**With Spark:**
+**Spark - La Solución:**
 \`\`\`
-Disk → Memory → Process → Process → Disk
-            (100x faster)
-\`\`\`
+   PASO 1          PASO 2          PASO 3
+┌─────────┐    ┌─────────┐    ┌─────────┐
+│  Leer   │ →  │ Procesar│ →  │ Procesar│ → Resultado
+│  Disco  │    │ MEMORIA │    │ MEMORIA │
+└─────────┘    └─────────┘    └─────────┘
+     ↓              ↓              ↓
+   1 vez       SUPER RÁPIDO   SUPER RÁPIDO
+              (RAM es 100x    (Sin I/O de
+               más rápida)     disco)
 
-### Spark Components:
-- **Spark Core**: Base engine
-- **Spark SQL**: SQL queries
-- **Spark Streaming**: Real-time data
-- **MLlib**: Machine Learning
-- **GraphX**: Graph processing
-
-### Architecture:
-\`\`\`
-Driver Program (your code)
-       ↓
-Cluster Manager (manages resources)
-       ↓
-Worker Nodes (execute tasks)
-\`\`\``,
-        pt: `## Apache Spark
-
-### História
-- 2009: Criado na UC Berkeley
-- 2014: Recorde mundial de ordenação de dados
-- 2023: O framework mais usado para Big Data
-
-### Por que Spark?
-
-**Antes do Spark (MapReduce):**
-\`\`\`
-Disco → Processo → Disco → Processo → Disco
-        (lento)         (lento)
+Solo lee del disco 1 vez, todo lo demás en RAM
 \`\`\`
 
-**Com Spark:**
+### Los 5 Componentes de Spark
+
+1. **Spark Core** - El motor base
+   - Gestión de memoria y disco
+   - Scheduling de tareas
+   - Recuperación ante fallos
+   - API de RDDs (Resilient Distributed Datasets)
+
+2. **Spark SQL** - Consultas estructuradas
+   - DataFrames y Datasets API
+   - Optimizador Catalyst
+   - Soporte JDBC/ODBC
+   - Compatible con Hive
+
+3. **Spark Streaming** - Datos en tiempo real
+   - Micro-batch processing
+   - Structured Streaming
+   - Integración con Kafka, Kinesis
+   - Exactly-once semantics
+
+4. **MLlib** - Machine Learning
+   - Algoritmos distribuidos
+   - Feature engineering
+   - Model selection
+   - Pipelines de ML
+
+5. **GraphX** - Procesamiento de grafos
+   - Algoritmos de grafos (PageRank, etc.)
+   - Graph-parallel computation
+   - Integración con GraphFrames
+
+### Arquitectura de Spark en Detalle
+
 \`\`\`
-Disco → Memória → Processo → Processo → Disco
-              (100x mais rápido)
+┌─────────────────────────────────────────────────────────────┐
+│                    TU APLICACIÓN SPARK                       │
+│  (PySpark, Scala, Java, R, SQL)                             │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      DRIVER PROGRAM                          │
+│  • SparkContext / SparkSession                              │
+│  • Planifica tareas (DAG)                                   │
+│  • Distribuye código a los workers                          │
+│  • Recolecta resultados                                     │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    CLUSTER MANAGER                           │
+│  (Standalone, YARN, Mesos, Kubernetes)                      │
+│  • Asigna recursos (CPU, memoria)                           │
+│  • Monitorea workers                                        │
+└─────────────────────────────────────────────────────────────┘
+                              │
+            ┌─────────────────┼─────────────────┐
+            ▼                 ▼                 ▼
+┌───────────────────┐ ┌───────────────────┐ ┌───────────────────┐
+│   WORKER NODE 1   │ │   WORKER NODE 2   │ │   WORKER NODE N   │
+│  ┌─────────────┐  │ │  ┌─────────────┐  │ │  ┌─────────────┐  │
+│  │  Executor   │  │ │  │  Executor   │  │ │  │  Executor   │  │
+│  │  ┌───────┐  │  │ │  │  ┌───────┐  │  │ │  │  ┌───────┐  │  │
+│  │  │ Task  │  │  │ │  │  │ Task  │  │  │ │  │  │ Task  │  │  │
+│  │  │ Task  │  │  │ │  │  │ Task  │  │  │ │  │  │ Task  │  │  │
+│  │  │ Cache │  │  │ │  │  │ Cache │  │  │ │  │  │ Cache │  │  │
+│  │  └───────┘  │  │ │  │  └───────┘  │  │ │  │  └───────┘  │  │
+│  └─────────────┘  │ │  └─────────────┘  │ │  └─────────────┘  │
+└───────────────────┘ └───────────────────┘ └───────────────────┘
 \`\`\`
 
-### Componentes do Spark:
-- **Spark Core**: Motor base
-- **Spark SQL**: Consultas SQL
-- **Spark Streaming**: Dados em tempo real
-- **MLlib**: Machine Learning
-- **GraphX**: Processamento de grafos
+### Empresas que usan Spark (Casos Reales)
 
-### Arquitetura:
+- **Netflix**: Procesa 500 mil millones de eventos por día para recomendaciones
+- **Uber**: ETL de 100+ petabytes de datos de viajes
+- **Airbnb**: ML para pricing dinámico y detección de fraude
+- **Spotify**: Análisis de 100 millones de usuarios activos
+- **Pinterest**: Procesamiento de 1000+ billones de pins
+
+### ¿Por qué aprender Spark te hace más empleable?
+
+1. **Salarios más altos**: Data Engineers con Spark ganan 20-30% más
+2. **Alta demanda**: 70% de las ofertas de DE requieren Spark
+3. **Skill transferible**: Funciona en AWS, Azure, GCP, on-premise
+4. **Base para Databricks**: Databricks ES Spark optimizado`,
+        en: `## Apache Spark: The Most Powerful Big Data Engine
+
+Apache Spark is a **distributed data processing platform** that has revolutionized how companies handle Big Data. Created by the same founders of Databricks, Spark has become the industry standard for processing large volumes of data.
+
+### History and Evolution
+
+**2009 - The Birth:**
+Spark was created at UC Berkeley's AMPLab by Matei Zaharia. The goal was to overcome the limitations of MapReduce, the dominant framework at the time.
+
+**2010 - Open Source:**
+The project was released as open source, allowing the community to contribute and improve it.
+
+**2013 - Apache Foundation:**
+Spark becomes an Apache project, gaining enterprise credibility.
+
+**2014 - World Record:**
+Spark set the world record for data sorting, processing 100TB in 23 minutes (3x faster than the previous Hadoop record).
+
+**2023 - Total Dominance:**
+More than 80% of Fortune 500 companies use Spark. It's the #1 framework in Gartner Magic Quadrant for Data Science and ML.
+
+### Why is Spark 100x Faster than MapReduce?
+
+The secret is **in-memory computing**.
+
+**MapReduce (Hadoop) - The Problem:**
 \`\`\`
-Driver Program (seu código)
-       ↓
-Cluster Manager (gerencia recursos)
-       ↓
-Worker Nodes (executam tarefas)
-\`\`\``
+   STEP 1          STEP 2          STEP 3
+┌─────────┐    ┌─────────┐    ┌─────────┐
+│  Read   │ →  │  Write  │ →  │  Read   │ →  ...
+│  Disk   │    │  Disk   │    │  Disk   │
+└─────────┘    └─────────┘    └─────────┘
+     ↓              ↓              ↓
+   SLOW          SLOW           SLOW
+   (I/O)         (I/O)          (I/O)
+
+Each intermediate step writes to disk = VERY SLOW
+\`\`\`
+
+**Spark - The Solution:**
+\`\`\`
+   STEP 1          STEP 2          STEP 3
+┌─────────┐    ┌─────────┐    ┌─────────┐
+│  Read   │ →  │ Process │ →  │ Process │ → Result
+│  Disk   │    │ MEMORY  │    │ MEMORY  │
+└─────────┘    └─────────┘    └─────────┘
+     ↓              ↓              ↓
+   1 time      SUPER FAST     SUPER FAST
+              (RAM is 100x    (No disk
+               faster)         I/O)
+
+Only reads from disk once, everything else in RAM
+\`\`\`
+
+### The 5 Components of Spark
+
+1. **Spark Core** - The base engine
+2. **Spark SQL** - Structured queries
+3. **Spark Streaming** - Real-time data
+4. **MLlib** - Machine Learning
+5. **GraphX** - Graph processing
+
+### Companies using Spark (Real Cases)
+
+- **Netflix**: Processes 500 billion events per day
+- **Uber**: ETL of 100+ petabytes of trip data
+- **Airbnb**: ML for dynamic pricing and fraud detection
+- **Spotify**: Analysis of 100 million active users`,
+        pt: `## Apache Spark: O Motor de Big Data mais Poderoso
+
+Apache Spark é uma **plataforma de processamento de dados distribuído** que revolucionou a forma como as empresas lidam com Big Data.
+
+### História e Evolução
+
+**2009 - O Nascimento:**
+Spark foi criado no AMPLab da UC Berkeley por Matei Zaharia.
+
+**2014 - Recorde Mundial:**
+Spark estabeleceu o recorde mundial de ordenação de dados, processando 100TB em 23 minutos.
+
+**2023 - Dominância Total:**
+Mais de 80% das empresas Fortune 500 usam Spark.
+
+### Por que Spark é 100x mais Rápido que MapReduce?
+
+O segredo está no **processamento em memória**.
+
+### Os 5 Componentes do Spark
+
+1. **Spark Core** - O motor base
+2. **Spark SQL** - Consultas estruturadas
+3. **Spark Streaming** - Dados em tempo real
+4. **MLlib** - Machine Learning
+5. **GraphX** - Processamento de grafos`
       },
       practicalTips: [
-        { es: '💡 Spark procesa en memoria, por eso es tan rápido.', en: '💡 Spark processes in memory, that\'s why it\'s so fast.', pt: '💡 Spark processa em memória, por isso é tão rápido.' }
+        { es: '💡 Spark procesa en memoria RAM, que es 100,000x más rápida que el disco duro. Por eso puede ser hasta 100x más rápido que Hadoop.', en: '💡 Spark processes in RAM memory, which is 100,000x faster than hard disk. That\'s why it can be up to 100x faster than Hadoop.', pt: '💡 Spark processa em memória RAM, que é 100.000x mais rápida que o disco. Por isso pode ser até 100x mais rápido que Hadoop.' },
+        { es: '💡 En Databricks, Spark ya viene pre-configurado y optimizado. No necesitas instalar nada.', en: '💡 In Databricks, Spark comes pre-configured and optimized. You don\'t need to install anything.', pt: '💡 No Databricks, Spark já vem pré-configurado e otimizado. Não precisa instalar nada.' },
+        { es: '💡 El 80% de las empresas Fortune 500 usan Spark. Aprenderlo te abre muchas puertas.', en: '💡 80% of Fortune 500 companies use Spark. Learning it opens many doors.', pt: '💡 80% das empresas Fortune 500 usam Spark. Aprendê-lo abre muitas portas.' }
       ],
-      externalLinks: [{ title: 'Apache Spark Official', url: 'https://spark.apache.org/', type: 'docs' }],
-      checkpoint: { es: '🤔 ¿Por qué Spark es más rápido que MapReduce?', en: '🤔 Why is Spark faster than MapReduce?', pt: '🤔 Por que Spark é mais rápido que MapReduce?' },
-      xpReward: 15,
-      estimatedMinutes: 15
+      externalLinks: [
+        { title: 'Apache Spark Official', url: 'https://spark.apache.org/', type: 'docs' },
+        { title: 'Spark: The Definitive Guide (Free Chapter)', url: 'https://pages.databricks.com/rs/094-YMS-629/images/Apache-Spark-The-Definitive-Guide-Excerpts-R1.pdf', type: 'article' },
+        { title: 'Databricks Spark Docs', url: 'https://docs.databricks.com/spark/index.html', type: 'docs' }
+      ],
+      checkpoint: { es: '🤔 Explica con tus palabras: ¿Por qué procesar datos en memoria RAM es más rápido que hacerlo desde disco? ¿Cuál es la diferencia de velocidad aproximada?', en: '🤔 Explain in your own words: Why is processing data in RAM memory faster than from disk? What is the approximate speed difference?', pt: '🤔 Explique com suas palavras: Por que processar dados em memória RAM é mais rápido que do disco? Qual é a diferença de velocidade aproximada?' },
+      xpReward: 25,
+      estimatedMinutes: 30
     },
     {
       id: 'db-3-2',

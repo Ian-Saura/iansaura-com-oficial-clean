@@ -2,19 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { 
   CheckCircle, Lock, Zap, ChevronRight, Sparkles, Star,
-  Gem, MapPin, Info, Clock, Folder, MessageCircle
+  Gem, MapPin, MessageCircle
 } from 'lucide-react';
 import { useLanguage } from '../../../i18n/LanguageContext';
 import { LocalizedContent as LC, t as tLocalized } from '../../../types/i18n';
 import { useUserProgress } from '../../../hooks/useUserProgress';
 import { useCelebration } from '../../../hooks/useCelebration';
 import { useEnergySystem } from '../../../hooks/useEnergySystem';
-import { roadmapLevels, getLevelStepIds, specializations } from '../../../data/roadmapData';
-import { hasBetaAccess } from '../../../config/beta';
+import { roadmapLevels, getLevelStepIds } from '../../../data/roadmapData';
 import { projects } from '../../../data/projectsData';
 import { DISCORD_INVITE_LINK } from '../../../data/videosData';
 import { ResourceButton, TabType, renderMarkdown } from '../MembersUtils';
-import { SpecializationCountdown } from '../../SpecializationCountdown';
 
 // XP System
 export const XP_PER_STEP = 10;
@@ -28,8 +26,7 @@ const RoadmapTab: React.FC<{
   onPositionChange?: (position: { level: number; phaseIndex: number; stepId?: string }) => void;
   energySystem?: ReturnType<typeof useEnergySystem>;
   onLevelComplete?: (stepId: string) => void;
-  userEmail?: string;
-}> = ({ progress, setActiveTab, celebration, isFreeUser = false, onPositionChange, energySystem, onLevelComplete, userEmail }) => {
+}> = ({ progress, setActiveTab, celebration, isFreeUser = false, onPositionChange, energySystem, onLevelComplete }) => {
   const { language } = useLanguage();
   const t = (content: LC | string): string => tLocalized(content, language);
   
@@ -941,158 +938,6 @@ const RoadmapTab: React.FC<{
                       </div>
         </div>
 
-        {/* 🚀 Coming Soon with Countdown - Next specializations */}
-        {(() => {
-          // Filter specializations: show beta ones only to beta testers
-          const visibleSpecs = specializations.filter(s => {
-            if (s.betaOnly && !hasBetaAccess(s.id, userEmail)) return false;
-            return true;
-          });
-          
-          const nextSpecs = visibleSpecs.filter(s => s.isNext && !s.isHidden && s.status !== 'beta');
-          const betaSpecs = visibleSpecs.filter(s => s.status === 'beta' && !s.isHidden);
-          
-          return (
-            <>
-              {/* Beta Features Section - Only visible to beta testers */}
-              {betaSpecs.length > 0 && (
-                <div className="mb-6">
-                  <h4 className="text-sm font-semibold text-purple-400 mb-3 flex items-center gap-2">
-                    <span>🧪</span> {t({ es: 'Beta - Acceso Anticipado', en: 'Beta - Early Access', pt: 'Beta - Acesso Antecipado' })}
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {betaSpecs.map(spec => (
-                      <SpecializationCountdown key={spec.id} specialization={{...spec, status: 'available'}} isBeta />
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              {/* Coming Soon Section */}
-              {nextSpecs.length > 0 && (
-                <div className="mb-6">
-                  <h4 className="text-sm font-semibold text-orange-400 mb-3 flex items-center gap-2">
-                    <span>🚀</span> {t({ es: 'Próximamente', en: 'Coming Soon', pt: 'Em breve' })}
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {nextSpecs.map(spec => (
-                      <SpecializationCountdown key={spec.id} specialization={spec} />
-                    ))}
-                  </div>
-                </div>
-              )}
-            </>
-          );
-        })()}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {specializations.filter(spec => {
-            if (spec.isHidden || spec.isNext) return false;
-            // Hide beta specs from this section (they're shown above)
-            if (spec.status === 'beta') return false;
-            // Hide beta-only specs from non-beta testers
-            if (spec.betaOnly && !hasBetaAccess(spec.id, userEmail)) return false;
-            return true;
-          }).map((spec) => (
-            <div 
-              key={spec.id}
-              className={`relative overflow-hidden rounded-xl border transition-all ${
-                spec.status === 'available' 
-                  ? 'bg-gradient-to-br from-slate-800 to-slate-900 border-slate-600 hover:border-slate-500 cursor-pointer' 
-                  : 'bg-slate-800/30 border-slate-700/50'
-              }`}
-            >
-              {/* Coming Soon Badge */}
-              {spec.status === 'coming_soon' && (
-                <div className="absolute top-3 right-3">
-                  <span className="px-2 py-1 bg-amber-500/20 text-amber-400 text-xs font-medium rounded-full border border-amber-500/30">
-                    {spec.releaseDate}
-                  </span>
-                    </div>
-              )}
-
-              <div className="p-4">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="text-3xl">{spec.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <h4 className={`font-bold truncate ${spec.status === 'available' ? 'text-white' : 'text-slate-400'}`}>
-                      {t(spec.title).replace('Especialización en ', '')}
-                    </h4>
-                    <p className="text-xs text-slate-500 truncate">{t(spec.subtitle)}</p>
-                  </div>
-                </div>
-
-                <p className={`text-sm mb-4 line-clamp-2 ${spec.status === 'available' ? 'text-slate-300' : 'text-slate-500'}`}>
-                  {t(spec.description).substring(0, 100)}...
-                </p>
-
-                {/* Meta info */}
-                <div className="flex items-center gap-4 text-xs text-slate-500 mb-3">
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {spec.duration}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Folder className="w-3 h-3" />
-                    {spec.projects} proyectos
-                  </span>
-                </div>
-
-                {/* Skills preview */}
-                <div className="flex flex-wrap gap-1 mb-3">
-                  {spec.skills.slice(0, 3).map((skill, idx) => (
-                    <span 
-                      key={idx}
-                      className={`px-2 py-0.5 rounded text-xs ${
-                        spec.status === 'available' 
-                          ? 'bg-slate-700 text-slate-300' 
-                          : 'bg-slate-800/50 text-slate-500'
-                      }`}
-                    >
-                      {t(skill).split(' ')[0]}
-                    </span>
-                  ))}
-                  {spec.skills.length > 3 && (
-                    <span className="px-2 py-0.5 rounded text-xs bg-slate-800/50 text-slate-500">
-                      +{spec.skills.length - 3}
-                    </span>
-                  )}
-                </div>
-
-                {/* CTA */}
-                {spec.status === 'available' ? (
-                  <button className={`w-full py-2 rounded-lg bg-gradient-to-r from-${spec.color}-500 to-${spec.color}-600 text-white text-sm font-medium hover:opacity-90 transition-opacity`}>
-                    Comenzar
-                  </button>
-                ) : (
-                  <div className="w-full py-2 rounded-lg bg-slate-700/30 text-slate-500 text-sm font-medium text-center">
-                    Próximamente
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Info about specializations */}
-        <div className="mt-6 p-4 bg-slate-800/30 rounded-xl border border-slate-700/30">
-          <div className="flex items-start gap-3">
-            <Info className="w-5 h-5 text-slate-400 mt-0.5 flex-shrink-0" />
-            <div>
-              <p className="text-sm text-slate-400">
-                {t({ 
-                  es: 'Las especializaciones son paths opcionales para profundizar en áreas específicas. Lanzamos', 
-                  en: 'Specializations are optional paths to deepen in specific areas. We launch', 
-                  pt: 'Especializações são trilhas opcionais para aprofundar em áreas específicas. Lançamos' 
-                })}
-                <span className="text-amber-400 font-medium">
-                  {t({ es: ' una nueva especialización cada mes', en: ' a new specialization every month', pt: ' uma nova especialização a cada mês' })}
-                </span>.
-                {t({ es: ' Completá primero los 3 niveles base para desbloquearlas.', en: ' Complete the 3 base levels first to unlock them.', pt: ' Complete os 3 níveis base primeiro para desbloqueá-las.' })}
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Discord CTA */}

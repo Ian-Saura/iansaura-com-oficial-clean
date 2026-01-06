@@ -160,6 +160,298 @@ export const PHASE_11_BEST_PRACTICES: DatabricksPhase = {
       `## Repos in Databricks\n\n### Connect repository:\n1. Workspace > Repos > Add Repo\n2. Git repo URL\n3. Credentials (token)\n\n### Operations:\n- Pull: get changes\n- Push: upload changes\n- Checkout branch\n- Create branch\n\n### CI/CD:\n- GitHub Actions\n- Azure DevOps\n- Databricks Asset Bundles`,
       `## Repos no Databricks\n\n### Conectar repositório:\n1. Workspace > Repos > Add Repo\n2. URL do repo Git\n3. Credenciais (token)\n\n### Operações:\n- Pull: trazer mudanças\n- Push: subir mudanças\n- Checkout branch\n- Criar branch\n\n### CI/CD:\n- GitHub Actions\n- Azure DevOps\n- Databricks Asset Bundles`,
       {es: '🔄 Siempre usá Git, incluso para proyectos pequeños.', en: '🔄 Always use Git, even for small projects.', pt: '🔄 Sempre use Git, mesmo para projetos pequenos.'}, '✅ ¿Conectaste un repo Git?', '✅ Did you connect a Git repo?', '✅ Você conectou um repo Git?', 25, 20),
+    {
+      id: 'db-11-2b',
+      title: { es: 'Databricks Asset Bundles (DABs)', en: 'Databricks Asset Bundles (DABs)', pt: 'Databricks Asset Bundles (DABs)' },
+      description: { es: 'El nuevo estándar (2024) para CI/CD en Databricks. Reemplaza a dbx.', en: 'The new standard (2024) for CI/CD in Databricks. Replaces dbx.', pt: 'O novo padrão (2024) para CI/CD no Databricks. Substitui dbx.' },
+      theory: {
+        es: `## Databricks Asset Bundles (DABs)
+
+DABs es la forma **oficial y recomendada** de hacer CI/CD en Databricks (2024). Reemplaza a herramientas anteriores como dbx.
+
+### ¿Qué es un Asset Bundle?
+
+Es un **proyecto como código** que define:
+- Jobs y pipelines
+- Clusters
+- Notebooks
+- DLT pipelines
+- Permisos
+- Variables por ambiente
+
+\`\`\`
+┌─────────────────────────────────────────────────────────────┐
+│                 DATABRICKS ASSET BUNDLE                      │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  databricks.yml           # Configuración principal          │
+│       │                                                      │
+│       ├── Define: Jobs, Pipelines, Clusters                 │
+│       │                                                      │
+│       └── Ambientes: dev → staging → prod                   │
+│                                                              │
+│  src/                    # Tu código                         │
+│  resources/              # Configuraciones adicionales       │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+\`\`\`
+
+### Estructura de un Bundle
+
+\`\`\`
+my-project/
+├── databricks.yml           # Configuración principal
+├── resources/
+│   ├── jobs.yml            # Definición de jobs
+│   └── pipelines.yml       # Definición de DLT
+├── src/
+│   ├── notebooks/
+│   │   ├── bronze.py
+│   │   ├── silver.py
+│   │   └── gold.py
+│   └── libs/
+│       └── transforms.py
+└── tests/
+    └── test_transforms.py
+\`\`\`
+
+### databricks.yml Básico
+
+\`\`\`yaml
+# databricks.yml
+bundle:
+  name: mi-pipeline-etl
+
+# Variables que cambian por ambiente
+variables:
+  catalog:
+    description: "Catalog de Unity"
+    default: "dev"
+  warehouse_id:
+    description: "SQL Warehouse ID"
+
+# Recursos (jobs, pipelines, etc)
+include:
+  - resources/*.yml
+
+# Ambientes
+targets:
+  dev:
+    workspace:
+      host: https://dbc-xxxxx.cloud.databricks.com
+    variables:
+      catalog: dev
+  
+  staging:
+    workspace:
+      host: https://dbc-xxxxx.cloud.databricks.com
+    variables:
+      catalog: staging
+  
+  prod:
+    workspace:
+      host: https://dbc-xxxxx.cloud.databricks.com
+    variables:
+      catalog: prod
+    mode: production  # Requiere permisos explícitos
+\`\`\`
+
+### resources/jobs.yml
+
+\`\`\`yaml
+resources:
+  jobs:
+    daily_etl:
+      name: "Daily ETL Pipeline"
+      schedule:
+        quartz_cron_expression: "0 0 6 * * ?"
+        timezone_id: "America/Buenos_Aires"
+      
+      tasks:
+        - task_key: bronze
+          notebook_task:
+            notebook_path: ./src/notebooks/bronze.py
+          job_cluster_key: etl_cluster
+        
+        - task_key: silver
+          depends_on:
+            - task_key: bronze
+          notebook_task:
+            notebook_path: ./src/notebooks/silver.py
+          job_cluster_key: etl_cluster
+        
+        - task_key: gold
+          depends_on:
+            - task_key: silver
+          notebook_task:
+            notebook_path: ./src/notebooks/gold.py
+          job_cluster_key: etl_cluster
+      
+      job_clusters:
+        - job_cluster_key: etl_cluster
+          new_cluster:
+            spark_version: "14.3.x-scala2.12"
+            num_workers: 2
+            node_type_id: i3.xlarge
+            aws_attributes:
+              availability: SPOT_WITH_FALLBACK
+      
+      email_notifications:
+        on_failure:
+          - team@company.com
+\`\`\`
+
+### Comandos CLI
+
+\`\`\`bash
+# Instalar CLI
+pip install databricks-cli
+
+# Configurar autenticación
+databricks configure --token
+
+# Validar bundle
+databricks bundle validate
+
+# Desplegar a dev
+databricks bundle deploy -t dev
+
+# Ver cambios sin aplicar
+databricks bundle deploy -t staging --dry-run
+
+# Desplegar a producción
+databricks bundle deploy -t prod
+
+# Ejecutar job manualmente
+databricks bundle run daily_etl -t dev
+
+# Destruir recursos (cuidado!)
+databricks bundle destroy -t dev
+\`\`\`
+
+### CI/CD con GitHub Actions
+
+\`\`\`yaml
+# .github/workflows/deploy.yml
+name: Deploy to Databricks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: databricks/setup-cli@main
+      - run: databricks bundle validate
+        env:
+          DATABRICKS_TOKEN: \${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_HOST: \${{ secrets.DATABRICKS_HOST }}
+
+  deploy-staging:
+    needs: validate
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: databricks/setup-cli@main
+      - run: databricks bundle deploy -t staging
+        env:
+          DATABRICKS_TOKEN: \${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_HOST: \${{ secrets.DATABRICKS_HOST }}
+
+  deploy-prod:
+    needs: validate
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v3
+      - uses: databricks/setup-cli@main
+      - run: databricks bundle deploy -t prod
+        env:
+          DATABRICKS_TOKEN: \${{ secrets.DATABRICKS_TOKEN_PROD }}
+          DATABRICKS_HOST: \${{ secrets.DATABRICKS_HOST_PROD }}
+\`\`\`
+
+### DABs vs Otras Herramientas
+
+| Feature | DABs (2024) | dbx (legacy) | Terraform |
+|---------|-------------|--------------|-----------|
+| Oficial Databricks | ✅ Sí | ❌ Deprecated | ❌ No |
+| YAML config | ✅ | ✅ | HCL |
+| Ambientes | ✅ Built-in | Requiere config | Requiere config |
+| Validación | ✅ CLI | Limited | Limited |
+| Preview cambios | ✅ dry-run | ❌ | ✅ plan |
+| DLT support | ✅ Nativo | Limited | Limited |`,
+        en: `## Databricks Asset Bundles (DABs)
+
+DABs is the **official and recommended** way to do CI/CD in Databricks (2024). Replaces previous tools like dbx.
+
+### What is an Asset Bundle?
+
+It's a **project as code** that defines jobs, pipelines, clusters, DLT pipelines, permissions, and environment variables.
+
+\`\`\`yaml
+# databricks.yml
+bundle:
+  name: my-etl-pipeline
+
+targets:
+  dev:
+    workspace:
+      host: https://dbc-xxxxx.cloud.databricks.com
+  prod:
+    workspace:
+      host: https://dbc-xxxxx.cloud.databricks.com
+    mode: production
+\`\`\`
+
+### CLI Commands
+\`\`\`bash
+databricks bundle validate     # Validate
+databricks bundle deploy -t dev # Deploy to dev
+databricks bundle run job -t dev # Run job
+\`\`\``,
+        pt: `## Databricks Asset Bundles (DABs)
+
+DABs é a forma **oficial e recomendada** de fazer CI/CD no Databricks (2024). Substitui ferramentas anteriores como dbx.
+
+### O que é um Asset Bundle?
+
+É um **projeto como código** que define jobs, pipelines, clusters, pipelines DLT, permissões e variáveis de ambiente.
+
+\`\`\`yaml
+# databricks.yml
+bundle:
+  name: meu-pipeline-etl
+
+targets:
+  dev:
+    workspace:
+      host: https://dbc-xxxxx.cloud.databricks.com
+  prod:
+    workspace:
+      host: https://dbc-xxxxx.cloud.databricks.com
+\`\`\``
+      },
+      practicalTips: [
+        { es: '🚀 DABs es el FUTURO de CI/CD en Databricks. Aprendelo ahora.', en: '🚀 DABs is the FUTURE of CI/CD in Databricks. Learn it now.', pt: '🚀 DABs é o FUTURO de CI/CD no Databricks. Aprenda agora.' },
+        { es: '🔄 Si usás dbx, migrá a DABs. dbx está deprecated.', en: '🔄 If you use dbx, migrate to DABs. dbx is deprecated.', pt: '🔄 Se você usa dbx, migre para DABs. dbx está deprecated.' },
+        { es: '💡 Usá targets (dev/staging/prod) para separar ambientes.', en: '💡 Use targets (dev/staging/prod) to separate environments.', pt: '💡 Use targets (dev/staging/prod) para separar ambientes.' }
+      ],
+      externalLinks: [
+        { title: 'Asset Bundles Docs', url: 'https://docs.databricks.com/dev-tools/bundles/index.html', type: 'docs' },
+        { title: 'Bundle Examples', url: 'https://github.com/databricks/bundle-examples', type: 'article' }
+      ],
+      checkpoint: { es: '✅ ¿Creaste un bundle básico y lo desplegaste a dev?', en: '✅ Did you create a basic bundle and deploy it to dev?', pt: '✅ Você criou um bundle básico e o fez deploy para dev?' },
+      xpReward: 40,
+      estimatedMinutes: 40
+    },
     createStep('db-11-3', 'Secrets Management', 'Secrets Management', 'Gerenciamento de Secrets', 'Nunca hardcodees credenciales. Usá secrets.', 'Never hardcode credentials. Use secrets.', 'Nunca coloque credenciais fixas. Use secrets.',
       `## Databricks Secrets\n\n### Crear scope y secret:\n\`\`\`bash\ndatabricks secrets create-scope --scope mi_scope\ndatabricks secrets put --scope mi_scope --key db_password\n\`\`\`\n\n### Usar en código:\n\`\`\`python\npassword = dbutils.secrets.get(\n    scope="mi_scope", \n    key="db_password"\n)\n\`\`\`\n\n### Best practices:\n- Un scope por proyecto/ambiente\n- Rotar secrets regularmente\n- Limitar acceso por grupo`,
       `## Databricks Secrets\n\n### Create scope and secret:\n\`\`\`bash\ndatabricks secrets create-scope --scope my_scope\ndatabricks secrets put --scope my_scope --key db_password\n\`\`\`\n\n### Use in code:\n\`\`\`python\npassword = dbutils.secrets.get(\n    scope="my_scope", \n    key="db_password"\n)\n\`\`\`\n\n### Best practices:\n- One scope per project/environment\n- Rotate secrets regularly\n- Limit access by group`,
