@@ -304,6 +304,7 @@ export interface Specialization {
   isNext?: boolean; // Si es la próxima en lanzarse (para destacar)
   isHidden?: boolean; // Si está oculta
   betaOnly?: boolean; // Si solo está disponible para beta testers
+  isNew?: boolean; // Si es nuevo (mostrar badge)
   releaseDate?: string; // Fecha formateada para mostrar
   releaseDateISO?: string; // Fecha ISO para countdown (ej: '2025-01-01T00:00:00')
   prerequisites: string[];

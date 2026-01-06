@@ -510,57 +510,131 @@ export default function Home({ user }: HomeProps) {
               </div>
       </section>
 
-      {/* 🚀 Coming Soon - Specializations */}
-      {(() => {
-        const nextSpecs = specializations.filter(s => s.isNext && !s.isHidden);
-        if (nextSpecs.length === 0) return null;
+      {/* 🚀 NUEVO - Databricks Specialization Launch */}
+      <section className="py-20 bg-gradient-to-br from-slate-900 via-slate-900/95 to-orange-900/10 relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-orange-500/30 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-10 w-72 h-72 bg-amber-500/30 rounded-full blur-3xl"></div>
+        </div>
         
-        return (
-          <section className="py-20 bg-gradient-to-br from-slate-900 via-slate-900/95 to-orange-900/10">
-            <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-6xl mx-auto px-6 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <div className="text-center mb-10">
+              <div className="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-400 px-4 py-2 rounded-full text-sm font-semibold mb-4 border border-emerald-500/30 animate-pulse">
+                <span>🚀</span>
+                {({ es: '¡NUEVO LANZAMIENTO!', en: 'NEW LAUNCH!', pt: 'NOVO LANÇAMENTO!' } as any)[language]}
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                {({ es: 'Especialización en Databricks', en: 'Databricks Specialization', pt: 'Especialização em Databricks' } as any)[language]}
+              </h2>
+              <p className="text-xl text-orange-400 font-medium mb-4">
+                {({ es: 'El mejor curso de Databricks en LATAM', en: 'The best Databricks course in LATAM', pt: 'O melhor curso de Databricks em LATAM' } as any)[language]}
+              </p>
+              <p className="text-slate-400 max-w-2xl mx-auto">
+                {({ 
+                  es: 'Domina Databricks desde cero hasta la certificación DE Associate. 12 fases completas con teoría, práctica, Labs hands-on y proyectos reales.', 
+                  en: 'Master Databricks from zero to DE Associate certification. 12 complete phases with theory, practice, hands-on Labs and real projects.', 
+                  pt: 'Domine Databricks do zero à certificação DE Associate. 12 fases completas com teoria, prática, Labs hands-on e projetos reais.' 
+                } as any)[language]}
+              </p>
+            </div>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-10">
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
+                transition={{ delay: 0.1 }}
                 viewport={{ once: true }}
+                className="bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 text-center border border-orange-500/20"
               >
-                <div className="text-center mb-10">
-                  <div className="inline-flex items-center gap-2 bg-orange-500/20 text-orange-400 px-4 py-1.5 rounded-full text-sm font-medium mb-4 border border-orange-500/30">
-                    <span className="animate-pulse">🔥</span>
-                    {({ es: 'Enero 2025', en: 'January 2025', pt: 'Janeiro 2025' } as any)[language]}
-                  </div>
-                  <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                    {({ es: '🚀 Próximamente: Labs Premium', en: '🚀 Coming Soon: Premium Labs', pt: '🚀 Em breve: Labs Premium' } as any)[language]}
-                  </h2>
-                  <p className="text-slate-400 max-w-2xl mx-auto">
-                    {({ 
-                      es: 'Especializaciones avanzadas con Labs hands-on, 100+ pasos, proyectos, ejercicios y preparación para certificaciones oficiales.', 
-                      en: 'Advanced specializations with hands-on Labs, 100+ steps, projects, exercises, and official certification prep.', 
-                      pt: 'Especializações avançadas com Labs hands-on, 100+ passos, projetos, exercícios e preparação para certificações oficiais.' 
-                    } as any)[language]}
-                  </p>
-                </div>
-                <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                  {nextSpecs.map((spec, idx) => (
-                    <motion.div
-                      key={spec.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ delay: idx * 0.1 }}
-                      viewport={{ once: true }}
-                    >
-                      <SpecializationCountdown specialization={spec} />
-                    </motion.div>
-                  ))}
-                </div>
-                <p className="text-center text-slate-500 text-sm mt-6">
-                  {({ es: '🎁 Incluido gratis con tu suscripción Premium', en: '🎁 Included free with your Premium subscription', pt: '🎁 Incluído grátis com sua assinatura Premium' } as any)[language]}
-                </p>
+                <div className="text-3xl font-bold text-orange-400">12</div>
+                <div className="text-slate-400 text-sm">{({ es: 'Fases', en: 'Phases', pt: 'Fases' } as any)[language]}</div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                viewport={{ once: true }}
+                className="bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 text-center border border-blue-500/20"
+              >
+                <div className="text-3xl font-bold text-blue-400">100+</div>
+                <div className="text-slate-400 text-sm">{({ es: 'Pasos', en: 'Steps', pt: 'Passos' } as any)[language]}</div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                viewport={{ once: true }}
+                className="bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 text-center border border-purple-500/20"
+              >
+                <div className="text-3xl font-bold text-purple-400">20</div>
+                <div className="text-slate-400 text-sm">{({ es: 'Ejercicios', en: 'Exercises', pt: 'Exercícios' } as any)[language]}</div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                viewport={{ once: true }}
+                className="bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 text-center border border-emerald-500/20"
+              >
+                <div className="text-3xl font-bold text-emerald-400">10</div>
+                <div className="text-slate-400 text-sm">Labs</div>
               </motion.div>
             </div>
-          </section>
-        );
-      })()}
+
+            {/* Topics */}
+            <div className="flex flex-wrap justify-center gap-3 mb-10">
+              {['Apache Spark', 'Delta Lake', 'Unity Catalog', 'Delta Live Tables', 'MLflow', 'Workflows', 'SQL Warehouse', 'Certificación DE'].map((topic, idx) => (
+                <motion.span
+                  key={topic}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: idx * 0.05 }}
+                  viewport={{ once: true }}
+                  className="bg-orange-500/10 text-orange-300 px-4 py-2 rounded-full text-sm font-medium border border-orange-500/20"
+                >
+                  {topic}
+                </motion.span>
+              ))}
+            </div>
+
+            {/* CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              viewport={{ once: true }}
+              className="text-center"
+            >
+              <Button
+                onClick={() => {
+                  trackCTAClick('landing_databricks_cta');
+                  if (user) {
+                    navigate('/members?tab=especializaciones');
+                  } else {
+                    navigate('/auth?redirect=/members?tab=especializaciones');
+                  }
+                }}
+                className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white px-8 py-4 text-lg font-bold rounded-xl shadow-lg shadow-orange-500/30 hover:scale-105 transition-all"
+              >
+                <Play className="w-5 h-5 mr-2" />
+                {({ es: '¡Comenzar Ahora!', en: 'Start Now!', pt: 'Começar Agora!' } as any)[language]}
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+              <p className="text-slate-500 text-sm mt-4">
+                {({ es: '✨ Incluido gratis con tu suscripción Premium', en: '✨ Included free with your Premium subscription', pt: '✨ Incluído grátis com sua assinatura Premium' } as any)[language]}
+              </p>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
 
       {/* Subscription Benefits Section */}
       <section className="py-20">

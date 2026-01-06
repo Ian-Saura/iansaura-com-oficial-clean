@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import Navigation from '../components/Navigation';
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Textarea } from "../components/ui/textarea";
 import { 
   CheckCircle, 
   Users, 
-  Zap, 
-  Play, 
   Calendar,
   MessageCircle,
   ArrowRight,
   Clock,
   Target,
   Star,
-  BookOpen,
-  Video
+  Video,
+  ClipboardCheck,
+  ExternalLink,
+  Sparkles,
+  Zap,
+  Play,
+  BookOpen
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -24,69 +24,12 @@ interface MentoriasProps {
   user?: any;
 }
 
+// URL del formulario de aplicación JotForm
+const JOTFORM_URL = 'https://form.jotform.com/253644919536064';
+
 export default function Mentorias({ user }: MentoriasProps) {
-  const [waitlistData, setWaitlistData] = useState({
-    name: '',
-    email: '',
-    preferredPlan: 'Mentorías Premium 1:1',
-    reason: '',
-    contactMethod: '',
-    contactLink: ''
-  });
-  const [isWaitlistSubmitting, setIsWaitlistSubmitting] = useState(false);
-  const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
-  const [showWaitlistModal, setShowWaitlistModal] = useState(false);
-
-  const handleWaitlistSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsWaitlistSubmitting(true);
-
-    try {
-      const apiUrl = window.location.hostname === 'localhost' 
-        ? 'http://localhost:3001/api/waitlist.php' 
-        : '/api/waitlist.php';
-      
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(waitlistData),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-
-      if (result.success) {
-        setWaitlistSubmitted(true);
-        setWaitlistData({ 
-          name: '', 
-          email: '', 
-          preferredPlan: 'Mentorías Premium 1:1', 
-          reason: '', 
-          contactMethod: '', 
-          contactLink: '' 
-        });
-        setTimeout(() => {
-          setShowWaitlistModal(false);
-          setWaitlistSubmitted(false);
-        }, 3000);
-      } else {
-        alert('Error enviando solicitud: ' + (result.error || 'Error desconocido'));
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-      alert('Error enviando solicitud. Por favor intenta nuevamente. Detalles: ' + errorMessage);
-    }
-
-    setIsWaitlistSubmitting(false);
-  };
-
-  const openWaitlistModal = () => {
-    setShowWaitlistModal(true);
+  const handleApplyClick = () => {
+    window.open(JOTFORM_URL, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -118,38 +61,52 @@ export default function Mentorias({ user }: MentoriasProps) {
               Sesiones enfocadas en <strong className="text-white">tus objetivos específicos</strong>.
             </p>
 
-            {/* Sold Out Banner */}
+            {/* Application Banner */}
             <div className="max-w-xl mx-auto mb-12">
-              <div className="bg-gradient-to-r from-red-900/40 to-orange-900/40 rounded-2xl p-6 border border-red-500/30">
+              <div className="bg-gradient-to-r from-emerald-900/40 to-cyan-900/40 rounded-2xl p-6 border border-emerald-500/30">
                 <div className="flex items-center justify-center gap-2 mb-3">
-                  <span className="text-2xl">🔥</span>
-                  <span className="text-xl font-bold text-red-400">Cupos Agotados</span>
+                  <Sparkles className="w-6 h-6 text-emerald-400" />
+                  <span className="text-xl font-bold text-emerald-400">Postulaciones Abiertas</span>
                 </div>
-                <p className="text-slate-300 mb-6 text-sm">
-                  Actualmente todas las plazas de mentoría están ocupadas. 
-                  Únete a la lista de espera para ser notificado cuando haya disponibilidad.
+                <p className="text-slate-300 mb-4 text-sm">
+                  ¿Querés ser parte del programa de mentorías personalizadas? 
+                  Completá el formulario y analizaremos tu perfil.
                 </p>
                 
-                {user ? (
-                  <button
-                    onClick={openWaitlistModal}
-                    className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-bold py-3 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-red-500/30"
-                  >
-                    📝 Unirme a la Lista de Espera
-                  </button>
-                ) : (
-                  <div className="space-y-3">
-                    <p className="text-orange-400 text-sm font-medium">
-                      🔐 Necesitas una cuenta para unirte a la lista de espera
-                    </p>
-                    <Link
-                      to="/auth"
-                      className="inline-block bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white py-3 px-8 rounded-xl font-bold transition-all duration-300 transform hover:scale-105"
-                    >
-                      Crear cuenta / Iniciar sesión
-                    </Link>
+                {/* Application Process Steps */}
+                <div className="bg-slate-900/50 rounded-xl p-4 mb-6">
+                  <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                    <ClipboardCheck className="w-4 h-4 text-emerald-400" />
+                    Proceso de selección:
+                  </h4>
+                  <div className="space-y-2 text-xs text-slate-400">
+                    <div className="flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold">1</span>
+                      <span>Completás el formulario de aplicación</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold">2</span>
+                      <span>Analizamos tu perfil y objetivos</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold">3</span>
+                      <span>Te contactamos para coordinar la mentoría</span>
+                    </div>
                   </div>
-                )}
+                </div>
+                
+                <button
+                  onClick={handleApplyClick}
+                  className="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-emerald-500/30 flex items-center justify-center gap-2"
+                >
+                  <ClipboardCheck className="w-5 h-5" />
+                  Completar Formulario de Aplicación
+                  <ExternalLink className="w-4 h-4" />
+                </button>
+                
+                <p className="text-slate-500 text-xs mt-3 text-center">
+                  El formulario se abre en una nueva pestaña
+                </p>
               </div>
             </div>
           </motion.div>
@@ -473,109 +430,6 @@ export default function Mentorias({ user }: MentoriasProps) {
         </div>
       </footer>
 
-      {/* Waitlist Modal */}
-      {showWaitlistModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-slate-800 rounded-2xl p-8 max-w-md w-full max-h-[90vh] overflow-y-auto border border-slate-700"
-          >
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold">
-                Lista de Espera - Mentorías
-              </h3>
-              <button
-                onClick={() => setShowWaitlistModal(false)}
-                className="text-slate-400 hover:text-white text-2xl"
-              >
-                ×
-              </button>
-            </div>
-            
-            <div className="bg-red-900/30 border border-red-500/30 rounded-xl p-4 mb-6">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-red-400 font-bold">🔥 TEMPORALMENTE AGOTADO</span>
-              </div>
-              <p className="text-red-300 text-sm">
-                Las mentorías están agotadas por alta demanda. Únete a la lista de espera y te contactaré cuando abra un nuevo cupo.
-              </p>
-            </div>
-
-            {waitlistSubmitted ? (
-              <div className="text-center py-8">
-                <CheckCircle className="w-16 h-16 text-emerald-500 mx-auto mb-4" />
-                <h4 className="text-xl font-bold mb-2">¡Te has unido a la lista de espera!</h4>
-                <p className="text-slate-400">
-                  Te contactaré cuando se abra un cupo para mentorías personalizadas.
-                </p>
-              </div>
-            ) : (
-              <form onSubmit={handleWaitlistSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-slate-300">Nombre completo <span className="text-red-400">*</span></label>
-                  <Input
-                    type="text"
-                    required
-                    value={waitlistData.name}
-                    onChange={(e) => setWaitlistData({...waitlistData, name: e.target.value})}
-                    placeholder="Tu nombre completo"
-                    className="w-full bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-slate-300">Email <span className="text-red-400">*</span></label>
-                  <Input
-                    type="email"
-                    required
-                    value={waitlistData.email}
-                    onChange={(e) => setWaitlistData({...waitlistData, email: e.target.value})}
-                    placeholder="tu@email.com"
-                    className="w-full bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-slate-300">Método de contacto preferido</label>
-                  <select
-                    value={waitlistData.contactMethod}
-                    onChange={(e) => setWaitlistData({...waitlistData, contactMethod: e.target.value})}
-                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white"
-                  >
-                    <option value="">Selecciona método de contacto</option>
-                    <option value="Email">Email</option>
-                    <option value="WhatsApp">WhatsApp</option>
-                    <option value="LinkedIn">LinkedIn</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-slate-300">
-                    ¿Por qué te interesa la mentoría? <span className="text-red-400">*</span>
-                  </label>
-                  <Textarea
-                    required
-                    rows={4}
-                    value={waitlistData.reason}
-                    onChange={(e) => setWaitlistData({...waitlistData, reason: e.target.value})}
-                    placeholder="Contame tu situación actual y qué querés lograr..."
-                    className="w-full bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={isWaitlistSubmitting}
-                  className="w-full py-3 rounded-xl font-bold bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
-                >
-                  {isWaitlistSubmitting ? 'Enviando...' : '📝 Unirme a la Lista de Espera'}
-                </Button>
-              </form>
-            )}
-          </motion.div>
-        </div>
-      )}
     </div>
   );
 }

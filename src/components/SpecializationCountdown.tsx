@@ -14,6 +14,7 @@ interface SpecializationCountdownProps {
   onNotifyMe?: (email: string, specId: string) => void;
   compact?: boolean;
   isBeta?: boolean;
+  onStart?: (specId: string) => void;
 }
 
 const calculateTimeLeft = (targetDate: string): CountdownValues => {
@@ -35,7 +36,8 @@ export const SpecializationCountdown: React.FC<SpecializationCountdownProps> = (
   specialization,
   onNotifyMe,
   compact = false,
-  isBeta = false
+  isBeta = false,
+  onStart
 }) => {
   const { language } = useLanguage();
   const [timeLeft, setTimeLeft] = useState<CountdownValues>(
@@ -256,7 +258,10 @@ export const SpecializationCountdown: React.FC<SpecializationCountdownProps> = (
 
       {/* Beta CTA Button */}
       {isBeta && (
-        <button className="w-full py-3 rounded-lg bg-gradient-to-r from-purple-500 to-violet-600 text-white font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+        <button 
+          onClick={() => onStart?.(specialization.id)}
+          className="w-full py-3 rounded-lg bg-gradient-to-r from-purple-500 to-violet-600 text-white font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+        >
           <span>🚀</span>
           {({ es: 'Comenzar Especialización', en: 'Start Specialization', pt: 'Iniciar Especialização' } as any)[language]}
         </button>

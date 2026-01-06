@@ -1626,6 +1626,288 @@ WHERE usage_date >= current_date - 30
       estimatedMinutes: 20
     },
     {
+      id: 'db-2-8b',
+      title: {
+        es: 'Cluster Policies: Governance de Clusters',
+        en: 'Cluster Policies: Cluster Governance',
+        pt: 'Cluster Policies: Governança de Clusters'
+      },
+      description: {
+        es: 'Controla qué tipos de clusters pueden crear los usuarios en tu workspace.',
+        en: 'Control what types of clusters users can create in your workspace.',
+        pt: 'Controle quais tipos de clusters os usuários podem criar no seu workspace.'
+      },
+      theory: {
+        es: `## Cluster Policies: Governance Empresarial
+
+Las Cluster Policies permiten a los admins **controlar y estandarizar** la creación de clusters. Esto es CRÍTICO para:
+- Controlar costos
+- Garantizar seguridad
+- Estandarizar configuraciones
+
+### ¿Por qué son Importantes?
+
+\`\`\`
+Sin Policies:                    Con Policies:
+                                 
+Usuario A: i3.2xlarge x 10      ┌──────────────────────────┐
+Usuario B: i3.4xlarge x 20      │     CLUSTER POLICY       │
+Usuario C: i3.8xlarge x 5       │                          │
+         ↓                      │ • Max 4 workers          │
+    COSTOS SIN CONTROL          │ • Solo i3.xlarge         │
+    $$$$$$$                     │ • Autotermination ON     │
+                                │ • Spot instances         │
+                                └──────────────────────────┘
+                                          ↓
+                                  COSTOS CONTROLADOS
+                                  $$
+\`\`\`
+
+### Estructura de una Policy
+
+\`\`\`json
+{
+  "name": "Data Engineering Standard",
+  "definition": {
+    "spark_version": {
+      "type": "fixed",
+      "value": "14.3.x-scala2.12"
+    },
+    "node_type_id": {
+      "type": "allowlist",
+      "values": ["i3.xlarge", "i3.2xlarge"]
+    },
+    "autoscale.max_workers": {
+      "type": "range",
+      "maxValue": 10
+    },
+    "autotermination_minutes": {
+      "type": "fixed",
+      "value": 30,
+      "hidden": true
+    },
+    "custom_tags.team": {
+      "type": "fixed",
+      "value": "data-engineering"
+    }
+  }
+}
+\`\`\`
+
+### Tipos de Restricciones
+
+| Tipo | Descripción | Ejemplo |
+|------|-------------|---------|
+| \`fixed\` | Valor fijo, no modificable | Runtime específico |
+| \`allowlist\` | Solo valores de la lista | Tipos de instancia |
+| \`blocklist\` | Prohibir valores | No usar GPU |
+| \`range\` | Rango numérico | Max 10 workers |
+| \`unlimited\` | Sin restricción | Usuario decide |
+| \`regex\` | Debe matchear regex | Nombre del cluster |
+
+### Ejemplo: Policy para Desarrollo
+
+\`\`\`json
+{
+  "name": "Dev - Cost Optimized",
+  "description": "Para desarrollo y experimentación",
+  "definition": {
+    "spark_version": {
+      "type": "allowlist",
+      "values": ["14.3.x-scala2.12", "14.3.x-scala2.12"],
+      "defaultValue": "14.3.x-scala2.12"
+    },
+    "node_type_id": {
+      "type": "allowlist",
+      "values": ["i3.xlarge", "m5.large"],
+      "defaultValue": "i3.xlarge"
+    },
+    "driver_node_type_id": {
+      "type": "fixed",
+      "value": "i3.xlarge"
+    },
+    "autoscale.min_workers": {
+      "type": "fixed",
+      "value": 1
+    },
+    "autoscale.max_workers": {
+      "type": "range",
+      "maxValue": 4,
+      "defaultValue": 2
+    },
+    "autotermination_minutes": {
+      "type": "range",
+      "minValue": 10,
+      "maxValue": 60,
+      "defaultValue": 30
+    },
+    "aws_attributes.availability": {
+      "type": "fixed",
+      "value": "SPOT_WITH_FALLBACK"
+    }
+  }
+}
+\`\`\`
+
+### Ejemplo: Policy para Producción
+
+\`\`\`json
+{
+  "name": "Production - High Availability",
+  "description": "Para jobs críticos de producción",
+  "definition": {
+    "spark_version": {
+      "type": "fixed",
+      "value": "14.3.x-scala2.12"
+    },
+    "node_type_id": {
+      "type": "fixed",
+      "value": "i3.2xlarge"
+    },
+    "autoscale.min_workers": {
+      "type": "range",
+      "minValue": 2
+    },
+    "autoscale.max_workers": {
+      "type": "range",
+      "maxValue": 20
+    },
+    "autotermination_minutes": {
+      "type": "fixed",
+      "value": 0,
+      "hidden": true
+    },
+    "aws_attributes.availability": {
+      "type": "fixed",
+      "value": "ON_DEMAND"
+    },
+    "cluster_log_conf.type": {
+      "type": "fixed",
+      "value": "S3"
+    }
+  }
+}
+\`\`\`
+
+### Crear Policy via UI
+
+1. **Compute** → **Cluster Policies** → **Create Policy**
+2. Nombrar la policy
+3. Definir restricciones en JSON
+4. Asignar a grupos de usuarios
+
+### Crear Policy via API
+
+\`\`\`python
+import requests
+
+policy = {
+    "name": "My Policy",
+    "definition": {
+        "autoscale.max_workers": {
+            "type": "range",
+            "maxValue": 5
+        }
+    }
+}
+
+response = requests.post(
+    f"{databricks_url}/api/2.0/policies/clusters/create",
+    headers={"Authorization": f"Bearer {token}"},
+    json=policy
+)
+\`\`\`
+
+### Instance Pools (Complemento de Policies)
+
+Los Instance Pools pre-aprovisionan VMs para reducir el tiempo de inicio:
+
+\`\`\`
+Sin Pool:                       Con Pool:
+                               
+Crear cluster                   ┌─────────────────────┐
+      ↓                        │   INSTANCE POOL     │
+Solicitar VMs a AWS            │                     │
+      ↓ (2-5 min)              │  VM VM VM VM VM     │
+VMs listas                     │  (pre-aprovisionadas)│
+      ↓                        └─────────────────────┘
+Cluster listo                           ↓
+                                Crear cluster
+Total: 3-8 min                         ↓ (30 seg)
+                                Cluster listo
+                               
+                               Total: 30-60 seg
+\`\`\`
+
+### Crear un Pool
+
+\`\`\`json
+{
+  "instance_pool_name": "Data Engineering Pool",
+  "node_type_id": "i3.xlarge",
+  "min_idle_instances": 2,
+  "max_capacity": 20,
+  "idle_instance_autotermination_minutes": 30
+}
+\`\`\``,
+        en: `## Cluster Policies: Enterprise Governance
+
+Cluster Policies let admins **control and standardize** cluster creation.
+
+\`\`\`json
+{
+  "name": "Standard Policy",
+  "definition": {
+    "autoscale.max_workers": {
+      "type": "range",
+      "maxValue": 10
+    },
+    "autotermination_minutes": {
+      "type": "fixed",
+      "value": 30
+    }
+  }
+}
+\`\`\`
+
+### Key Benefits
+- Cost control
+- Security compliance
+- Standardized configurations`,
+        pt: `## Cluster Policies: Governança Empresarial
+
+Cluster Policies permitem aos admins **controlar e padronizar** a criação de clusters.
+
+\`\`\`json
+{
+  "name": "Policy Padrão",
+  "definition": {
+    "autoscale.max_workers": {
+      "type": "range",
+      "maxValue": 10
+    }
+  }
+}
+\`\`\``
+      },
+      practicalTips: [
+        { es: '💰 Las policies son ESENCIALES para controlar costos en empresas grandes.', en: '💰 Policies are ESSENTIAL for cost control in large enterprises.', pt: '💰 Policies são ESSENCIAIS para controle de custos em grandes empresas.' },
+        { es: '🔒 Usa "fixed" + "hidden" para configuraciones que los usuarios no deben cambiar.', en: '🔒 Use "fixed" + "hidden" for settings users should not change.', pt: '🔒 Use "fixed" + "hidden" para configurações que os usuários não devem alterar.' },
+        { es: '⚡ Instance Pools + Policies = clusters rápidos y controlados.', en: '⚡ Instance Pools + Policies = fast and controlled clusters.', pt: '⚡ Instance Pools + Policies = clusters rápidos e controlados.' }
+      ],
+      externalLinks: [
+        { title: 'Cluster Policies', url: 'https://docs.databricks.com/administration-guide/clusters/policies.html', type: 'docs' },
+        { title: 'Instance Pools', url: 'https://docs.databricks.com/clusters/instance-pools/index.html', type: 'docs' }
+      ],
+      checkpoint: {
+        es: '✅ ¿Sabés qué restricciones pondrías en una policy de desarrollo vs producción?',
+        en: '✅ Do you know what restrictions you would put in a dev vs production policy?',
+        pt: '✅ Você sabe quais restrições colocaria em uma policy de dev vs produção?'
+      },
+      xpReward: 25,
+      estimatedMinutes: 25
+    },
+    {
       id: 'db-2-9',
       title: {
         es: 'Quiz: Arquitectura de Databricks',

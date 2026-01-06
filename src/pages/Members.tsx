@@ -38,6 +38,7 @@ import { ProyectosTab as ExtractedProyectosTab } from '../components/members/tab
 import { InterviewPrepTab } from '../components/members/tabs/InterviewPrepTab';
 import { DatasetsTab as ExtractedDatasetsTab } from '../components/members/tabs/DatasetsTab';
 import RoadmapTab from '../components/members/tabs/RoadmapTab';
+import { SpecializationsTab } from '../components/members/tabs/SpecializationsTab';
 import { BadgeModal } from '../components/members/BadgeModal';
 import { AchievementToast, CountdownTimer, LockedContentPreview, AchievementNotification } from '../components/members/MembersUtils';
 import { LeaderboardSection as ExtractedLeaderboardSection } from '../components/members/LeaderboardSection';
@@ -47,6 +48,7 @@ import { NotificationPrompt } from '../components/NotificationPrompt';
 import { EnergyBar } from '../components/EnergyBar';
 import { EnergyLimitModal } from '../components/EnergyLimitModal';
 import { LevelCompletionModal } from '../components/LevelCompletionModal';
+import { LaunchAnnouncementPopup, useLaunchAnnouncement } from '../components/LaunchAnnouncementPopup';
 
 // Types
 import { SHOP_ITEMS } from '../types/members';
@@ -410,6 +412,9 @@ const Members: React.FC<MembersProps> = ({ user }) => {
   const isSubscribed = actuallySubscribed;
   const isFreeUser = !isSubscribed;
   
+  // 🚀 DATABRICKS LAUNCH ANNOUNCEMENT POPUP - show once for subscribed users
+  const { showPopup: showLaunchPopup, dismissPopup: dismissLaunchPopup } = useLaunchAnnouncement();
+  
   // Show Quick Win challenge for new SUBSCRIBED users (no completed steps)
   // Free users (level 0) should NOT see SQL challenge - they're learning Python basics
   useEffect(() => {
@@ -589,32 +594,32 @@ const Members: React.FC<MembersProps> = ({ user }) => {
   const motivational = getMotivationalMessage(totalSteps > 0 ? Math.min(100, Math.round(totalSteps / 30 * 100)) : 0, translateKey);
 
   // Tabs - Free users see all but some are locked
-  // Primary tabs - always visible
+  // NUEVO ORDEN: Dashboard, Roadmaps, Especializaciones, Proyectos, Practica, Entrevistas, Grabaciones, Mas
   const primaryTabs = isFreeUser ? [
     { id: 'dashboard', label: t({ es: 'Dashboard', en: 'Dashboard', pt: 'Dashboard' }), icon: TrendingUp },
     { id: 'roadmap', label: t({ es: 'Nivel 0', en: 'Level 0', pt: 'Nível 0' }), icon: Map },
+    { id: 'especializaciones', label: t({ es: 'Especializaciones', en: 'Specializations', pt: 'Especializações' }), icon: Rocket, isNew: true },
+    { id: 'proyectos', label: t({ es: 'Proyectos', en: 'Projects', pt: 'Projetos' }), icon: Target, locked: true },
     { id: 'practica', label: t({ es: 'Práctica', en: 'Practice', pt: 'Prática' }), icon: Code },
     { id: 'interviews', label: t({ es: 'Entrevistas', en: 'Interviews', pt: 'Entrevistas' }), icon: Layers, locked: true },
-    { id: 'proyectos', label: t({ es: 'Proyectos', en: 'Projects', pt: 'Projetos' }), icon: Target, locked: true },
+    { id: 'grabaciones', label: t({ es: 'Videos', en: 'Videos', pt: 'Vídeos' }), icon: Video, locked: true },
   ] : [
     { id: 'dashboard', label: t({ es: 'Dashboard', en: 'Dashboard', pt: 'Dashboard' }), icon: TrendingUp },
     { id: 'roadmap', label: t({ es: 'Roadmap', en: 'Roadmap', pt: 'Roadmap' }), icon: Map },
+    { id: 'especializaciones', label: t({ es: 'Especializaciones', en: 'Specializations', pt: 'Especializações' }), icon: Rocket, isNew: true },
+    { id: 'proyectos', label: t({ es: 'Proyectos', en: 'Projects', pt: 'Projetos' }), icon: Target },
     { id: 'practica', label: t({ es: 'Práctica', en: 'Practice', pt: 'Prática' }), icon: Code },
     { id: 'interviews', label: t({ es: 'Entrevistas', en: 'Interviews', pt: 'Entrevistas' }), icon: Layers, isNew: isFeatureNew(INTERVIEW_PREP_RELEASE_DATE) },
-    { id: 'proyectos', label: t({ es: 'Proyectos', en: 'Projects', pt: 'Projetos' }), icon: Target },
+    { id: 'grabaciones', label: t({ es: 'Grabaciones', en: 'Recordings', pt: 'Gravações' }), icon: Video },
   ];
 
-  // Secondary tabs - in "More" dropdown
+  // Secondary tabs - in "Más" dropdown (solo Tienda y Datasets)
   const secondaryTabs = isFreeUser ? [
-    { id: 'datasets', label: t({ es: 'Datasets', en: 'Datasets', pt: 'Datasets' }), icon: Database, locked: true },
-    { id: 'grabaciones', label: t({ es: 'Videos', en: 'Videos', pt: 'Vídeos' }), icon: Video, locked: true },
     { id: 'tienda', label: t({ es: 'Tienda', en: 'Shop', pt: 'Loja' }), icon: ShoppingBag, locked: true },
-    { id: 'especializaciones', label: t({ es: 'Próximamente', en: 'Coming Soon', pt: 'Em Breve' }), icon: Rocket, isComingSoon: true },
+    { id: 'datasets', label: t({ es: 'Datasets & APIs', en: 'Datasets & APIs', pt: 'Datasets & APIs' }), icon: Database, locked: true },
   ] : [
-    { id: 'datasets', label: t({ es: 'Datasets & APIs', en: 'Datasets & APIs', pt: 'Datasets & APIs' }), icon: Database },
-    { id: 'grabaciones', label: t({ es: 'Grabaciones', en: 'Recordings', pt: 'Gravações' }), icon: Video },
     { id: 'tienda', label: t({ es: 'Tienda', en: 'Shop', pt: 'Loja' }), icon: ShoppingBag, highlight: true },
-    { id: 'especializaciones', label: t({ es: 'Próximamente', en: 'Coming Soon', pt: 'Em Breve' }), icon: Rocket, isComingSoon: true },
+    { id: 'datasets', label: t({ es: 'Datasets & APIs', en: 'Datasets & APIs', pt: 'Datasets & APIs' }), icon: Database },
   ];
 
   // Combined for backwards compatibility and mobile nav
@@ -1229,11 +1234,13 @@ const Members: React.FC<MembersProps> = ({ user }) => {
                                     : 'text-slate-300 hover:bg-slate-800'
                           }`}
                         >
+                          <>
                           {isLocked && !isComingSoon ? <Lock className="w-4 h-4" /> : <tab.icon className="w-4 h-4" />}
                           <span>{tab.label}</span>
                           {isLocked && !isComingSoon && <span className="text-xs ml-auto">🔒</span>}
                           {isComingSoon && <span className="text-xs ml-auto">🚀</span>}
                           {isHighlight && !isLocked && <span className="text-xs ml-auto">💎</span>}
+                          </>
                         </button>
                       );
                     })}
@@ -1360,7 +1367,6 @@ const Members: React.FC<MembersProps> = ({ user }) => {
             energySystem={energySystem}
             onPositionChange={handlePositionChange}
             onLevelComplete={checkLevelCompletion}
-            userEmail={user?.email}
           />}
           {activeTab === 'proyectos' && (isFreeUser ? <LockedContentPreview title={translateKey('locked.projects.title')} description={translateKey('locked.projects.description')} features={[translateKey('locked.projects.feature1'), translateKey('locked.projects.feature2'), translateKey('locked.projects.feature3'), translateKey('locked.projects.feature4')]} userEmail={user?.email} /> : <ExtractedProyectosTab progress={progress} />)}
           {activeTab === 'datasets' && <ExtractedDatasetsTab userEmail={user?.email || ''} isFreeUser={isFreeUser} />}
@@ -1389,131 +1395,12 @@ const Members: React.FC<MembersProps> = ({ user }) => {
             />
           )}
           
-          {/* 🚀 COMING SOON - Especializaciones Tab */}
+          {/* 🚀 ESPECIALIZACIONES TAB - Databricks LIVE + AWS Coming Soon */}
           {activeTab === 'especializaciones' && (
-            <div className="space-y-8">
-              {/* Hero Section */}
-              <div className="bg-gradient-to-br from-orange-500/10 via-slate-900 to-amber-500/10 rounded-2xl p-8 border border-orange-500/20 text-center">
-                <div className="inline-flex items-center gap-2 bg-orange-500/20 text-orange-400 px-4 py-2 rounded-full text-sm font-semibold mb-4 border border-orange-500/30">
-                  <Rocket className="w-4 h-4" />
-                  {t({ es: 'Nuevo contenido en Enero 2025', en: 'New content in January 2025', pt: 'Novo conteúdo em Janeiro 2025' })}
-                </div>
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                  {t({ es: '🚀 Especializaciones Avanzadas', en: '🚀 Advanced Specializations', pt: '🚀 Especializações Avançadas' })}
-                </h2>
-                <p className="text-slate-400 max-w-2xl mx-auto text-lg mb-6">
-                  {t({ es: 'Rutas de aprendizaje premium con Labs hands-on, 100+ pasos, proyectos reales y preparación para certificaciones oficiales. Todo incluido en tu suscripción.', en: 'Premium learning paths with hands-on Labs, 100+ steps, real projects and official certification prep. All included in your subscription.', pt: 'Trilhas de aprendizado premium com Labs hands-on, 100+ passos, projetos reais e preparação para certificações oficiais. Tudo incluído na sua assinatura.' })}
-                </p>
-                <div className="flex items-center justify-center gap-2 text-emerald-400">
-                  <CheckCircle className="w-5 h-5" />
-                  <span className="font-medium">{t({ es: 'Incluido gratis en tu suscripción Premium', en: 'Included free in your Premium subscription', pt: 'Incluído grátis na sua assinatura Premium' })}</span>
-                </div>
-              </div>
-
-              {/* Countdown Cards - Databricks y AWS */}
-              <div className="grid md:grid-cols-2 gap-6">
-                {/* Databricks - Enero 2025 */}
-                <div className="bg-gradient-to-br from-orange-500/10 to-slate-900 rounded-2xl p-6 border border-orange-500/30">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-5xl">🔶</span>
-                    <div>
-                      <h3 className="text-xl font-bold text-white">
-                        {t({ es: 'Especialización en Databricks', en: 'Databricks Specialization', pt: 'Especialização em Databricks' })}
-                      </h3>
-                      <p className="text-sm text-slate-400">
-                        {t({ es: 'La plataforma unificada de datos más demandada', en: 'The most in-demand unified data platform', pt: 'A plataforma unificada de dados mais demandada' })}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <p className="text-slate-300 text-xs mb-4 line-clamp-2">
-                    {t({ es: 'Domina Databricks desde cero hasta la certificación DE Associate. 12 fases con 100+ pasos detallados, 10 Labs hands-on, 20 ejercicios de Spark y Delta Lake, 5 proyectos completos.', en: 'Master Databricks from zero to DE Associate certification. 12 phases with 100+ detailed steps, 10 hands-on Labs, 20 Spark and Delta Lake exercises, 5 complete projects.', pt: 'Domine Databricks do zero à certificação DE Associate. 12 fases com 100+ passos detalhados, 10 Labs hands-on, 20 exercícios de Spark e Delta Lake, 5 projetos completos.' })}
-                  </p>
-                  
-                  {/* Countdown Databricks */}
-                  <div className="bg-slate-900/80 rounded-xl p-4 mb-4 border border-orange-500/20">
-                    <p className="text-orange-400 text-sm font-semibold mb-3">🚀 {t({ es: 'Lanzamiento: 1 de Enero 2025', en: 'Launch: January 1, 2025', pt: 'Lançamento: 1 de Janeiro 2025' })}</p>
-                    <CountdownTimer targetDate="2025-01-01T00:00:00" />
-                  </div>
-                  
-                  <div className="flex flex-wrap gap-2">
-                    <span className="bg-slate-700/50 px-3 py-1 rounded-lg text-xs text-slate-300">12 {t({ es: 'Fases', en: 'Phases', pt: 'Fases' })}</span>
-                    <span className="bg-slate-700/50 px-3 py-1 rounded-lg text-xs text-slate-300">100+ {t({ es: 'Pasos', en: 'Steps', pt: 'Passos' })}</span>
-                    <span className="bg-slate-700/50 px-3 py-1 rounded-lg text-xs text-slate-300">10 {t({ es: 'Labs', en: 'Labs', pt: 'Labs' })}</span>
-                    <span className="bg-slate-700/50 px-3 py-1 rounded-lg text-xs text-slate-300">20 {t({ es: 'Ejercicios', en: 'Exercises', pt: 'Exercícios' })}</span>
-                  </div>
-                </div>
-
-                {/* AWS - Febrero 2025 */}
-                <div className="bg-gradient-to-br from-amber-500/10 to-slate-900 rounded-2xl p-6 border border-amber-500/30">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-5xl">☁️</span>
-                    <div>
-                      <h3 className="text-xl font-bold text-white">
-                        {t({ es: 'Especialización en AWS Data Engineering', en: 'AWS Data Engineering Specialization', pt: 'Especialização em AWS Data Engineering' })}
-                      </h3>
-                      <p className="text-sm text-slate-400">
-                        {t({ es: 'El cloud #1 en demanda laboral', en: 'The #1 cloud in job demand', pt: 'A nuvem #1 em demanda de emprego' })}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <p className="text-slate-300 text-xs mb-4 line-clamp-2">
-                    {t({ es: 'Conviértete en experto en el stack de datos de AWS. 12 fases, 107 pasos, 10 Labs hands-on, 35 ejercicios, 5 proyectos. Aprenderás S3, Glue, Redshift, Athena, EMR, Kinesis, y Step Functions.', en: 'Become an expert in the AWS data stack. 12 phases, 107 steps, 10 hands-on Labs, 35 exercises, 5 projects. You will learn S3, Glue, Redshift, Athena, EMR, Kinesis, and Step Functions.', pt: 'Torne-se um especialista no stack de dados da AWS. 12 fases, 107 passos, 10 Labs hands-on, 35 exercícios, 5 projetos. Você aprenderá S3, Glue, Redshift, Athena, EMR, Kinesis e Step Functions.' })}
-                  </p>
-                  
-                  {/* Countdown AWS */}
-                  <div className="bg-slate-900/80 rounded-xl p-4 mb-4 border border-amber-500/20">
-                    <p className="text-amber-400 text-sm font-semibold mb-3">🚀 {t({ es: 'Lanzamiento: 1 de Febrero 2025', en: 'Launch: February 1, 2025', pt: 'Lançamento: 1 de Fevereiro 2025' })}</p>
-                    <CountdownTimer targetDate="2025-02-01T00:00:00" />
-                  </div>
-                  
-                  <div className="flex flex-wrap gap-2">
-                    <span className="bg-slate-700/50 px-3 py-1 rounded-lg text-xs text-slate-300">12 {t({ es: 'Fases', en: 'Phases', pt: 'Fases' })}</span>
-                    <span className="bg-slate-700/50 px-3 py-1 rounded-lg text-xs text-slate-300">107+ {t({ es: 'Pasos', en: 'Steps', pt: 'Passos' })}</span>
-                    <span className="bg-slate-700/50 px-3 py-1 rounded-lg text-xs text-slate-300">10 {t({ es: 'Labs', en: 'Labs', pt: 'Labs' })}</span>
-                    <span className="bg-slate-700/50 px-3 py-1 rounded-lg text-xs text-slate-300">35 {t({ es: 'Ejercicios', en: 'Exercises', pt: 'Exercícios' })}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* What's Included */}
-              <div className="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
-                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                  <Star className="w-5 h-5 text-yellow-400" />
-                  {t({ es: '¿Qué incluye cada especialización?', en: 'What does each specialization include?', pt: 'O que inclui cada especialização?' })}
-                </h3>
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/30">
-                    <div className="text-2xl font-bold text-emerald-400 mb-1">100+</div>
-                    <div className="text-slate-400 text-sm">{t({ es: 'Pasos detallados', en: 'Detailed steps', pt: 'Passos detalhados' })}</div>
-                  </div>
-                  <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/30">
-                    <div className="text-2xl font-bold text-blue-400 mb-1">10+</div>
-                    <div className="text-slate-400 text-sm">{t({ es: 'Labs hands-on', en: 'Hands-on Labs', pt: 'Labs hands-on' })}</div>
-                  </div>
-                  <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/30">
-                    <div className="text-2xl font-bold text-purple-400 mb-1">20+</div>
-                    <div className="text-slate-400 text-sm">{t({ es: 'Ejercicios prácticos', en: 'Practical exercises', pt: 'Exercícios práticos' })}</div>
-                  </div>
-                  <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/30">
-                    <div className="text-2xl font-bold text-orange-400 mb-1">5</div>
-                    <div className="text-slate-400 text-sm">{t({ es: 'Proyectos portfolio', en: 'Portfolio projects', pt: 'Projetos portfolio' })}</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Stay Tuned */}
-              <div className="bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 rounded-2xl p-6 border border-emerald-500/20 text-center">
-                <Bell className="w-10 h-10 text-emerald-400 mx-auto mb-3" />
-                <h3 className="text-lg font-bold text-white mb-2">
-                  {t({ es: '¡No te pierdas el lanzamiento!', en: "Don't miss the launch!", pt: 'Não perca o lançamento!' })}
-                </h3>
-                <p className="text-slate-400 text-sm">
-                  {t({ es: 'Introduce tu email arriba para recibir una notificación cuando lancemos. Serás de los primeros en acceder.', en: 'Enter your email above to get notified when we launch. You will be among the first to access.', pt: 'Digite seu email acima para receber uma notificação quando lançarmos. Você será um dos primeiros a acessar.' })}
-                </p>
-              </div>
-            </div>
+            <SpecializationsTab 
+              isFreeUser={isFreeUser}
+              userEmail={user?.email}
+            />
           )}
         </div>
       </div>
@@ -1527,8 +1414,8 @@ const Members: React.FC<MembersProps> = ({ user }) => {
       />
 
       {/* 🗺️ FLOATING RETURN TO ROADMAP BUTTON */}
-      {/* Hide in roadmap (already there) and practica (has its own button at top) */}
-      {activeTab !== 'roadmap' && activeTab !== 'practica' && savedRoadmapPosition && (
+      {/* Hide in roadmap, practica, and especializaciones (each has its own navigation) */}
+      {activeTab !== 'roadmap' && activeTab !== 'practica' && activeTab !== 'especializaciones' && savedRoadmapPosition && (
         <button
           onClick={() => {
             const pos = savedRoadmapPosition;
@@ -1563,6 +1450,17 @@ const Members: React.FC<MembersProps> = ({ user }) => {
           floating={true}
           initialQuestion={saurioQuestion}
           onQuestionSent={() => setSaurioQuestion('')}
+        />
+      )}
+
+      {/* 🚀 DATABRICKS LAUNCH ANNOUNCEMENT POPUP - Only show once to subscribed users */}
+      {showLaunchPopup && !isFreeUser && (
+        <LaunchAnnouncementPopup
+          onClose={dismissLaunchPopup}
+          onGoToSpecialization={() => {
+            dismissLaunchPopup();
+            setActiveTab('especializaciones');
+          }}
         />
       )}
     </>

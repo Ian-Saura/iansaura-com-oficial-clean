@@ -75,7 +75,7 @@ export const PHASE_4_SPARK_ADVANCED: DatabricksPhase = {
       title: { es: 'Manejo de Skew de Datos', en: 'Handling Data Skew', pt: 'Lidando com Skew de Dados' },
       description: { es: 'El skew es uno de los problemas más comunes. Aprendé a detectarlo y solucionarlo.', en: 'Skew is one of the most common problems. Learn to detect and fix it.', pt: 'O skew é um dos problemas mais comuns. Aprenda a detectá-lo e corrigi-lo.' },
       theory: { es: `## Data Skew\n\nEl skew ocurre cuando algunos particiones tienen muchos más datos que otras.\n\n### Detectar skew:\n\`\`\`python\n# Ver distribución\ndf.groupBy("columna_join").count().orderBy("count", ascending=False).show()\n\`\`\`\n\n### Soluciones:\n\n**1. Salting (agregar ruido)**\n\`\`\`python\nfrom pyspark.sql.functions import rand, concat, lit\n\n# Agregar salt a la key\ndf_salted = df.withColumn("key_salted", \n    concat("key", lit("_"), (rand() * 10).cast("int")))\n\`\`\`\n\n**2. Broadcast si una tabla es pequeña**\n\`\`\`python\ndf_grande.join(broadcast(df_pequeño), "key")\n\`\`\`\n\n**3. AQE (Adaptive Query Execution)**\n\`\`\`python\nspark.conf.set("spark.sql.adaptive.enabled", "true")\nspark.conf.set("spark.sql.adaptive.skewJoin.enabled", "true")\n\`\`\``, en: `## Data Skew\n\nSkew occurs when some partitions have much more data than others.\n\n### Detect skew:\n\`\`\`python\n# View distribution\ndf.groupBy("join_column").count().orderBy("count", ascending=False).show()\n\`\`\`\n\n### Solutions:\n\n**1. Salting (add noise)**\n\`\`\`python\nfrom pyspark.sql.functions import rand, concat, lit\n\n# Add salt to key\ndf_salted = df.withColumn("key_salted", \n    concat("key", lit("_"), (rand() * 10).cast("int")))\n\`\`\`\n\n**2. Broadcast if one table is small**\n\`\`\`python\ndf_large.join(broadcast(df_small), "key")\n\`\`\`\n\n**3. AQE (Adaptive Query Execution)**\n\`\`\`python\nspark.conf.set("spark.sql.adaptive.enabled", "true")\nspark.conf.set("spark.sql.adaptive.skewJoin.enabled", "true")\n\`\`\``, pt: `## Data Skew\n\nO skew ocorre quando algumas partições têm muito mais dados que outras.\n\n### Detectar skew:\n\`\`\`python\n# Ver distribuição\ndf.groupBy("coluna_join").count().orderBy("count", ascending=False).show()\n\`\`\`\n\n### Soluções:\n\n**1. Salting (adicionar ruído)**\n\`\`\`python\nfrom pyspark.sql.functions import rand, concat, lit\n\n# Adicionar salt à key\ndf_salted = df.withColumn("key_salted", \n    concat("key", lit("_"), (rand() * 10).cast("int")))\n\`\`\`\n\n**2. Broadcast se uma tabela é pequena**\n\`\`\`python\ndf_grande.join(broadcast(df_pequeno), "key")\n\`\`\`\n\n**3. AQE (Adaptive Query Execution)**\n\`\`\`python\nspark.conf.set("spark.sql.adaptive.enabled", "true")\nspark.conf.set("spark.sql.adaptive.skewJoin.enabled", "true")\n\`\`\`` },
-      practicalTips: [{ es: '💡 AQE está habilitado por default en Databricks Runtime 7.3+', en: '💡 AQE is enabled by default in Databricks Runtime 7.3+', pt: '💡 AQE está habilitado por padrão no Databricks Runtime 7.3+' }],
+      practicalTips: [{ es: '💡 AQE está habilitado por default en todos los Databricks Runtime modernos (7.3+). En 14.x es aún más potente.', en: '💡 AQE is enabled by default in all modern Databricks Runtimes (7.3+). In 14.x it is even more powerful.', pt: '💡 AQE está habilitado por padrão em todos os Databricks Runtimes modernos (7.3+). No 14.x é ainda mais poderoso.' }],
       externalLinks: [{ title: 'Skew Handling', url: 'https://docs.databricks.com/optimizations/skew-join.html', type: 'docs' }],
       checkpoint: { es: '✅ ¿Detectaste skew y aplicaste una solución?', en: '✅ Did you detect skew and apply a solution?', pt: '✅ Você detectou skew e aplicou uma solução?' },
       xpReward: 35,
@@ -85,10 +85,684 @@ export const PHASE_4_SPARK_ADVANCED: DatabricksPhase = {
       id: 'db-4-7',
       title: { es: 'Structured Streaming Básico', en: 'Basic Structured Streaming', pt: 'Structured Streaming Básico' },
       description: { es: 'Introducción al procesamiento de datos en tiempo real con Spark.', en: 'Introduction to real-time data processing with Spark.', pt: 'Introdução ao processamento de dados em tempo real com Spark.' },
-      theory: { es: `## Structured Streaming\n\n\`\`\`python\n# Leer stream (ejemplo con archivo)\ndf_stream = spark.readStream \\\n    .format("cloudFiles") \\\n    .option("cloudFiles.format", "json") \\\n    .schema(schema) \\\n    .load("path/to/input")\n\n# Transformaciones (igual que batch!)\ndf_transformed = df_stream \\\n    .filter(df_stream.value > 100) \\\n    .groupBy("category").count()\n\n# Escribir stream\nquery = df_transformed.writeStream \\\n    .format("delta") \\\n    .outputMode("complete") \\\n    .option("checkpointLocation", "/checkpoint") \\\n    .start("path/to/output")\n\n# Output modes:\n# - append: solo nuevas filas\n# - complete: toda la tabla (para agregaciones)\n# - update: filas modificadas\n\nquery.awaitTermination()\n\`\`\``, en: `## Structured Streaming\n\n\`\`\`python\n# Read stream (file example)\ndf_stream = spark.readStream \\\n    .format("cloudFiles") \\\n    .option("cloudFiles.format", "json") \\\n    .schema(schema) \\\n    .load("path/to/input")\n\n# Transformations (same as batch!)\ndf_transformed = df_stream \\\n    .filter(df_stream.value > 100) \\\n    .groupBy("category").count()\n\n# Write stream\nquery = df_transformed.writeStream \\\n    .format("delta") \\\n    .outputMode("complete") \\\n    .option("checkpointLocation", "/checkpoint") \\\n    .start("path/to/output")\n\n# Output modes:\n# - append: only new rows\n# - complete: entire table (for aggregations)\n# - update: modified rows\n\nquery.awaitTermination()\n\`\`\``, pt: `## Structured Streaming\n\n\`\`\`python\n# Ler stream (exemplo com arquivo)\ndf_stream = spark.readStream \\\n    .format("cloudFiles") \\\n    .option("cloudFiles.format", "json") \\\n    .schema(schema) \\\n    .load("path/to/input")\n\n# Transformações (igual que batch!)\ndf_transformed = df_stream \\\n    .filter(df_stream.value > 100) \\\n    .groupBy("category").count()\n\n# Escrever stream\nquery = df_transformed.writeStream \\\n    .format("delta") \\\n    .outputMode("complete") \\\n    .option("checkpointLocation", "/checkpoint") \\\n    .start("path/to/output")\n\n# Output modes:\n# - append: só novas linhas\n# - complete: toda a tabela (para agregações)\n# - update: linhas modificadas\n\nquery.awaitTermination()\n\`\`\`` },
-      practicalTips: [{ es: '💡 El código de streaming es casi idéntico al de batch. Esa es la magia de Structured Streaming.', en: '💡 Streaming code is almost identical to batch. That\'s the magic of Structured Streaming.', pt: '💡 O código de streaming é quase idêntico ao de batch. Essa é a magia do Structured Streaming.' }],
-      externalLinks: [{ title: 'Structured Streaming', url: 'https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html', type: 'docs' }],
-      checkpoint: { es: '✅ ¿Ejecutaste un stream básico y verificaste la salida?', en: '✅ Did you run a basic stream and verify the output?', pt: '✅ Você executou um stream básico e verificou a saída?' },
+      theory: { es: `## Structured Streaming
+
+Structured Streaming trata los datos en tiempo real como una **tabla que crece infinitamente**.
+
+### Modelo Mental
+
+\`\`\`
+Datos llegando:        Stream como tabla infinita:
+                       
+t=0: [A, B]           ┌───┬───┐
+t=1: [C, D]    →      │ A │ B │  ← Fila 1
+t=2: [E, F]           │ C │ D │  ← Fila 2
+t=3: [G, H]           │ E │ F │  ← Fila 3
+  ...                 │ G │ H │  ← Fila 4
+                      │...│...│
+                      └───┴───┘
+
+Tu código opera sobre la "tabla" completa,
+Spark se encarga de procesar solo lo nuevo.
+\`\`\`
+
+### Leer y Escribir Streams
+
+\`\`\`python
+# LEER STREAM desde archivos (Auto Loader)
+df_stream = spark.readStream \\
+    .format("cloudFiles") \\
+    .option("cloudFiles.format", "json") \\
+    .option("cloudFiles.schemaLocation", "/schema") \\
+    .schema(schema) \\
+    .load("s3://bucket/landing/")
+
+# LEER STREAM desde Kafka
+df_kafka = spark.readStream \\
+    .format("kafka") \\
+    .option("kafka.bootstrap.servers", "broker:9092") \\
+    .option("subscribe", "topic_name") \\
+    .option("startingOffsets", "latest") \\
+    .load()
+
+# Transformaciones (IGUAL que batch!)
+df_transformed = df_stream \\
+    .filter(col("value") > 100) \\
+    .groupBy("category").count()
+
+# ESCRIBIR STREAM a Delta
+query = df_transformed.writeStream \\
+    .format("delta") \\
+    .outputMode("complete") \\
+    .option("checkpointLocation", "/checkpoints/my_stream") \\
+    .start("/output/path")
+
+query.awaitTermination()
+\`\`\`
+
+### Output Modes
+
+| Mode | Uso | Cuándo usar |
+|------|-----|-------------|
+| **append** | Solo nuevas filas | Sin agregaciones |
+| **complete** | Toda la tabla | Con agregaciones (groupBy) |
+| **update** | Filas modificadas | Agregaciones sin watermark |
+
+### Ejemplo Práctico
+
+\`\`\`python
+from pyspark.sql.functions import *
+
+# Stream de eventos de usuario
+events = spark.readStream \\
+    .format("cloudFiles") \\
+    .option("cloudFiles.format", "json") \\
+    .schema("user_id STRING, event STRING, timestamp TIMESTAMP") \\
+    .load("/data/events/")
+
+# Contar eventos por usuario (agregación)
+user_counts = events \\
+    .groupBy("user_id") \\
+    .agg(
+        count("*").alias("total_events"),
+        max("timestamp").alias("last_seen")
+    )
+
+# Escribir con output mode complete (porque hay agregación)
+query = user_counts.writeStream \\
+    .format("delta") \\
+    .outputMode("complete") \\
+    .option("checkpointLocation", "/checkpoints/user_counts") \\
+    .toTable("analytics.user_event_counts")
+\`\`\``, en: `## Structured Streaming
+
+Structured Streaming treats real-time data as an **infinitely growing table**.
+
+### Read and Write Streams
+
+\`\`\`python
+# READ STREAM from files (Auto Loader)
+df_stream = spark.readStream \\
+    .format("cloudFiles") \\
+    .option("cloudFiles.format", "json") \\
+    .load("s3://bucket/landing/")
+
+# Transformations (SAME as batch!)
+df_transformed = df_stream.filter(col("value") > 100)
+
+# WRITE STREAM to Delta
+query = df_transformed.writeStream \\
+    .format("delta") \\
+    .outputMode("append") \\
+    .option("checkpointLocation", "/checkpoints/") \\
+    .start("/output/")
+\`\`\`
+
+### Output Modes
+- **append**: Only new rows
+- **complete**: Entire table (with aggregations)
+- **update**: Modified rows`, pt: `## Structured Streaming
+
+Structured Streaming trata dados em tempo real como uma **tabela que cresce infinitamente**.
+
+\`\`\`python
+# LER STREAM de arquivos
+df_stream = spark.readStream \\
+    .format("cloudFiles") \\
+    .option("cloudFiles.format", "json") \\
+    .load("s3://bucket/landing/")
+
+# ESCREVER STREAM para Delta
+query = df_transformed.writeStream \\
+    .format("delta") \\
+    .outputMode("append") \\
+    .start("/output/")
+\`\`\`` },
+      practicalTips: [
+        { es: '💡 El código de streaming es casi idéntico al de batch. Esa es la magia de Structured Streaming.', en: '💡 Streaming code is almost identical to batch. That\'s the magic.', pt: '💡 O código de streaming é quase idêntico ao de batch.' },
+        { es: '⚠️ checkpointLocation es OBLIGATORIO. Sin él, perdes el estado si el job falla.', en: '⚠️ checkpointLocation is MANDATORY. Without it, you lose state if job fails.', pt: '⚠️ checkpointLocation é OBRIGATÓRIO. Sem ele, você perde o estado se o job falhar.' }
+      ],
+      externalLinks: [{ title: 'Structured Streaming Guide', url: 'https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html', type: 'docs' }],
+      checkpoint: { es: '✅ ¿Ejecutaste un stream y verificaste que los datos se escribieron incrementalmente?', en: '✅ Did you run a stream and verify data was written incrementally?', pt: '✅ Você executou um stream e verificou que os dados foram escritos incrementalmente?' },
+      xpReward: 35,
+      estimatedMinutes: 35
+    },
+    {
+      id: 'db-4-7b',
+      title: { es: 'Triggers en Streaming', en: 'Streaming Triggers', pt: 'Triggers em Streaming' },
+      description: { es: 'Controla CUÁNDO y CON QUÉ FRECUENCIA se procesan los micro-batches.', en: 'Control WHEN and HOW OFTEN micro-batches are processed.', pt: 'Controle QUANDO e COM QUE FREQUÊNCIA os micro-batches são processados.' },
+      theory: { es: `## Triggers: Control de Ejecución
+
+Los triggers controlan **cuándo** Spark procesa los nuevos datos.
+
+### Tipos de Triggers
+
+\`\`\`
+┌─────────────────────────────────────────────────────────────┐
+│                    TIPOS DE TRIGGERS                         │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  1. Default (sin trigger)                                   │
+│     └── Procesa apenas termina el batch anterior            │
+│         Latencia: ~100ms                                    │
+│                                                              │
+│  2. processingTime("10 seconds")                            │
+│     └── Procesa cada X tiempo                               │
+│         Latencia: X segundos                                │
+│                                                              │
+│  3. availableNow() ⭐ NUEVO Y RECOMENDADO                   │
+│     └── Procesa TODO lo disponible y TERMINA                │
+│         Ideal para: Jobs schedulados                        │
+│                                                              │
+│  4. once() [DEPRECADO - usar availableNow]                  │
+│     └── Un solo batch y termina                             │
+│                                                              │
+│  5. continuous("1 second") [Experimental]                   │
+│     └── True streaming (latencia ~1ms)                      │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+\`\`\`
+
+### Código de Cada Trigger
+
+\`\`\`python
+# Los triggers se pasan como argumentos a writeStream
+# No necesitas importar nada adicional
+
+# 1. DEFAULT - procesa continuamente
+query = df.writeStream \\
+    .format("delta") \\
+    .start()  # Sin trigger = default
+
+# 2. PROCESSING TIME - cada X tiempo
+query = df.writeStream \\
+    .format("delta") \\
+    .trigger(processingTime="30 seconds") \\
+    .start()
+
+# 3. AVAILABLE NOW ⭐ (Spark 3.3+) - RECOMENDADO
+# Procesa todo lo disponible y termina elegantemente
+query = df.writeStream \\
+    .format("delta") \\
+    .trigger(availableNow=True) \\
+    .start()
+
+# 4. ONCE [DEPRECADO]
+query = df.writeStream \\
+    .format("delta") \\
+    .trigger(once=True) \\
+    .start()
+
+# 5. CONTINUOUS (experimental) - ultra-baja latencia
+query = df.writeStream \\
+    .format("console") \\
+    .trigger(continuous="1 second") \\
+    .start()
+\`\`\`
+
+### ¿Cuál Usar? Guía Práctica
+
+| Escenario | Trigger Recomendado |
+|-----------|---------------------|
+| Job diario/horario (Workflow) | \`availableNow=True\` ⭐ |
+| Dashboard near-real-time | \`processingTime="1 minute"\` |
+| Alertas en tiempo real | \`processingTime="10 seconds"\` |
+| Streaming 24/7 | Default (sin trigger) |
+| Ultra-baja latencia | \`continuous\` (experimental) |
+
+### availableNow vs once
+
+\`\`\`
+ONCE (deprecado):
+- Procesa UN solo micro-batch
+- Si hay mucha data, puede dejar datos sin procesar
+- No recomendado
+
+AVAILABLE_NOW (nuevo):
+- Procesa TODOS los micro-batches disponibles
+- Garantiza que procesa todo lo pendiente
+- Termina limpiamente cuando no hay más datos
+- IDEAL para jobs de Databricks Workflows
+\`\`\`
+
+### Ejemplo: Pipeline con Trigger.AvailableNow
+
+\`\`\`python
+# Pipeline típico de producción con Workflow
+def run_streaming_job():
+    df = spark.readStream \\
+        .format("cloudFiles") \\
+        .option("cloudFiles.format", "json") \\
+        .load("/data/incoming/")
+    
+    result = df.withColumn("processed_at", current_timestamp())
+    
+    query = result.writeStream \\
+        .format("delta") \\
+        .outputMode("append") \\
+        .trigger(availableNow=True) \\
+        .option("checkpointLocation", "/checkpoints/job") \\
+        .toTable("silver.processed_events")
+    
+    query.awaitTermination()  # Espera hasta que termine
+    
+    print(f"Procesados: {query.lastProgress['numInputRows']} rows")
+
+# Este código se puede ejecutar cada hora via Databricks Workflow
+run_streaming_job()
+\`\`\``, en: `## Triggers: Execution Control
+
+Triggers control WHEN Spark processes new data.
+
+\`\`\`python
+# AVAILABLE NOW (Spark 3.3+) - RECOMMENDED
+query = df.writeStream \\
+    .trigger(availableNow=True) \\
+    .start()
+
+# PROCESSING TIME - every X time
+query = df.writeStream \\
+    .trigger(processingTime="30 seconds") \\
+    .start()
+\`\`\`
+
+### When to Use
+- Scheduled jobs: availableNow=True
+- Near-real-time: processingTime
+- 24/7 streaming: Default`, pt: `## Triggers: Controle de Execução
+
+Triggers controlam QUANDO Spark processa novos dados.
+
+\`\`\`python
+# AVAILABLE NOW (Spark 3.3+) - RECOMENDADO
+query = df.writeStream \\
+    .trigger(availableNow=True) \\
+    .start()
+\`\`\`` },
+      practicalTips: [
+        { es: '⭐ availableNow es el estándar actual (2024) para jobs schedulados. Trigger.once está deprecado.', en: '⭐ availableNow is the current standard (2024) for scheduled jobs. Trigger.once is deprecated.', pt: '⭐ availableNow é o padrão atual (2024) para jobs schedulados. Trigger.once está deprecado.' },
+        { es: '🎯 Para pipelines de Databricks Workflows, SIEMPRE usa availableNow=True.', en: '🎯 For Databricks Workflows pipelines, ALWAYS use availableNow=True.', pt: '🎯 Para pipelines de Databricks Workflows, SEMPRE use availableNow=True.' }
+      ],
+      externalLinks: [
+        { title: 'Triggers', url: 'https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#triggers', type: 'docs' },
+        { title: 'availableNow', url: 'https://docs.databricks.com/structured-streaming/triggers.html', type: 'docs' }
+      ],
+      checkpoint: { es: '✅ ¿Ejecutaste un stream con trigger availableNow y verificaste que terminó correctamente?', en: '✅ Did you run a stream with availableNow trigger and verify it completed correctly?', pt: '✅ Você executou um stream com trigger availableNow e verificou que terminou corretamente?' },
+      xpReward: 30,
+      estimatedMinutes: 25
+    },
+    {
+      id: 'db-4-7c',
+      title: { es: 'foreachBatch: Lógica Custom en Streaming', en: 'foreachBatch: Custom Streaming Logic', pt: 'foreachBatch: Lógica Custom em Streaming' },
+      description: { es: 'El patrón más poderoso para streaming en producción: ejecuta código custom en cada micro-batch.', en: 'The most powerful pattern for production streaming: execute custom code on each micro-batch.', pt: 'O padrão mais poderoso para streaming em produção: execute código custom em cada micro-batch.' },
+      theory: { es: `## foreachBatch: El Patrón de Producción
+
+foreachBatch te permite ejecutar **cualquier código** en cada micro-batch del stream.
+
+### ¿Por qué es tan Importante?
+
+\`\`\`
+Stream normal:          Con foreachBatch:
+                        
+df.writeStream         df.writeStream
+  .format("delta")       .foreachBatch(mi_funcion)
+  .start()               .start()
+     │                       │
+     ▼                       ▼
+  Solo escribe          Puedes hacer:
+  a Delta               - MERGE/upsert
+                        - Multi-table writes
+                        - Notificaciones
+                        - Métricas custom
+                        - Llamadas a APIs
+                        - Lo que quieras!
+\`\`\`
+
+### Sintaxis Básica
+
+\`\`\`python
+def process_batch(batch_df, batch_id):
+    """
+    Esta función se ejecuta en cada micro-batch.
+    
+    Args:
+        batch_df: DataFrame con los datos del batch (es un DF normal!)
+        batch_id: ID único del batch (para idempotencia)
+    """
+    print(f"Procesando batch {batch_id} con {batch_df.count()} rows")
+    
+    # batch_df es un DataFrame NORMAL - puedes hacer lo que quieras
+    batch_df.write.format("delta").mode("append").save("/output/")
+
+# Usar foreachBatch
+query = df_stream.writeStream \\
+    .foreachBatch(process_batch) \\
+    .option("checkpointLocation", "/checkpoints/") \\
+    .start()
+\`\`\`
+
+### Caso de Uso 1: MERGE (Upsert) en Streaming
+
+\`\`\`python
+from delta.tables import DeltaTable
+
+def upsert_to_delta(batch_df, batch_id):
+    """MERGE de datos streaming a tabla Delta"""
+    
+    # Referencia a la tabla destino
+    delta_table = DeltaTable.forPath(spark, "/tables/customers")
+    
+    # MERGE: update si existe, insert si no
+    delta_table.alias("target").merge(
+        batch_df.alias("source"),
+        "target.customer_id = source.customer_id"
+    ).whenMatchedUpdate(set={
+        "name": "source.name",
+        "email": "source.email",
+        "updated_at": "source.updated_at"
+    }).whenNotMatchedInsertAll() \\
+    .execute()
+
+# Stream con upsert
+query = events_stream.writeStream \\
+    .foreachBatch(upsert_to_delta) \\
+    .option("checkpointLocation", "/checkpoints/upsert") \\
+    .trigger(availableNow=True) \\
+    .start()
+\`\`\`
+
+### Caso de Uso 2: Escribir a Múltiples Tablas
+
+\`\`\`python
+def write_to_multiple_tables(batch_df, batch_id):
+    """Escribe el mismo batch a varias tablas"""
+    
+    # Tabla principal
+    batch_df.write.format("delta").mode("append").saveAsTable("silver.events")
+    
+    # Tabla de métricas agregadas
+    metrics = batch_df.groupBy("event_type").count()
+    metrics.write.format("delta").mode("overwrite").saveAsTable("gold.event_counts")
+    
+    # Log de auditoría
+    audit = batch_df.select("event_id", "timestamp").withColumn("processed_at", current_timestamp())
+    audit.write.format("delta").mode("append").saveAsTable("audit.processing_log")
+
+query = stream.writeStream \\
+    .foreachBatch(write_to_multiple_tables) \\
+    .start()
+\`\`\`
+
+### Caso de Uso 3: Notificaciones y Métricas
+
+\`\`\`python
+import requests
+
+def process_with_notification(batch_df, batch_id):
+    """Procesa datos y envía notificación si hay alertas"""
+    
+    # Escribir datos
+    batch_df.write.format("delta").mode("append").save("/data/events/")
+    
+    # Detectar alertas
+    alerts = batch_df.filter(col("severity") == "CRITICAL")
+    alert_count = alerts.count()
+    
+    if alert_count > 0:
+        # Enviar a Slack
+        webhook_url = dbutils.secrets.get("alerts", "slack_webhook")
+        requests.post(webhook_url, json={
+            "text": f"🚨 {alert_count} alertas críticas detectadas en batch {batch_id}"
+        })
+    
+    # Publicar métricas
+    print(f"Batch {batch_id}: {batch_df.count()} events, {alert_count} alerts")
+
+query = events.writeStream \\
+    .foreachBatch(process_with_notification) \\
+    .start()
+\`\`\`
+
+### Idempotencia: Evitar Duplicados
+
+\`\`\`python
+def idempotent_write(batch_df, batch_id):
+    """Escritura idempotente usando batch_id"""
+    
+    # Agregar batch_id como columna para tracking
+    batch_with_id = batch_df.withColumn("_batch_id", lit(batch_id))
+    
+    # Usar MERGE para evitar duplicados si se re-procesa el batch
+    delta_table = DeltaTable.forPath(spark, "/output/")
+    delta_table.alias("t").merge(
+        batch_with_id.alias("s"),
+        "t.event_id = s.event_id"
+    ).whenNotMatchedInsertAll().execute()
+
+# Si el job falla y se reinicia, no hay duplicados
+query = stream.writeStream \\
+    .foreachBatch(idempotent_write) \\
+    .option("checkpointLocation", "/checkpoints/") \\
+    .start()
+\`\`\``, en: `## foreachBatch: Production Pattern
+
+foreachBatch lets you run **any code** on each micro-batch.
+
+\`\`\`python
+def process_batch(batch_df, batch_id):
+    # batch_df is a normal DataFrame
+    batch_df.write.format("delta").save("/output/")
+
+query = stream.writeStream \\
+    .foreachBatch(process_batch) \\
+    .start()
+\`\`\`
+
+### Use Cases
+- MERGE/upsert in streaming
+- Write to multiple tables
+- Send notifications
+- Custom metrics`, pt: `## foreachBatch: Padrão de Produção
+
+foreachBatch permite executar **qualquer código** em cada micro-batch.
+
+\`\`\`python
+def process_batch(batch_df, batch_id):
+    batch_df.write.format("delta").save("/output/")
+
+query = stream.writeStream \\
+    .foreachBatch(process_batch) \\
+    .start()
+\`\`\`` },
+      practicalTips: [
+        { es: '🏆 foreachBatch es el patrón #1 en pipelines streaming de producción. Dominalo.', en: '🏆 foreachBatch is pattern #1 in production streaming pipelines. Master it.', pt: '🏆 foreachBatch é o padrão #1 em pipelines streaming de produção. Domine-o.' },
+        { es: '⚠️ batch_df es un DataFrame NORMAL - puedes usar todas las funciones de Spark.', en: '⚠️ batch_df is a NORMAL DataFrame - you can use all Spark functions.', pt: '⚠️ batch_df é um DataFrame NORMAL - você pode usar todas as funções do Spark.' },
+        { es: '🔄 Usa batch_id para idempotencia - si el job falla, puede reprocessar sin duplicados.', en: '🔄 Use batch_id for idempotency - if job fails, it can reprocess without duplicates.', pt: '🔄 Use batch_id para idempotência - se o job falhar, pode reprocessar sem duplicados.' }
+      ],
+      externalLinks: [
+        { title: 'foreachBatch', url: 'https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#foreachbatch', type: 'docs' },
+        { title: 'Upsert from Streaming', url: 'https://docs.databricks.com/delta/delta-update.html#upsert-from-streaming-queries-using-foreachbatch', type: 'docs' }
+      ],
+      checkpoint: { es: '✅ ¿Implementaste un stream con foreachBatch que hace MERGE a una tabla Delta?', en: '✅ Did you implement a stream with foreachBatch that does MERGE to a Delta table?', pt: '✅ Você implementou um stream com foreachBatch que faz MERGE para uma tabela Delta?' },
+      xpReward: 40,
+      estimatedMinutes: 40
+    },
+    {
+      id: 'db-4-7d',
+      title: { es: 'Watermarking: Manejo de Late Data', en: 'Watermarking: Handling Late Data', pt: 'Watermarking: Lidando com Late Data' },
+      description: { es: 'En el mundo real, los datos llegan tarde. Watermarking te permite manejar late arrivals elegantemente.', en: 'In the real world, data arrives late. Watermarking lets you handle late arrivals elegantly.', pt: 'No mundo real, os dados chegam atrasados. Watermarking permite lidar com late arrivals elegantemente.' },
+      theory: { es: `## Watermarking: El Problema de Late Data
+
+En streaming real, los datos pueden llegar tarde por:
+- Latencia de red
+- Dispositivos offline que reconectan
+- Buffers en sistemas upstream
+
+### El Problema
+
+\`\`\`
+Tiempo real:    10:00    10:01    10:02    10:03
+                  │        │        │        │
+Eventos:        [A,B]    [C,D]    [E,F]    [G,H]
+                                     │
+                                     └─── Evento X llega con timestamp 10:00
+                                          (2 minutos tarde!)
+
+Pregunta: ¿Incluimos X en la agregación de 10:00?
+          ¿Hasta cuándo esperamos datos tardíos?
+\`\`\`
+
+### La Solución: Watermark
+
+\`\`\`
+Watermark = "Acepto datos hasta N tiempo de retraso"
+
+Si watermark = "10 minutes":
+- Evento de 10:00 que llega a las 10:05 → ✅ Aceptado
+- Evento de 10:00 que llega a las 10:15 → ❌ Descartado
+\`\`\`
+
+### Sintaxis
+
+\`\`\`python
+from pyspark.sql.functions import window, col
+
+# DEFINIR WATERMARK
+df_with_watermark = df_stream \\
+    .withWatermark("event_timestamp", "10 minutes")
+
+# AGREGAR POR VENTANA DE TIEMPO
+result = df_with_watermark \\
+    .groupBy(
+        window("event_timestamp", "5 minutes"),  # Ventanas de 5 min
+        "category"
+    ) \\
+    .agg(
+        count("*").alias("event_count"),
+        sum("amount").alias("total_amount")
+    )
+
+# Escribir (update mode funciona con watermark)
+query = result.writeStream \\
+    .format("delta") \\
+    .outputMode("update") \\
+    .option("checkpointLocation", "/checkpoints/windowed") \\
+    .start()
+\`\`\`
+
+### Cómo Funciona el Watermark
+
+\`\`\`
+Timeline de eventos (watermark = 5 min):
+
+Tiempo      Evento          Watermark      ¿Aceptado?
+─────────────────────────────────────────────────────
+10:00       A (ts=10:00)    09:55          ✅ Sí
+10:01       B (ts=10:00)    09:56          ✅ Sí
+10:02       C (ts=09:55)    09:57          ✅ Sí (dentro de 5min)
+10:05       D (ts=09:58)    10:00          ✅ Sí (dentro de 5min)
+10:07       E (ts=09:50)    10:02          ❌ No (más de 5min tarde)
+
+Watermark = max(event_timestamp) - threshold
+\`\`\`
+
+### Ejemplo Completo: Métricas por Ventana
+
+\`\`\`python
+from pyspark.sql.functions import *
+
+# Stream de transacciones
+transactions = spark.readStream \\
+    .format("kafka") \\
+    .option("kafka.bootstrap.servers", "broker:9092") \\
+    .option("subscribe", "transactions") \\
+    .load() \\
+    .select(
+        from_json(col("value").cast("string"), schema).alias("data")
+    ).select("data.*")
+
+# Aplicar watermark de 15 minutos
+windowed_metrics = transactions \\
+    .withWatermark("transaction_time", "15 minutes") \\
+    .groupBy(
+        window("transaction_time", "5 minutes", "1 minute"),  # Sliding window
+        "merchant_category"
+    ) \\
+    .agg(
+        count("*").alias("tx_count"),
+        sum("amount").alias("total_amount"),
+        avg("amount").alias("avg_amount"),
+        max("amount").alias("max_amount")
+    )
+
+# Output a Delta con update mode
+query = windowed_metrics.writeStream \\
+    .format("delta") \\
+    .outputMode("update") \\
+    .option("checkpointLocation", "/checkpoints/tx_metrics") \\
+    .trigger(processingTime="1 minute") \\
+    .toTable("gold.transaction_metrics")
+\`\`\`
+
+### Tipos de Ventanas
+
+\`\`\`python
+# TUMBLING WINDOW (ventanas fijas sin overlap)
+window("timestamp", "5 minutes")
+# 10:00-10:05, 10:05-10:10, 10:10-10:15...
+
+# SLIDING WINDOW (con overlap)
+window("timestamp", "10 minutes", "5 minutes")
+# 10:00-10:10, 10:05-10:15, 10:10-10:20...
+
+# SESSION WINDOW (basado en actividad)
+session_window("timestamp", "10 minutes")
+# Agrupa eventos cercanos, gap de 10min crea nueva sesión
+\`\`\`
+
+### ¿Qué Watermark Elegir?
+
+| Escenario | Watermark Sugerido |
+|-----------|-------------------|
+| IoT con conexión estable | 5-10 minutos |
+| Mobile apps (usuarios offline) | 30-60 minutos |
+| Sistemas legacy batch | 1-4 horas |
+| Dispositivos que syncan diario | 24 horas |`, en: `## Watermarking: Late Data Problem
+
+In real streaming, data can arrive late. Watermarking handles this.
+
+\`\`\`python
+# Accept data up to 10 minutes late
+df_with_watermark = df_stream \\
+    .withWatermark("timestamp", "10 minutes")
+
+# Aggregate with time windows
+result = df_with_watermark \\
+    .groupBy(window("timestamp", "5 minutes")) \\
+    .count()
+\`\`\``, pt: `## Watermarking: Problema de Late Data
+
+Em streaming real, dados podem chegar atrasados. Watermarking lida com isso.
+
+\`\`\`python
+# Aceitar dados até 10 minutos atrasados
+df_with_watermark = df_stream \\
+    .withWatermark("timestamp", "10 minutes")
+
+# Agregar com janelas de tempo
+result = df_with_watermark \\
+    .groupBy(window("timestamp", "5 minutes")) \\
+    .count()
+\`\`\`` },
+      practicalTips: [
+        { es: '⏰ El watermark debe ser >= al retraso máximo esperado de tus datos.', en: '⏰ Watermark should be >= the maximum expected delay of your data.', pt: '⏰ O watermark deve ser >= ao atraso máximo esperado dos seus dados.' },
+        { es: '📊 Watermark muy pequeño = pierdes datos tardíos. Muy grande = usas más memoria.', en: '📊 Too small watermark = lose late data. Too large = use more memory.', pt: '📊 Watermark muito pequeno = perde dados atrasados. Muito grande = usa mais memória.' },
+        { es: '🎯 Esta es pregunta FRECUENTE en entrevistas de DE Senior con Spark.', en: '🎯 This is a FREQUENT question in Senior DE interviews with Spark.', pt: '🎯 Esta é pergunta FREQUENTE em entrevistas de DE Senior com Spark.' }
+      ],
+      externalLinks: [
+        { title: 'Watermarking', url: 'https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#handling-late-data-and-watermarking', type: 'docs' }
+      ],
+      checkpoint: { es: '✅ ¿Implementaste una agregación con ventana de tiempo y watermark?', en: '✅ Did you implement an aggregation with time window and watermark?', pt: '✅ Você implementou uma agregação com janela de tempo e watermark?' },
       xpReward: 35,
       estimatedMinutes: 35
     },
