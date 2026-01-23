@@ -1,6 +1,12 @@
 /**
  * FASES 9-12: SQL Warehouse, MLflow, Best Practices, Certificación
  * 33 pasos finales para completar la especialización
+ * 
+ * ACTUALIZADO: Enero 2026 - Notas sobre Free Edition:
+ * - SQL Warehouse usa serverless automáticamente en Free Edition
+ * - MLflow está disponible en Free Edition
+ * - AI/BI Dashboards (nuevos) reemplazan los legacy dashboards
+ * - Databricks Academy tiene cursos gratuitos para certificación
  */
 
 import { DatabricksPhase, DatabricksStep } from '../types';
@@ -15,7 +21,7 @@ export const PHASE_9_SQL_WAREHOUSE: DatabricksPhase = {
   id: 'db-phase-9', number: 9,
   title: { es: 'SQL Warehouse & BI', en: 'SQL Warehouse & BI', pt: 'SQL Warehouse & BI' },
   subtitle: { es: 'Analytics y visualización', en: 'Analytics and visualization', pt: 'Analytics e visualização' },
-  description: { es: 'SQL Warehouses permiten ejecutar SQL a escala y conectar herramientas de BI. ⚠️ Nota: SQL Warehouse no está disponible en Community Edition. Practica con Databricks Academy o el trial de 14 días.', en: 'SQL Warehouses allow running SQL at scale and connecting BI tools. ⚠️ Note: SQL Warehouse is not available in Community Edition. Practice with Databricks Academy or 14-day trial.', pt: 'SQL Warehouses permitem executar SQL em escala e conectar ferramentas de BI. ⚠️ Nota: SQL Warehouse não está disponível no Community Edition. Pratique com Databricks Academy ou trial de 14 dias.' },
+  description: { es: 'SQL Warehouses permiten ejecutar SQL a escala y conectar herramientas de BI. En Free Edition, usas serverless compute automáticamente para tus queries SQL. Los nuevos AI/BI Dashboards (2026) reemplazan los dashboards legacy.', en: 'SQL Warehouses allow running SQL at scale and connecting BI tools. In Free Edition, you use serverless compute automatically for your SQL queries. New AI/BI Dashboards (2026) replace legacy dashboards.', pt: 'SQL Warehouses permitem executar SQL em escala e conectar ferramentas de BI. No Free Edition, você usa serverless compute automaticamente para suas queries SQL. Os novos AI/BI Dashboards (2026) substituem os dashboards legacy.' },
   icon: '📈', color: 'indigo', estimatedDays: '3-4 días',
   steps: [
     createStep('db-9-1', '¿Qué es SQL Warehouse?', 'What is SQL Warehouse?', 'O que é SQL Warehouse?',
@@ -528,9 +534,9 @@ export const PHASE_12_CERTIFICATION: DatabricksPhase = {
       `## Governança de Dados (9%)\n\n### Você deve saber:\n- Unity Catalog (catalog > schema > table)\n- Permissões (GRANT, REVOKE)\n- Managed vs External tables\n- Data lineage\n- Audit logs\n\n### Perguntas típicas:\n- O que acontece ao fazer DROP em managed vs external?\n- Como dar SELECT a um grupo?\n- O que é um metastore?`,
       {es: '🔐 Managed vs External es pregunta frecuente.', en: '🔐 Managed vs External is a frequent question.', pt: '🔐 Managed vs External é pergunta frequente.'}, '✅ ¿Qué pasa al hacer DROP TABLE en cada tipo?', '✅ What happens when you DROP TABLE on each type?', '✅ O que acontece ao fazer DROP TABLE em cada tipo?', 25, 20),
     createStep('db-12-7', 'Practice Tests y Recursos', 'Practice Tests and Resources', 'Testes Práticos e Recursos', 'Recursos para prepararte.', 'Resources to prepare.', 'Recursos para se preparar.',
-      `## Recursos de Estudio\n\n### Oficiales:\n- Databricks Academy (gratis)\n- Practice Exam oficial\n- Documentación\n\n### Comunidad:\n- Udemy: "Databricks Certified Data Engineer Associate"\n- YouTube: Databricks channel\n- Reddit: r/databricks\n\n### Tips:\n- Hacé TODOS los labs de Databricks Academy\n- Practicá en Community Edition\n- Tomá el practice exam 2+ veces\n- Leé documentación de Delta Lake`,
-      `## Study Resources\n\n### Official:\n- Databricks Academy (free)\n- Official Practice Exam\n- Documentation\n\n### Community:\n- Udemy: "Databricks Certified Data Engineer Associate"\n- YouTube: Databricks channel\n- Reddit: r/databricks\n\n### Tips:\n- Do ALL Databricks Academy labs\n- Practice in Community Edition\n- Take practice exam 2+ times\n- Read Delta Lake documentation`,
-      `## Recursos de Estudo\n\n### Oficiais:\n- Databricks Academy (grátis)\n- Practice Exam oficial\n- Documentação\n\n### Comunidade:\n- Udemy: "Databricks Certified Data Engineer Associate"\n- YouTube: Canal Databricks\n- Reddit: r/databricks\n\n### Dicas:\n- Faça TODOS os labs do Databricks Academy\n- Pratique no Community Edition\n- Faça o practice exam 2+ vezes\n- Leia documentação do Delta Lake`,
+      `## Recursos de Estudio\n\n### Oficiales:\n- Databricks Academy (gratis)\n- Practice Exam oficial\n- Documentación\n\n### Comunidad:\n- Udemy: "Databricks Certified Data Engineer Associate"\n- YouTube: Databricks channel\n- Reddit: r/databricks\n\n### Tips:\n- Hacé TODOS los labs de Databricks Academy\n- Practicá en Free Edition (gratis)\n- Tomá el practice exam 2+ veces\n- Leé documentación de Delta Lake`,
+      `## Study Resources\n\n### Official:\n- Databricks Academy (free)\n- Official Practice Exam\n- Documentation\n\n### Community:\n- Udemy: "Databricks Certified Data Engineer Associate"\n- YouTube: Databricks channel\n- Reddit: r/databricks\n\n### Tips:\n- Do ALL Databricks Academy labs\n- Practice in Free Edition (free)\n- Take practice exam 2+ times\n- Read Delta Lake documentation`,
+      `## Recursos de Estudo\n\n### Oficiais:\n- Databricks Academy (grátis)\n- Practice Exam oficial\n- Documentação\n\n### Comunidade:\n- Udemy: "Databricks Certified Data Engineer Associate"\n- YouTube: Canal Databricks\n- Reddit: r/databricks\n\n### Dicas:\n- Faça TODOS os labs do Databricks Academy\n- Pratique no Free Edition (grátis)\n- Faça o practice exam 2+ vezes\n- Leia documentação do Delta Lake`,
       {es: '📚 Databricks Academy es el recurso #1. Es gratis y oficial.', en: '📚 Databricks Academy is resource #1. It\'s free and official.', pt: '📚 Databricks Academy é o recurso #1. É grátis e oficial.'}, '✅ ¿Te registraste en Databricks Academy?', '✅ Did you register on Databricks Academy?', '✅ Você se registrou no Databricks Academy?', 20, 15),
     createStep('db-12-8', 'Estrategia de Examen', 'Exam Strategy', 'Estratégia de Exame', 'Tips para el día del examen.', 'Tips for exam day.', 'Dicas para o dia do exame.',
       `## Día del Examen\n\n### Antes:\n- Dormí bien\n- Probá tu setup (cámara, micrófono)\n- Ambiente silencioso\n- Documento de identidad listo\n\n### Durante:\n- 2 min por pregunta máximo\n- Marcá las difíciles y seguí\n- Lee TODA la pregunta\n- Buscá keywords en opciones\n- Si no sabés, eliminá opciones\n\n### Después:\n- Resultado inmediato\n- Badge en 24-48hs\n- Agregá a LinkedIn!\n\n### ¡ÉXITOS! 🎉`,

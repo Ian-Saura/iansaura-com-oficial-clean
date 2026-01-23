@@ -126,15 +126,11 @@ export const isPremiumUser = (user: {
   subscription_status?: string;
   trial_end?: string;
   is_invited?: boolean;
-  oneinfinite_subscriber?: boolean;
 }): boolean => {
   if (!user) return false;
   
   // Invited users are premium
   if (user.is_invited) return true;
-  
-  // OneInfinite subscribers are premium
-  if (user.oneinfinite_subscriber) return true;
   
   // Active subscription
   if (user.subscription_status === 'active' || user.subscription_status === 'trialing') {

@@ -1,6 +1,10 @@
 /**
  * FASE 7: Databricks Workflows
  * Orquestación y automatización de pipelines de datos
+ * 
+ * ACTUALIZADO: Enero 2026 - Compatible con Free Edition (serverless compute)
+ * - Los jobs usan serverless compute automáticamente en Free Edition
+ * - Features avanzados de scheduling pueden requerir plan pago
  */
 
 import { DatabricksPhase } from '../types';
@@ -11,9 +15,9 @@ export const PHASE_7_WORKFLOWS: DatabricksPhase = {
   title: { es: 'Databricks Workflows', en: 'Databricks Workflows', pt: 'Databricks Workflows' },
   subtitle: { es: 'Orquestación de pipelines', en: 'Pipeline orchestration', pt: 'Orquestração de pipelines' },
   description: { 
-    es: 'Workflows es el orquestador nativo de Databricks. Aprende a crear Jobs, configurar schedules, manejar dependencias entre tareas y monitorear ejecuciones. Es la forma de llevar tus notebooks a producción.',
-    en: 'Workflows is Databricks native orchestrator. Learn to create Jobs, configure schedules, manage task dependencies and monitor executions.',
-    pt: 'Workflows é o orquestrador nativo do Databricks. Aprenda a criar Jobs, configurar schedules, gerenciar dependências entre tarefas e monitorar execuções.'
+    es: 'Workflows es el orquestador nativo de Databricks. Aprende a crear Jobs, configurar schedules, manejar dependencias entre tareas y monitorear ejecuciones. En Free Edition, los jobs usan serverless compute automáticamente.',
+    en: 'Workflows is Databricks native orchestrator. Learn to create Jobs, configure schedules, manage task dependencies and monitor executions. In Free Edition, jobs use serverless compute automatically.',
+    pt: 'Workflows é o orquestrador nativo do Databricks. Aprenda a criar Jobs, configurar schedules, gerenciar dependências entre tarefas e monitorar execuções. No Free Edition, jobs usam serverless compute automaticamente.'
   },
   icon: '⚙️',
   color: 'blue',

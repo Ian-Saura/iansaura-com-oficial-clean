@@ -1,9 +1,46 @@
 import { Specialization } from '../../types/members';
+import { DEEP_DIVES_STATS } from '../deepDives';
 
 // Import Databricks specialization data
 // import { DATABRICKS_STATS, DATABRICKS_PREVIEW } from '../specializations/databricks';
 
 export const specializations: Specialization[] = [
+  // 🎓 FUNDAMENTOS TEÓRICOS - 🔥 PRÓXIMAMENTE FEBRERO 2026
+  {
+    id: 'spec-theoretical-foundations',
+    title: { es: 'Fundamentos Teóricos', en: 'Theoretical Foundations', pt: 'Fundamentos Teóricos' },
+    subtitle: { es: 'Para quienes quieren entender el "por qué"', en: 'For those who want to understand the "why"', pt: 'Para quem quer entender o "porquê"' },
+    description: { es: 'Contenido académico profundo que complementa cada fase del roadmap. 20+ Deep Dives con mapas mentales Mermaid, cheat sheets técnicos, bibliografía de papers clásicos (Kleppmann, Kimball, Google Papers, Amazon Dynamo) y gotchas de nivel senior. Opcional pero poderoso: te convierte en un ingeniero con bases sólidas que entiende el "por qué" detrás de cada herramienta.', en: 'Deep academic content that complements each roadmap phase. 20+ Deep Dives with Mermaid mind maps, technical cheat sheets, bibliography of classic papers (Kleppmann, Kimball, Google Papers, Amazon Dynamo) and senior-level gotchas. Optional but powerful: turns you into an engineer with solid foundations who understands the "why" behind each tool.', pt: 'Conteúdo acadêmico profundo que complementa cada fase do roadmap. 20+ Deep Dives com mapas mentais Mermaid, cheat sheets técnicos, bibliografia de papers clássicos (Kleppmann, Kimball, Google Papers, Amazon Dynamo) e gotchas de nível sênior. Opcional mas poderoso: transforma você em um engenheiro com bases sólidas que entende o "porquê" por trás de cada ferramenta.' },
+    icon: '🎓',
+    color: 'violet',
+    status: 'coming_soon',
+    isNext: true, // 🔥 PRÓXIMA EN LANZARSE - Febrero 2026
+    isHidden: false, // ✅ VISIBLE como coming soon
+    isNew: false,
+    releaseDate: '1 de Febrero 2026',
+    releaseDateISO: '2026-02-01T00:00:00',
+    prerequisites: [], // No tiene prerequisitos - aplica a cualquier nivel
+    duration: '40+ horas de lectura',
+    skills: [
+      { es: 'First Principles & Fundamentos CS', en: 'First Principles & CS Fundamentals', pt: 'First Principles & Fundamentos CS' },
+      { es: 'Mapas Mentales (Mermaid)', en: 'Mind Maps (Mermaid)', pt: 'Mapas Mentais (Mermaid)' },
+      { es: 'Cheat Sheets Técnicos', en: 'Technical Cheat Sheets', pt: 'Cheat Sheets Técnicos' },
+      { es: 'Papers Académicos (Google, Amazon, etc.)', en: 'Academic Papers (Google, Amazon, etc.)', pt: 'Papers Acadêmicos (Google, Amazon, etc.)' },
+      { es: 'Bibliografía Profesional (Kleppmann, Kimball)', en: 'Professional Bibliography (Kleppmann, Kimball)', pt: 'Bibliografia Profissional (Kleppmann, Kimball)' },
+      { es: 'Gotchas de Nivel Senior', en: 'Senior-Level Gotchas', pt: 'Gotchas de Nível Sênior' },
+      { es: 'Preparación para Entrevistas Técnicas', en: 'Technical Interview Prep', pt: 'Preparação para Entrevistas Técnicas' },
+      { es: 'Patrones de Diseño de Datos', en: 'Data Design Patterns', pt: 'Padrões de Design de Dados' }
+    ],
+    projects: 0, // No tiene proyectos, es contenido teórico
+    dataPath: '../deepDives',
+    stats: {
+      phases: 20, // 20+ Deep Dives
+      steps: 200, // Estimado ~10 secciones por deep dive
+      exercises: 50, // Ejercicios de comprensión
+      projects: 0,
+      labs: 0
+    }
+  },
   // 1. DATABRICKS - 🚀 DISPONIBLE - Lanzado Enero 2025
   {
     id: 'spec-databricks',
@@ -42,7 +79,7 @@ export const specializations: Specialization[] = [
       projects: 5
     }
   },
-  // 2. AWS - 🔥 PRÓXIMAMENTE 1 DE FEBRERO 2025
+  // 2. AWS - MARZO 2026 - Después de Fundamentos Teóricos
   {
     id: 'spec-aws',
     title: { es: 'Especialización en AWS Data Engineering', en: 'AWS Data Engineering Specialization', pt: 'Especialização em AWS Data Engineering' },
@@ -51,10 +88,10 @@ export const specializations: Specialization[] = [
     icon: '☁️',
     color: 'amber',
     status: 'coming_soon',
-    isNext: true, // Segunda en lanzarse
-    isHidden: false, // Mostrar en tab especialziaciones
-    releaseDate: '1 de Febrero 2026',
-    releaseDateISO: '2026-02-01T00:00:00',
+    isNext: false,
+    isHidden: false, // ✅ VISIBLE como coming soon
+    releaseDate: '1 de Marzo 2026',
+    releaseDateISO: '2026-03-01T00:00:00',
     prerequisites: ['level-2'],
     duration: '8-10 semanas',
     skills: [
@@ -78,7 +115,7 @@ export const specializations: Specialization[] = [
       projects: 5
     }
   },
-  // 3. ANALYTICS ENGINEERING (dbt + Snowflake)
+  // 3. ANALYTICS ENGINEERING (dbt + Snowflake) - ABRIL 2026
   {
     id: 'spec-analytics-engineering',
     title: { es: 'Especialización en Analytics Engineering', en: 'Analytics Engineering Specialization', pt: 'Especialização em Analytics Engineering' },
@@ -87,7 +124,7 @@ export const specializations: Specialization[] = [
     icon: '📊',
     color: 'rose',
     status: 'coming_soon',
-    releaseDate: 'Marzo 2026',
+    releaseDate: 'Abril 2026',
     prerequisites: ['level-2'],
     duration: '4-6 semanas',
     skills: [

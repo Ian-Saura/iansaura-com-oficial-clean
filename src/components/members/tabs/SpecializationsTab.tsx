@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { 
   Rocket, Star, CheckCircle, Clock, ArrowRight, Play, 
   BookOpen, Code, FlaskConical, Target, Lock, Award
@@ -8,6 +8,9 @@ import { useLanguage } from '../../../i18n/LanguageContext';
 import { LocalizedContent as LC, t as tLocalized } from '../../../types/i18n';
 import { DatabricksSpecializationView } from '../DatabricksSpecializationView';
 import { LockedContentPreview } from '../MembersUtils';
+// Deep Dives - Habilitado para hints en roadmap (Febrero 2026)
+import { DeepDiveViewer } from '../DeepDiveViewer';
+import { getDeepDiveById } from '../../../data/deepDives';
 
 interface SpecializationsTabProps {
   isFreeUser: boolean;
@@ -56,6 +59,7 @@ const CountdownTimer: React.FC<{ targetDate: string }> = ({ targetDate }) => {
 
 export const SpecializationsTab: React.FC<SpecializationsTabProps> = ({ isFreeUser, userEmail }) => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { language } = useLanguage();
   
   // Check if there's an active specialization saved
@@ -70,6 +74,20 @@ export const SpecializationsTab: React.FC<SpecializationsTabProps> = ({ isFreeUs
   };
 
   const [showDatabricks, setShowDatabricks] = useState(() => getActiveSpecialization() === 'databricks');
+  
+  // Deep Dive viewer state - se activa cuando viene de un hint del roadmap
+  const [selectedDeepDiveId, setSelectedDeepDiveId] = useState<string | null>(null);
+  
+  // Check URL params for deep dive selection (from roadmap hints)
+  useEffect(() => {
+    const deepDiveId = searchParams.get('deepDive');
+    if (deepDiveId) {
+      const deepDive = getDeepDiveById(deepDiveId);
+      if (deepDive) {
+        setSelectedDeepDiveId(deepDiveId);
+      }
+    }
+  }, [searchParams]);
   
   const t = (content: LC | string): string => {
     if (typeof content === 'string') return content;
@@ -99,6 +117,28 @@ export const SpecializationsTab: React.FC<SpecializationsTabProps> = ({ isFreeUs
   if (showDatabricks) {
     return <DatabricksSpecializationView onBack={() => setShowDatabricks(false)} />;
   }
+  
+  // 🎓 Deep Dive Viewer - Cuando viene de un hint del roadmap
+  if (selectedDeepDiveId) {
+    const deepDive = getDeepDiveById(selectedDeepDiveId);
+    if (deepDive) {
+      return (
+        <DeepDiveViewer 
+          deepDiveId={selectedDeepDiveId}
+          onBack={() => {
+            setSelectedDeepDiveId(null);
+            // Limpiar el parámetro de la URL
+            searchParams.delete('deepDive');
+            setSearchParams(searchParams);
+          }}
+          onComplete={(id) => {
+            // Marcar como completado (si se implementa sistema de progreso)
+            console.log('Deep Dive completed:', id);
+          }}
+        />
+      );
+    }
+  }
 
   return (
     <div className="space-y-8">
@@ -122,6 +162,89 @@ export const SpecializationsTab: React.FC<SpecializationsTabProps> = ({ isFreeUs
 
       {/* Specializations Grid */}
       <div className="grid md:grid-cols-2 gap-6">
+        
+        {/* 🎓 FUNDAMENTOS TEÓRICOS - PRÓXIMAMENTE FEBRERO 2026 */}
+        <div className="bg-gradient-to-br from-violet-500/20 to-slate-900 rounded-2xl p-6 border-2 border-violet-500/50 shadow-lg shadow-violet-500/10 relative overflow-hidden group hover:border-violet-400 transition-all">
+          {/* Badge PRÓXIMAMENTE */}
+          <div className="absolute top-4 right-4">
+            <span className="bg-gradient-to-r from-violet-500 to-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 animate-pulse">
+              <Clock className="w-3 h-3" />
+              {t({ es: 'PRÓXIMAMENTE', en: 'COMING SOON', pt: 'EM BREVE' })}
+            </span>
+          </div>
+
+          {/* Header */}
+          <div className="flex items-center gap-4 mb-4">
+            <div className="text-6xl">🎓</div>
+            <div>
+              <h3 className="text-2xl font-bold text-white">
+                {t({ es: 'Fundamentos Teóricos', en: 'Theoretical Foundations', pt: 'Fundamentos Teóricos' })}
+              </h3>
+              <p className="text-violet-400 text-sm font-medium">
+                {t({ es: 'Para quienes quieren entender el "por qué"', en: 'For those who want to understand the "why"', pt: 'Para quem quer entender o "porquê"' })}
+              </p>
+            </div>
+          </div>
+
+          {/* Description */}
+          <p className="text-slate-300 text-sm mb-6">
+            {t({ es: '20+ Deep Dives con Mapas Mentales Mermaid, Cheat Sheets técnicos, Papers clásicos (Kleppmann, Kimball, Google, Amazon) y Gotchas de nivel senior. OPCIONAL pero poderoso.', en: '20+ Deep Dives with Mermaid Mind Maps, Technical Cheat Sheets, Classic Papers (Kleppmann, Kimball, Google, Amazon) and Senior-level Gotchas. OPTIONAL but powerful.', pt: '20+ Deep Dives com Mapas Mentais Mermaid, Cheat Sheets técnicos, Papers clássicos (Kleppmann, Kimball, Google, Amazon) e Gotchas de nível sênior. OPCIONAL mas poderoso.' })}
+          </p>
+
+          {/* Stats */}
+          <div className="grid grid-cols-4 gap-2 mb-6">
+            <div className="bg-slate-800/80 rounded-lg p-3 text-center">
+              <div className="text-xl font-bold text-violet-400">20+</div>
+              <div className="text-xs text-slate-400">Deep Dives</div>
+            </div>
+            <div className="bg-slate-800/80 rounded-lg p-3 text-center">
+              <div className="text-xl font-bold text-blue-400">40+</div>
+              <div className="text-xs text-slate-400">{t({ es: 'Horas', en: 'Hours', pt: 'Horas' })}</div>
+            </div>
+            <div className="bg-slate-800/80 rounded-lg p-3 text-center">
+              <div className="text-xl font-bold text-yellow-400">1500+</div>
+              <div className="text-xs text-slate-400">XP Bonus</div>
+            </div>
+            <div className="bg-slate-800/80 rounded-lg p-3 text-center">
+              <div className="text-xl font-bold text-emerald-400">∞</div>
+              <div className="text-xs text-slate-400">{t({ es: 'Niveles', en: 'Levels', pt: 'Níveis' })}</div>
+            </div>
+          </div>
+
+          {/* Skills Preview */}
+          <div className="flex flex-wrap gap-2 mb-6">
+            {['Mind Maps', 'Cheat Sheets', 'Kleppmann', 'Kimball', 'Google Papers', 'First Principles'].map(skill => (
+              <span key={skill} className="bg-violet-500/20 text-violet-300 text-xs px-2 py-1 rounded-full border border-violet-500/30">
+                {skill}
+              </span>
+            ))}
+          </div>
+
+          {/* Countdown */}
+          <div className="bg-slate-900/80 rounded-xl p-4 mb-6 border border-violet-500/20">
+            <p className="text-violet-400 text-sm font-semibold mb-3 text-center">
+              🚀 {t({ es: 'Lanzamiento: 1 de Febrero 2026', en: 'Launch: February 1, 2026', pt: 'Lançamento: 1 de Fevereiro 2026' })}
+            </p>
+            <CountdownTimer targetDate="2026-02-01T00:00:00" />
+          </div>
+
+          {/* Optional Badge */}
+          <div className="flex items-center gap-2 mb-4 bg-emerald-500/10 text-emerald-400 px-3 py-2 rounded-lg border border-emerald-500/20">
+            <CheckCircle className="w-4 h-4" />
+            <span className="text-sm font-medium">
+              {t({ es: 'OPCIONAL - Complementa cualquier nivel', en: 'OPTIONAL - Complements any level', pt: 'OPCIONAL - Complementa qualquer nível' })}
+            </span>
+          </div>
+
+          {/* Disabled CTA Button */}
+          <button
+            disabled
+            className="w-full py-4 rounded-xl bg-slate-700 text-slate-400 font-bold text-lg cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            <Lock className="w-5 h-5" />
+            {t({ es: 'Disponible en Febrero', en: 'Available in February', pt: 'Disponível em Fevereiro' })}
+          </button>
+        </div>
         
         {/* 🔶 DATABRICKS - DISPONIBLE AHORA */}
         <div className="bg-gradient-to-br from-orange-500/20 to-slate-900 rounded-2xl p-6 border-2 border-orange-500/50 shadow-lg shadow-orange-500/10 relative overflow-hidden group hover:border-orange-400 transition-all">

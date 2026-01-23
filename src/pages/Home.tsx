@@ -20,7 +20,8 @@ import {
   BookOpen,
   Layers,
   Bot,
-  Target
+  Target,
+  Clock
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAnalytics } from '../hooks/useAnalytics';
@@ -317,7 +318,7 @@ export default function Home({ user }: HomeProps) {
                       {t('landing.bootcampCard.viewDetails')}
                 </Link>
                 <a 
-                  href="https://onei.la/ihw"
+                  href="https://iansaura.gumroad.com/l/bykys"
                   target="_blank"
                   rel="noopener noreferrer"
                       className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-xl font-bold text-center hover:from-blue-600 hover:to-purple-600 transition-all flex items-center justify-center gap-2"
@@ -632,6 +633,82 @@ export default function Home({ user }: HomeProps) {
                 {({ es: '✨ Incluido gratis con tu suscripción Premium', en: '✨ Included free with your Premium subscription', pt: '✨ Incluído grátis com sua assinatura Premium' } as any)[language]}
               </p>
             </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* 🎓 PRÓXIMAMENTE - Fundamentos Teóricos (Febrero 2026) */}
+      <section className="py-16 bg-gradient-to-br from-slate-900 via-violet-900/10 to-slate-900 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-violet-500/30 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-10 w-72 h-72 bg-purple-500/30 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="max-w-5xl mx-auto px-6 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center"
+          >
+            <div className="inline-flex items-center gap-2 bg-violet-500/20 text-violet-400 px-4 py-2 rounded-full text-sm font-semibold mb-4 border border-violet-500/30 animate-pulse">
+              <Clock className="w-4 h-4" />
+              {({ es: 'PRÓXIMAMENTE - FEBRERO 2026', en: 'COMING SOON - FEBRUARY 2026', pt: 'EM BREVE - FEVEREIRO 2026' } as any)[language]}
+            </div>
+            
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <span className="text-5xl">🎓</span>
+              <h2 className="text-3xl md:text-4xl font-bold">
+                {({ es: 'Fundamentos Teóricos', en: 'Theoretical Foundations', pt: 'Fundamentos Teóricos' } as any)[language]}
+              </h2>
+            </div>
+            
+            <p className="text-xl text-violet-400 font-medium mb-4">
+              {({ es: 'Para quienes quieren entender el "por qué"', en: 'For those who want to understand the "why"', pt: 'Para quem quer entender o "porquê"' } as any)[language]}
+            </p>
+            
+            <p className="text-slate-400 max-w-2xl mx-auto mb-8">
+              {({ 
+                es: '20+ Deep Dives con Mapas Mentales Mermaid, Cheat Sheets técnicos, Papers clásicos (Kleppmann, Kimball, Google, Amazon) y Gotchas de nivel senior. OPCIONAL pero poderoso.', 
+                en: '20+ Deep Dives with Mermaid Mind Maps, Technical Cheat Sheets, Classic Papers (Kleppmann, Kimball, Google, Amazon) and Senior-level Gotchas. OPTIONAL but powerful.', 
+                pt: '20+ Deep Dives com Mapas Mentais Mermaid, Cheat Sheets técnicos, Papers clássicos (Kleppmann, Kimball, Google, Amazon) e Gotchas de nível sênior. OPCIONAL mas poderoso.' 
+              } as any)[language]}
+            </p>
+
+            {/* Features Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-8">
+              <div className="bg-slate-800/50 rounded-lg p-4 border border-violet-500/20">
+                <div className="text-2xl font-bold text-violet-400">20+</div>
+                <div className="text-xs text-slate-400">Deep Dives</div>
+              </div>
+              <div className="bg-slate-800/50 rounded-lg p-4 border border-violet-500/20">
+                <div className="text-2xl font-bold text-blue-400">40+</div>
+                <div className="text-xs text-slate-400">{({ es: 'Horas', en: 'Hours', pt: 'Horas' } as any)[language]}</div>
+              </div>
+              <div className="bg-slate-800/50 rounded-lg p-4 border border-violet-500/20">
+                <div className="text-2xl font-bold text-yellow-400">1500+</div>
+                <div className="text-xs text-slate-400">XP Bonus</div>
+              </div>
+              <div className="bg-slate-800/50 rounded-lg p-4 border border-violet-500/20">
+                <div className="text-2xl font-bold text-emerald-400">∞</div>
+                <div className="text-xs text-slate-400">{({ es: 'Niveles', en: 'Levels', pt: 'Níveis' } as any)[language]}</div>
+              </div>
+            </div>
+
+            {/* Tags */}
+            <div className="flex flex-wrap justify-center gap-2 mb-6">
+              {['Mind Maps', 'Cheat Sheets', 'Kleppmann', 'Kimball', 'Google Papers', 'First Principles', 'Gotchas Senior'].map(skill => (
+                <span key={skill} className="bg-violet-500/20 text-violet-300 text-xs px-3 py-1 rounded-full border border-violet-500/30">
+                  {skill}
+                </span>
+              ))}
+            </div>
+
+            <p className="text-emerald-400 text-sm flex items-center justify-center gap-2">
+              <CheckCircle className="w-4 h-4" />
+              {({ es: 'OPCIONAL - Complementa cualquier nivel del roadmap', en: 'OPTIONAL - Complements any roadmap level', pt: 'OPCIONAL - Complementa qualquer nível do roadmap' } as any)[language]}
+            </p>
           </motion.div>
         </div>
       </section>

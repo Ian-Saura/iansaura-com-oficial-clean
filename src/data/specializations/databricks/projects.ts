@@ -3,6 +3,11 @@ import { DatabricksProject } from './types';
 /**
  * Proyectos prácticos de la especialización Databricks
  * 5 proyectos completos con múltiples pasos
+ * 
+ * ACTUALIZADO: Enero 2026 - Compatible con Free Edition
+ * - Todos los proyectos usan serverless compute
+ * - Unity Catalog y DLT ahora disponibles gratis
+ * - Solo Python y SQL (no R/Scala)
  */
 export const ALL_DATABRICKS_PROJECTS: DatabricksProject[] = [
   // =====================================================
@@ -23,10 +28,10 @@ export const ALL_DATABRICKS_PROJECTS: DatabricksProject[] = [
     steps: [
       {
         id: 'db-proj-0-step-1',
-        name: { es: 'Crear cuenta y cluster', en: 'Create account and cluster', pt: 'Criar conta e cluster' },
-        description: { es: 'Registrate en Community Edition y crea tu primer cluster.', en: 'Sign up for Community Edition and create your first cluster.', pt: 'Registre-se no Community Edition e crie seu primeiro cluster.' },
-        theory: { es: 'Community Edition es gratis y perfecto para aprender.', en: 'Community Edition is free and perfect for learning.', pt: 'Community Edition é grátis e perfeito para aprender.' },
-        resources: [{ name: { es: 'Databricks Community Edition', en: 'Databricks Community Edition', pt: 'Databricks Community Edition' }, url: 'https://databricks.com/try-databricks' }]
+        name: { es: 'Crear cuenta gratuita', en: 'Create free account', pt: 'Criar conta gratuita' },
+        description: { es: 'Registrate en Databricks Free Edition. El compute serverless se activa automáticamente.', en: 'Sign up for Databricks Free Edition. Serverless compute activates automatically.', pt: 'Registre-se no Databricks Free Edition. O compute serverless ativa automaticamente.' },
+        theory: { es: 'Free Edition incluye serverless compute, Unity Catalog básico, DLT y Databricks Assistant gratis.', en: 'Free Edition includes serverless compute, basic Unity Catalog, DLT and Databricks Assistant for free.', pt: 'Free Edition inclui serverless compute, Unity Catalog básico, DLT e Databricks Assistant grátis.' },
+        resources: [{ name: { es: 'Databricks Free Edition', en: 'Databricks Free Edition', pt: 'Databricks Free Edition' }, url: 'https://www.databricks.com/try-databricks-free' }]
       },
       {
         id: 'db-proj-0-step-2',

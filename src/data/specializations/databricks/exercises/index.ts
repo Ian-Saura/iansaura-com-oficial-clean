@@ -5,6 +5,11 @@ import { DATABRICKS_EXERCISES_DELTA_LAKE } from './delta-lake';
 /**
  * Todos los ejercicios de la especialización Databricks
  * Total: 20 ejercicios (10 Spark + 10 Delta Lake)
+ * 
+ * ACTUALIZADO: Enero 2026 - Compatibles con Free Edition
+ * - Todos los ejercicios usan Python y SQL (lenguajes disponibles en Free Edition)
+ * - Diseñados para funcionar con serverless compute
+ * - Delta Lake y Unity Catalog ahora disponibles gratis
  */
 export const ALL_DATABRICKS_EXERCISES: DatabricksExercise[] = [
   ...DATABRICKS_EXERCISES_SPARK_BASICS,

@@ -5,3 +5,4 @@ export { DashboardTab } from './DashboardTab';
 // ApiTokenSection removed - functionality moved to DatasetsTab
 export { SystemDesignTab } from './SystemDesignTab';
 export { InterviewPrepTab } from './InterviewPrepTab';
+export { DeepDivesTab } from './DeepDivesTab';

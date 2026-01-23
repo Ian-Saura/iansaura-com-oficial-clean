@@ -1,6 +1,10 @@
 /**
  * FASE 5: Delta Lake
  * 10 pasos para dominar Delta Lake - El formato que revolucionó los Data Lakes
+ * 
+ * ACTUALIZADO: Enero 2026 - Compatible con Free Edition
+ * - Delta Lake está completamente disponible en Free Edition
+ * - Time Travel y VACUUM funcionan con las configuraciones actuales
  */
 
 import { DatabricksPhase } from '../types';
@@ -10,7 +14,7 @@ export const PHASE_5_DELTA_LAKE: DatabricksPhase = {
   number: 5,
   title: { es: 'Delta Lake', en: 'Delta Lake', pt: 'Delta Lake' },
   subtitle: { es: 'El formato de datos más poderoso', en: 'The most powerful data format', pt: 'O formato de dados mais poderoso' },
-  description: { es: 'Domina Delta Lake: ACID transactions, time travel, schema enforcement, MERGE, OPTIMIZE, y Z-ordering. Delta Lake es la tecnología core de Databricks y lo que hace posible el Lakehouse.', en: 'Master Delta Lake: ACID transactions, time travel, schema enforcement, MERGE, OPTIMIZE, and Z-ordering. Delta Lake is the core technology of Databricks and what makes the Lakehouse possible.', pt: 'Domine Delta Lake: transações ACID, time travel, schema enforcement, MERGE, OPTIMIZE e Z-ordering. Delta Lake é a tecnologia core do Databricks e o que torna possível o Lakehouse.' },
+  description: { es: 'Domina Delta Lake: ACID transactions, time travel, schema enforcement, MERGE, OPTIMIZE, y Z-ordering. Delta Lake está completamente disponible en Free Edition y es la tecnología core del Lakehouse.', en: 'Master Delta Lake: ACID transactions, time travel, schema enforcement, MERGE, OPTIMIZE, and Z-ordering. Delta Lake is fully available in Free Edition and is the core technology of the Lakehouse.', pt: 'Domine Delta Lake: transações ACID, time travel, schema enforcement, MERGE, OPTIMIZE e Z-ordering. Delta Lake está completamente disponível no Free Edition e é a tecnologia core do Lakehouse.' },
   icon: '🔷',
   color: 'blue',
   estimatedDays: '5-7 días',

@@ -3,7 +3,12 @@
  * ===============
  * 
  * Mini-labs guiados que integran los conceptos del roadmap
- * Diseñados para usar con Databricks Community Edition (GRATIS)
+ * Diseñados para usar con Databricks Free Edition (GRATIS)
+ * 
+ * ACTUALIZADO: Enero 2026 - Free Edition
+ * - Todos los labs usan serverless compute (automático)
+ * - Solo Python y SQL (no R/Scala)
+ * - Unity Catalog y DLT ahora disponibles gratis
  * 
  * Estructura de cada lab:
  * - Objetivo claro

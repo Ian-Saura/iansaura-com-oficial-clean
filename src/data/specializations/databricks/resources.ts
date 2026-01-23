@@ -1,6 +1,8 @@
 /**
  * Databricks External Resources
  * Recursos externos verificados para aprender Databricks
+ * 
+ * ACTUALIZADO: Enero 2026 - Free Edition (reemplaza Community Edition)
  */
 
 export interface DatabricksResource {
@@ -172,14 +174,28 @@ export const DATABRICKS_RESOURCES: DatabricksResource[] = [
   // =====================================================
   {
     id: 'res-tool-1',
-    title: 'Databricks Community Edition',
-    url: 'https://community.cloud.databricks.com/',
+    title: 'Databricks Free Edition',
+    url: 'https://www.databricks.com/try-databricks-free',
     type: 'tool',
     category: 'practice',
     description: {
-      es: 'Versión gratuita de Databricks para aprender',
-      en: 'Free Databricks version for learning',
-      pt: 'Versão gratuita do Databricks para aprender'
+      es: 'Versión gratuita de Databricks (2026) con serverless compute, Unity Catalog básico y Databricks Assistant',
+      en: 'Free Databricks version (2026) with serverless compute, basic Unity Catalog and Databricks Assistant',
+      pt: 'Versão gratuita do Databricks (2026) com serverless compute, Unity Catalog básico e Databricks Assistant'
+    },
+    free: true,
+    recommended: true
+  },
+  {
+    id: 'res-tool-1b',
+    title: 'Databricks Assistant Documentation',
+    url: 'https://docs.databricks.com/en/notebooks/databricks-assistant-faq.html',
+    type: 'docs',
+    category: 'learning',
+    description: {
+      es: 'Guía del asistente de IA integrado para escribir código, explicar errores y optimizar queries',
+      en: 'Guide to the integrated AI assistant for writing code, explaining errors and optimizing queries',
+      pt: 'Guia do assistente de IA integrado para escrever código, explicar erros e otimizar queries'
     },
     free: true,
     recommended: true

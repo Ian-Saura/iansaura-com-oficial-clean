@@ -1,6 +1,10 @@
 /**
  * FASE 8: Delta Live Tables (DLT)
  * ETL declarativo con calidad de datos incorporada
+ * 
+ * ACTUALIZADO: Enero 2026 - ¡DLT AHORA DISPONIBLE en Free Edition!
+ * - Free Edition incluye DLT básico para aprender y experimentar
+ * - Features enterprise (CDC avanzado, multiple pipelines) requieren plan pago
  */
 
 import { DatabricksPhase } from '../types';
@@ -11,9 +15,9 @@ export const PHASE_8_DLT: DatabricksPhase = {
   title: { es: 'Delta Live Tables', en: 'Delta Live Tables', pt: 'Delta Live Tables' },
   subtitle: { es: 'ETL declarativo y calidad de datos', en: 'Declarative ETL and data quality', pt: 'ETL declarativo e qualidade de dados' },
   description: { 
-    es: 'DLT es la forma más elegante de construir pipelines ETL en Databricks. Defines QUÉ quieres, no CÓMO hacerlo. Incluye validación de calidad de datos, manejo automático de dependencias, y CDC out-of-the-box.',
-    en: 'DLT is the most elegant way to build ETL pipelines in Databricks. You define WHAT you want, not HOW to do it. Includes data quality validation, automatic dependency management, and CDC out-of-the-box.',
-    pt: 'DLT é a forma mais elegante de construir pipelines ETL no Databricks. Você define O QUE quer, não COMO fazer. Inclui validação de qualidade de dados, gerenciamento automático de dependências e CDC out-of-the-box.'
+    es: '🆕 ¡DLT ahora está disponible en Free Edition! Es la forma más elegante de construir pipelines ETL. Defines QUÉ quieres, no CÓMO hacerlo. Incluye validación de calidad de datos, manejo automático de dependencias, y puedes probarlo gratis.',
+    en: '🆕 DLT is now available in Free Edition! It is the most elegant way to build ETL pipelines. You define WHAT you want, not HOW to do it. Includes data quality validation, automatic dependency management, and you can try it for free.',
+    pt: '🆕 DLT agora está disponível no Free Edition! É a forma mais elegante de construir pipelines ETL. Você define O QUE quer, não COMO fazer. Inclui validação de qualidade de dados, gerenciamento automático de dependências, e você pode testar gratuitamente.'
   },
   icon: '🔄',
   color: 'teal',

@@ -1,6 +1,9 @@
 /**
  * FASE 3: Spark Básico en Databricks
  * 10 pasos para dominar los fundamentos de Spark
+ * 
+ * ACTUALIZADO: Enero 2026 - Compatible con Free Edition (Python + SQL)
+ * Nota: Los ejemplos de Scala/R están marcados como "solo plan pago"
  */
 
 import { DatabricksPhase } from '../types';
@@ -19,9 +22,9 @@ export const PHASE_3_SPARK_BASICS: DatabricksPhase = {
     pt: 'O coração do Databricks'
   },
   description: {
-    es: 'Apache Spark es el motor de procesamiento detrás de Databricks. Dominar Spark te permite procesar terabytes de datos de forma eficiente.',
-    en: 'Apache Spark is the processing engine behind Databricks. Mastering Spark allows you to process terabytes of data efficiently.',
-    pt: 'Apache Spark é o motor de processamento por trás do Databricks. Dominar Spark permite processar terabytes de dados de forma eficiente.'
+    es: 'Apache Spark es el motor de procesamiento detrás de Databricks. Dominar Spark te permite procesar terabytes de datos de forma eficiente. Todo el contenido de esta fase es compatible con Free Edition (Python y SQL).',
+    en: 'Apache Spark is the processing engine behind Databricks. Mastering Spark allows you to process terabytes of data efficiently. All content in this phase is compatible with Free Edition (Python and SQL).',
+    pt: 'Apache Spark é o motor de processamento por trás do Databricks. Dominar Spark permite processar terabytes de dados de forma eficiente. Todo o conteúdo desta fase é compatível com Free Edition (Python e SQL).'
   },
   icon: '⚡',
   color: 'orange',
@@ -269,7 +272,8 @@ O segredo está no **processamento em memória**.
       practicalTips: [
         { es: '💡 Spark procesa en memoria RAM, que es 100,000x más rápida que el disco duro. Por eso puede ser hasta 100x más rápido que Hadoop.', en: '💡 Spark processes in RAM memory, which is 100,000x faster than hard disk. That\'s why it can be up to 100x faster than Hadoop.', pt: '💡 Spark processa em memória RAM, que é 100.000x mais rápida que o disco. Por isso pode ser até 100x mais rápido que Hadoop.' },
         { es: '💡 En Databricks, Spark ya viene pre-configurado y optimizado. No necesitas instalar nada.', en: '💡 In Databricks, Spark comes pre-configured and optimized. You don\'t need to install anything.', pt: '💡 No Databricks, Spark já vem pré-configurado e otimizado. Não precisa instalar nada.' },
-        { es: '💡 El 80% de las empresas Fortune 500 usan Spark. Aprenderlo te abre muchas puertas.', en: '💡 80% of Fortune 500 companies use Spark. Learning it opens many doors.', pt: '💡 80% das empresas Fortune 500 usam Spark. Aprendê-lo abre muitas portas.' }
+        { es: '💡 El 80% de las empresas Fortune 500 usan Spark. Aprenderlo te abre muchas puertas.', en: '💡 80% of Fortune 500 companies use Spark. Learning it opens many doors.', pt: '💡 80% das empresas Fortune 500 usam Spark. Aprendê-lo abre muitas portas.' },
+        { es: '⚠️ Free Edition: Spark soporta Python, SQL, Scala, R y Java, pero en Free Edition solo están disponibles Python y SQL.', en: '⚠️ Free Edition: Spark supports Python, SQL, Scala, R and Java, but in Free Edition only Python and SQL are available.', pt: '⚠️ Free Edition: Spark suporta Python, SQL, Scala, R e Java, mas no Free Edition apenas Python e SQL estão disponíveis.' }
       ],
       externalLinks: [
         { title: 'Apache Spark Official', url: 'https://spark.apache.org/', type: 'docs' },
