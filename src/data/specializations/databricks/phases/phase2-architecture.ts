@@ -1,6 +1,8 @@
 /**
  * FASE 2: Arquitectura de Databricks
  * 9 pasos para entender cómo funciona Databricks por dentro
+ * 
+ * ACTUALIZADO: Enero 2026 - Incluye arquitectura serverless y Free Edition
  */
 
 import { DatabricksPhase } from '../types';
@@ -19,9 +21,9 @@ export const PHASE_2_ARCHITECTURE: DatabricksPhase = {
     pt: 'Entenda como funciona por dentro'
   },
   description: {
-    es: 'Conocer la arquitectura de Databricks te permite tomar mejores decisiones de diseño, optimizar costos y resolver problemas de performance. Esta fase te da la visión completa del sistema.',
-    en: 'Knowing Databricks architecture allows you to make better design decisions, optimize costs and solve performance problems. This phase gives you the complete system vision.',
-    pt: 'Conhecer a arquitetura do Databricks permite tomar melhores decisões de design, otimizar custos e resolver problemas de performance. Esta fase te dá a visão completa do sistema.'
+    es: 'Conocer la arquitectura de Databricks te permite tomar mejores decisiones de diseño, optimizar costos y resolver problemas de performance. Esta fase cubre tanto la arquitectura enterprise (planes pagos) como serverless (Free Edition).',
+    en: 'Knowing Databricks architecture allows you to make better design decisions, optimize costs and solve performance problems. This phase covers both enterprise architecture (paid plans) and serverless (Free Edition).',
+    pt: 'Conhecer a arquitetura do Databricks permite tomar melhores decisões de design, otimizar custos e resolver problemas de performance. Esta fase cobre tanto a arquitetura enterprise (planos pagos) quanto serverless (Free Edition).'
   },
   icon: '🏗️',
   color: 'blue',
@@ -207,6 +209,11 @@ Usuário → Control Plane → Inicia Cluster
           es: '💰 En entrevistas, mencionar esta separación muestra que entendés Databricks a fondo.',
           en: '💰 In interviews, mentioning this separation shows you understand Databricks deeply.',
           pt: '💰 Em entrevistas, mencionar esta separação mostra que você entende Databricks profundamente.'
+        },
+        {
+          es: '📌 En Free Edition, Databricks gestiona todo (control + data plane). Esta arquitectura aplica a planes enterprise.',
+          en: '📌 In Free Edition, Databricks manages everything (control + data plane). This architecture applies to enterprise plans.',
+          pt: '📌 No Free Edition, o Databricks gerencia tudo (control + data plane). Esta arquitetura aplica-se a planos enterprise.'
         }
       ],
       externalLinks: [
@@ -408,19 +415,34 @@ Integração nativa: BigQuery, Dataflow
     {
       id: 'db-2-3',
       title: {
-        es: 'Tipos de Clusters: All-Purpose vs Job',
-        en: 'Cluster Types: All-Purpose vs Job',
-        pt: 'Tipos de Clusters: All-Purpose vs Job'
+        es: 'Tipos de Compute: Serverless, All-Purpose y Job Clusters',
+        en: 'Compute Types: Serverless, All-Purpose and Job Clusters',
+        pt: 'Tipos de Compute: Serverless, All-Purpose e Job Clusters'
       },
       description: {
-        es: 'Elegir el tipo de cluster correcto impacta directamente en costos y performance.',
-        en: 'Choosing the right cluster type directly impacts costs and performance.',
-        pt: 'Escolher o tipo de cluster correto impacta diretamente em custos e performance.'
+        es: 'Databricks ofrece diferentes opciones de compute. Elegir correctamente impacta en costos y performance.',
+        en: 'Databricks offers different compute options. Choosing correctly impacts costs and performance.',
+        pt: 'O Databricks oferece diferentes opções de compute. Escolher corretamente impacta em custos e performance.'
       },
       theory: {
-        es: `## Tipos de Clusters
+        es: `## Tipos de Compute en Databricks
 
-### All-Purpose Clusters (Interactivos)
+### 🆕 Serverless Compute (Free Edition y planes pagos)
+\`\`\`
+✅ Para: Desarrollo rápido, SQL analytics, notebooks
+✅ Disponible en: Free Edition (único tipo disponible)
+💰 Costo: Por uso (sin costo en Free Edition)
+⏱️ Inicio: Segundos (sin esperas)
+\`\`\`
+
+**Características:**
+- Se activa automáticamente al ejecutar código
+- Sin configuración manual
+- Recursos administrados por Databricks
+- Incluye Photon para queries SQL
+- Lenguajes: Python y SQL (en Free Edition)
+
+### All-Purpose Clusters (Solo planes pagos)
 \`\`\`
 ✅ Para: Desarrollo, exploración, notebooks colaborativos
 ❌ No para: Jobs de producción
@@ -430,15 +452,15 @@ Integração nativa: BigQuery, Dataflow
 
 **Características:**
 - Múltiples usuarios pueden conectarse
+- Configuración personalizada (RAM, cores, GPU)
+- Lenguajes: Python, SQL, R, Scala
 - Persisten después de ejecutar código
-- Ideal para desarrollo iterativo
-- Se pueden adjuntar a múltiples notebooks
 
-### Job Clusters (Automatizados)
+### Job Clusters (Solo planes pagos)
 \`\`\`
 ✅ Para: Jobs de producción, pipelines schedulados
 ❌ No para: Desarrollo interactivo
-💰 Costo: Más barato (~50% menos DBUs)
+💰 Costo: Más barato (~50% menos DBUs que All-Purpose)
 ⏱️ Duración: Se crean y destruyen automáticamente
 \`\`\`
 
@@ -448,21 +470,38 @@ Integração nativa: BigQuery, Dataflow
 - Configuración vía API/UI de Jobs
 - Optimizados para batch processing
 
-### Comparativa de Costos:
+### Comparativa Completa:
 
-| Tipo | DBU/hora (ejemplo) | Uso típico |
-|------|-------------------|------------|
-| All-Purpose | 1.0 DBU | 8h/día desarrollo |
-| Job | 0.5 DBU | 2h/noche producción |
+| Tipo | Disponibilidad | DBU/hora | Inicio | Lenguajes |
+|------|---------------|----------|--------|-----------|
+| Serverless | Free + Pagos | Por uso | Segundos | Python, SQL |
+| All-Purpose | Solo Pagos | ~1.0 | 3-5 min | Python, SQL, R, Scala |
+| Job | Solo Pagos | ~0.5 | 3-5 min | Python, SQL, R, Scala |
 
 ### Best Practices:
 
-1. **Desarrollo**: All-Purpose con auto-terminate (30 min)
-2. **Producción**: Job clusters (siempre)
-3. **Costos**: Monitorear con Tags por proyecto/equipo`,
-        en: `## Cluster Types
+1. **Free Edition**: Usá serverless (es automático)
+2. **Desarrollo (pagos)**: All-Purpose con auto-terminate (30 min)
+3. **Producción (pagos)**: Job clusters o Serverless Jobs
+4. **Costos**: Monitorear con Tags por proyecto/equipo`,
+        en: `## Compute Types in Databricks
 
-### All-Purpose Clusters (Interactive)
+### 🆕 Serverless Compute (Free Edition and paid plans)
+\`\`\`
+✅ For: Quick development, SQL analytics, notebooks
+✅ Available in: Free Edition (only type available)
+💰 Cost: Per use (no cost in Free Edition)
+⏱️ Startup: Seconds (no waiting)
+\`\`\`
+
+**Features:**
+- Activates automatically when running code
+- No manual configuration
+- Resources managed by Databricks
+- Includes Photon for SQL queries
+- Languages: Python and SQL (in Free Edition)
+
+### All-Purpose Clusters (Paid plans only)
 \`\`\`
 ✅ For: Development, exploration, collaborative notebooks
 ❌ Not for: Production jobs
@@ -472,15 +511,15 @@ Integração nativa: BigQuery, Dataflow
 
 **Features:**
 - Multiple users can connect
+- Custom configuration (RAM, cores, GPU)
+- Languages: Python, SQL, R, Scala
 - Persist after running code
-- Ideal for iterative development
-- Can attach to multiple notebooks
 
-### Job Clusters (Automated)
+### Job Clusters (Paid plans only)
 \`\`\`
 ✅ For: Production jobs, scheduled pipelines
 ❌ Not for: Interactive development
-💰 Cost: Cheaper (~50% less DBUs)
+💰 Cost: Cheaper (~50% less DBUs than All-Purpose)
 ⏱️ Duration: Created and destroyed automatically
 \`\`\`
 
@@ -490,21 +529,38 @@ Integração nativa: BigQuery, Dataflow
 - Configuration via Jobs API/UI
 - Optimized for batch processing
 
-### Cost Comparison:
+### Complete Comparison:
 
-| Type | DBU/hour (example) | Typical use |
-|------|-------------------|-------------|
-| All-Purpose | 1.0 DBU | 8h/day development |
-| Job | 0.5 DBU | 2h/night production |
+| Type | Availability | DBU/hour | Startup | Languages |
+|------|-------------|----------|---------|-----------|
+| Serverless | Free + Paid | Per use | Seconds | Python, SQL |
+| All-Purpose | Paid only | ~1.0 | 3-5 min | Python, SQL, R, Scala |
+| Job | Paid only | ~0.5 | 3-5 min | Python, SQL, R, Scala |
 
 ### Best Practices:
 
-1. **Development**: All-Purpose with auto-terminate (30 min)
-2. **Production**: Job clusters (always)
-3. **Costs**: Monitor with Tags by project/team`,
-        pt: `## Tipos de Clusters
+1. **Free Edition**: Use serverless (it's automatic)
+2. **Development (paid)**: All-Purpose with auto-terminate (30 min)
+3. **Production (paid)**: Job clusters or Serverless Jobs
+4. **Costs**: Monitor with Tags by project/team`,
+        pt: `## Tipos de Compute no Databricks
 
-### All-Purpose Clusters (Interativos)
+### 🆕 Serverless Compute (Free Edition e planos pagos)
+\`\`\`
+✅ Para: Desenvolvimento rápido, SQL analytics, notebooks
+✅ Disponível em: Free Edition (único tipo disponível)
+💰 Custo: Por uso (sem custo no Free Edition)
+⏱️ Início: Segundos (sem esperas)
+\`\`\`
+
+**Características:**
+- Ativa automaticamente ao executar código
+- Sem configuração manual
+- Recursos gerenciados pelo Databricks
+- Inclui Photon para queries SQL
+- Linguagens: Python e SQL (no Free Edition)
+
+### All-Purpose Clusters (Apenas planos pagos)
 \`\`\`
 ✅ Para: Desenvolvimento, exploração, notebooks colaborativos
 ❌ Não para: Jobs de produção
@@ -514,15 +570,15 @@ Integração nativa: BigQuery, Dataflow
 
 **Características:**
 - Múltiplos usuários podem conectar
+- Configuração personalizada (RAM, cores, GPU)
+- Linguagens: Python, SQL, R, Scala
 - Persistem após executar código
-- Ideal para desenvolvimento iterativo
-- Podem ser anexados a múltiplos notebooks
 
-### Job Clusters (Automatizados)
+### Job Clusters (Apenas planos pagos)
 \`\`\`
 ✅ Para: Jobs de produção, pipelines schedulados
 ❌ Não para: Desenvolvimento interativo
-💰 Custo: Mais barato (~50% menos DBUs)
+💰 Custo: Mais barato (~50% menos DBUs que All-Purpose)
 ⏱️ Duração: Criados e destruídos automaticamente
 \`\`\`
 
@@ -532,24 +588,31 @@ Integração nativa: BigQuery, Dataflow
 - Configuração via API/UI de Jobs
 - Otimizados para batch processing
 
-### Comparação de Custos:
+### Comparação Completa:
 
-| Tipo | DBU/hora (exemplo) | Uso típico |
-|------|-------------------|------------|
-| All-Purpose | 1.0 DBU | 8h/dia desenvolvimento |
-| Job | 0.5 DBU | 2h/noite produção |
+| Tipo | Disponibilidade | DBU/hora | Início | Linguagens |
+|------|-----------------|----------|--------|------------|
+| Serverless | Free + Pagos | Por uso | Segundos | Python, SQL |
+| All-Purpose | Apenas Pagos | ~1.0 | 3-5 min | Python, SQL, R, Scala |
+| Job | Apenas Pagos | ~0.5 | 3-5 min | Python, SQL, R, Scala |
 
 ### Melhores Práticas:
 
-1. **Desenvolvimento**: All-Purpose com auto-terminate (30 min)
-2. **Produção**: Job clusters (sempre)
-3. **Custos**: Monitorar com Tags por projeto/equipe`
+1. **Free Edition**: Use serverless (é automático)
+2. **Desenvolvimento (pagos)**: All-Purpose com auto-terminate (30 min)
+3. **Produção (pagos)**: Job clusters ou Serverless Jobs
+4. **Custos**: Monitorar com Tags por projeto/equipe`
       },
       practicalTips: [
         {
           es: '💰 Un error común de principiantes: usar All-Purpose para jobs de producción. Cuesta el doble!',
           en: '💰 A common beginner mistake: using All-Purpose for production jobs. Costs double!',
           pt: '💰 Um erro comum de iniciantes: usar All-Purpose para jobs de produção. Custa o dobro!'
+        },
+        {
+          es: '🆓 En Free Edition, no te preocupes por elegir - solo tenés serverless y funciona automáticamente.',
+          en: '🆓 In Free Edition, don\'t worry about choosing - you only have serverless and it works automatically.',
+          pt: '🆓 No Free Edition, não se preocupe em escolher - você só tem serverless e funciona automaticamente.'
         }
       ],
       externalLinks: [
@@ -940,9 +1003,14 @@ df.explain()
       },
       practicalTips: [
         {
-          es: '🚀 En 2024, Photon está incluido en muchos planes. Preguntá a tu admin si lo tienen.',
-          en: '🚀 In 2024, Photon is included in many plans. Ask your admin if you have it.',
-          pt: '🚀 Em 2024, Photon está incluído em muitos planos. Pergunte ao seu admin se vocês têm.'
+          es: '🚀 Photon está incluido automáticamente en serverless compute (Free Edition y planes pagos).',
+          en: '🚀 Photon is automatically included in serverless compute (Free Edition and paid plans).',
+          pt: '🚀 Photon está incluído automaticamente no serverless compute (Free Edition e planos pagos).'
+        },
+        {
+          es: '💡 En Free Edition, todas tus queries SQL ya usan Photon sin configuración adicional.',
+          en: '💡 In Free Edition, all your SQL queries already use Photon without additional configuration.',
+          pt: '💡 No Free Edition, todas as suas queries SQL já usam Photon sem configuração adicional.'
         }
       ],
       externalLinks: [

@@ -1598,7 +1598,6 @@ const Admin: React.FC<AdminProps> = ({ user }) => {
                   className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white"
                 >
                   <option value="gumroad">💳 Gumroad (pago mensual)</option>
-                  <option value="oneinfinite">🔄 OneInfinite (migración)</option>
                   <option value="invited_permanent">🎁 Invitado Permanente</option>
                   <option value="invited_temporary">⏳ Invitado Temporal</option>
                   <option value="invited">🎁 Invitado (legacy)</option>
@@ -1864,104 +1863,49 @@ const Admin: React.FC<AdminProps> = ({ user }) => {
             {/* Overview Tab */}
             {activeTab === 'overview' && stats && (
               <div className="space-y-6">
-                {/* 🔄 OneInfinite Migration Banner */}
-                {(subscriberCounts.paid_oneinfinite > 0 || subscribers.filter(s => s.is_oneinfinite || s.payment_type === 'oneinfinite').length > 0) && (
-                  <div className="bg-gradient-to-r from-cyan-900/50 to-blue-900/50 rounded-xl p-4 border border-cyan-500/50">
-                    <div className="flex items-center justify-between flex-wrap gap-4">
-                      <div className="flex items-center gap-3">
-                        <div className="text-3xl">🔄</div>
-                        <div>
-                          <h3 className="text-cyan-400 font-bold">Migración OneInfinite → Gumroad</h3>
-                          <p className="text-slate-400 text-sm">
-                            <span className="text-cyan-300 font-bold">{subscriberCounts.paid_oneinfinite || subscribers.filter(s => s.is_oneinfinite || s.payment_type === 'oneinfinite').length}</span> suscriptores vencen el <span className="text-white font-bold">1 de Enero 2025</span>
-                          </p>
-                    </div>
-                    </div>
-                      <div className="flex items-center gap-3">
-                        <div className="text-right">
-                          <div className="text-slate-400 text-xs">Días restantes</div>
-                          <div className="text-2xl font-bold text-cyan-400">
-                            {(() => {
-                              const today = new Date();
-                              today.setHours(0, 0, 0, 0); // Set to start of today
-                              const targetDate = new Date('2025-01-02'); // Set to Jan 1 (end of day)
-                              targetDate.setHours(0, 0, 0, 0);
-                              const diffTime = targetDate.getTime() - today.getTime();
-                              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                              return Math.max(0, diffDays);
-                            })()}
-                  </div>
-                        </div>
-                        <button 
-                          onClick={() => {
-                            setUserAccessFilter('oneinfinite');
-                            setActiveTab('users');
-                          }}
-                          className="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                        >
-                          Ver lista →
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
                 {/* 💰 REVENUE PROJECTION - Main Focus */}
                 <div className="bg-gradient-to-br from-emerald-900/30 to-slate-900 rounded-2xl p-6 border border-emerald-500/30">
                   <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                     💰 Proyección de Ingresos Mensuales
                   </h2>
                   <div className="grid md:grid-cols-3 gap-6">
-                    {/* MRR Actual */}
+                    {/* MRR Actual - Todos los usuarios activos × $22 */}
                     <div className="bg-slate-800/50 rounded-xl p-5 border border-slate-700">
                       <div className="text-slate-400 text-sm mb-1">MRR Actual (Pagos)</div>
-                      <div className="text-4xl font-bold text-emerald-400">
-                        ${(() => {
-                          const existingSubs = subscriberCounts.paid_gumroad || 0;
-                          const newSubs = subscriberCounts.paid_oneinfinite || 0;
-                          const invited = subscriberCounts.invited || 0;
-                          return ((existingSubs * 16) + (newSubs * 24) + (invited * 0)).toFixed(0);
-                        })()}
+                      {(() => {
+                        const totalPaid = (subscriberCounts.paid_gumroad || 0) + (subscriberCounts.paid_oneinfinite || 0);
+                        const invited = subscriberCounts.invited || 0;
+                        const mrr = totalPaid * 22;
+                        return (
+                          <>
+                            <div className="text-4xl font-bold text-emerald-400">
+                              ${mrr.toFixed(0)}
+                            </div>
+                            <div className="text-slate-500 text-xs mt-2 space-y-1">
+                              <div className="text-emerald-400">• {totalPaid} suscriptores activos × $22 = ${mrr.toFixed(0)}</div>
+                              <div className="text-purple-400">• {invited} invitados (gratis)</div>
+                            </div>
+                          </>
+                        );
+                      })()}
                     </div>
-                      <div className="text-slate-500 text-xs mt-2 space-y-1">
-                        <div>• {subscriberCounts.paid_gumroad || 0} existentes × $16 = ${((subscriberCounts.paid_gumroad || 0) * 16).toFixed(0)}</div>
-                        <div>• {subscriberCounts.paid_oneinfinite || 0} nuevos × $24 = ${((subscriberCounts.paid_oneinfinite || 0) * 24).toFixed(0)}</div>
-                        <div className="text-purple-400">• {subscriberCounts.invited || 0} invitados (gratis)</div>
-                      </div>
-                  </div>
 
-                    {/* Potencial si Trials Convierten */}
+                    {/* Potencial si Trials Convierten - $22 por trial */}
                     <div className="bg-slate-800/50 rounded-xl p-5 border border-amber-500/30">
                       <div className="text-slate-400 text-sm mb-1">Si Trials Convierten</div>
                       {(() => {
-                        // Trials nuevos: desde 8/12/2024 inclusive → $24
-                        // Trials antiguos: antes del 8/12/2024 → $16
-                        const cutoffDate = new Date('2024-12-08');
-                        cutoffDate.setHours(0, 0, 0, 0);
-                        
                         const activeTrials = subscribers.filter(s => s.is_trial && !s.is_expired);
-                        const newTrials = activeTrials.filter(s => {
-                          const startDate = new Date(s.subscription_start || s.created_at);
-                          startDate.setHours(0, 0, 0, 0);
-                          return startDate >= cutoffDate;
-                        });
-                        const oldTrials = activeTrials.filter(s => {
-                          const startDate = new Date(s.subscription_start || s.created_at);
-                          startDate.setHours(0, 0, 0, 0);
-                          return startDate < cutoffDate;
-                        });
-                        const totalPotential = (newTrials.length * 24) + (oldTrials.length * 16);
+                        const totalPotential = activeTrials.length * 22;
                         
                         return (
                           <>
                             <div className="text-4xl font-bold text-amber-400">
                               +${totalPotential.toFixed(0)}
-                    </div>
+                            </div>
                             <div className="text-slate-500 text-xs mt-2 space-y-1">
-                              <div className="text-emerald-400">• {newTrials.length} nuevos (desde 8/12) × $24 = ${(newTrials.length * 24).toFixed(0)}</div>
-                              <div>• {oldTrials.length} antiguos (antes 8/12) × $16 = ${(oldTrials.length * 16).toFixed(0)}</div>
+                              <div className="text-emerald-400">• {activeTrials.length} trials activos × $22 = ${totalPotential.toFixed(0)}</div>
                               <div className="text-red-400">• {subscriberCounts.trials_expired || 0} trials expirados</div>
-                      </div>
+                            </div>
                           </>
                         );
                       })()}
@@ -1971,27 +1915,11 @@ const Admin: React.FC<AdminProps> = ({ user }) => {
                     <div className="bg-gradient-to-br from-purple-500/20 to-purple-900/20 rounded-xl p-5 border border-purple-500/50">
                       <div className="text-slate-400 text-sm mb-1">MRR Potencial Total</div>
                       {(() => {
-                        const cutoffDate = new Date('2024-12-08');
-                        cutoffDate.setHours(0, 0, 0, 0);
+                        const totalPaid = (subscriberCounts.paid_gumroad || 0) + (subscriberCounts.paid_oneinfinite || 0);
+                        const activeTrials = subscribers.filter(s => s.is_trial && !s.is_expired).length;
                         
-                        const paidGumroad = subscriberCounts.paid_gumroad || 0;
-                        const paidOneinfinite = subscriberCounts.paid_oneinfinite || 0;
-                        const activeTrials = subscribers.filter(s => s.is_trial && !s.is_expired);
-                        
-                        const newTrials = activeTrials.filter(s => {
-                          const startDate = new Date(s.subscription_start || s.created_at);
-                          startDate.setHours(0, 0, 0, 0);
-                          return startDate >= cutoffDate;
-                        }).length;
-                        
-                        const oldTrials = activeTrials.filter(s => {
-                          const startDate = new Date(s.subscription_start || s.created_at);
-                          startDate.setHours(0, 0, 0, 0);
-                          return startDate < cutoffDate;
-                        }).length;
-                        
-                        const mrrActual = (paidGumroad * 16) + (paidOneinfinite * 24);
-                        const mrrPotencial = mrrActual + (newTrials * 24) + (oldTrials * 16);
+                        const mrrActual = totalPaid * 22;
+                        const mrrPotencial = (totalPaid + activeTrials) * 22;
                         
                         return (
                           <>
@@ -2000,7 +1928,7 @@ const Admin: React.FC<AdminProps> = ({ user }) => {
                             </div>
                             <div className="text-slate-500 text-xs mt-2">
                               <div className="text-emerald-400 font-medium">Si todos los trials convierten</div>
-                              <div className="mt-1">MRR actual: ${mrrActual.toFixed(0)} + Trials (8/12+: $24, antes: $16): ${((newTrials * 24) + (oldTrials * 16)).toFixed(0)}</div>
+                              <div className="mt-1">({totalPaid} pagos + {activeTrials} trials) × $22</div>
                             </div>
                           </>
                         );
@@ -2806,12 +2734,6 @@ const Admin: React.FC<AdminProps> = ({ user }) => {
                                 ) : (
                                   <span className="px-2 py-0.5 rounded text-xs font-medium bg-slate-700 text-slate-500">
                                     Sin acceso
-                                  </span>
-                                )}
-                                {/* OneInfinite - Migración */}
-                                {subscribers.some(s => s.email === u.email && (s.is_oneinfinite || s.payment_type === 'oneinfinite')) && (
-                                  <span className="px-2 py-0.5 rounded text-xs font-medium bg-cyan-500/20 text-cyan-400" title="Vence 1 Enero - Migrar a Gumroad">
-                                    🔄 OneInfinite
                                   </span>
                                 )}
                                 {/* Bootcamp */}

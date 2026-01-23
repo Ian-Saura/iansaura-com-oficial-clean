@@ -1,6 +1,10 @@
 /**
  * FASE 6: Unity Catalog
  * Governance centralizada de datos - El sistema nervioso de Databricks
+ * 
+ * ACTUALIZADO: Enero 2026 - ¡Unity Catalog AHORA DISPONIBLE en Free Edition!
+ * - Free Edition incluye Unity Catalog básico (1 workspace, 1 metastore)
+ * - Features avanzadas (cross-workspace, row-level security) requieren plan pago
  */
 
 import { DatabricksPhase } from '../types';
@@ -11,9 +15,9 @@ export const PHASE_6_UNITY_CATALOG: DatabricksPhase = {
   title: { es: 'Unity Catalog', en: 'Unity Catalog', pt: 'Unity Catalog' },
   subtitle: { es: 'Governance y seguridad de datos', en: 'Data governance and security', pt: 'Governance e segurança de dados' },
   description: { 
-    es: 'Unity Catalog es el sistema de governance centralizado de Databricks. Controla accesos, audita uso, rastrea linaje y gestiona datos de forma unificada. Es FUNDAMENTAL para empresas y está en el 30% del examen de certificación.',
-    en: 'Unity Catalog is Databricks centralized governance system. Controls access, audits usage, tracks lineage and manages data in a unified way.',
-    pt: 'Unity Catalog é o sistema de governance centralizado do Databricks. Controla acessos, audita uso, rastreia linhagem e gerencia dados de forma unificada.'
+    es: '🆕 ¡Unity Catalog ahora está disponible en Free Edition! Es el sistema de governance centralizado de Databricks. Controla accesos, audita uso, rastrea linaje y gestiona datos de forma unificada. Free Edition incluye las funcionalidades básicas.',
+    en: '🆕 Unity Catalog is now available in Free Edition! It is Databricks centralized governance system. Controls access, audits usage, tracks lineage and manages data in a unified way. Free Edition includes basic functionality.',
+    pt: '🆕 Unity Catalog agora está disponível no Free Edition! É o sistema de governance centralizado do Databricks. Controla acessos, audita uso, rastreia linhagem e gerencia dados de forma unificada. Free Edition inclui funcionalidades básicas.'
   },
   icon: '🔐',
   color: 'purple',
@@ -140,12 +144,12 @@ SELECT * FROM catalog.schema.my_iceberg_table VERSION AS OF 123;
 | Compartir datos | Difícil | Delta Sharing nativo |
 | ML Models | Separado | Integrado |
 
-### ⚠️ Nota Importante
+### ✅ Unity Catalog en Free Edition (2026)
 
-Unity Catalog **NO está disponible en Community Edition**. Para practicar:
-1. Usa el **trial gratuito de 14 días** de Databricks
-2. Toma los **labs de Databricks Academy** (gratis)
-3. Estudia la documentación para el examen`,
+¡Buenas noticias! Unity Catalog **ahora está disponible en Free Edition**:
+- ✅ Funcionalidad básica de governance incluida
+- ✅ 1 metastore y 1 workspace
+- ⚠️ Features avanzados (cross-workspace, row-level security) requieren plan pago`,
         en: `## Unity Catalog: Databricks Governance Brain
 
 Unity Catalog is Databricks **unified governance solution** that lets you manage data, ML models, and notebooks from one place.
@@ -179,7 +183,7 @@ SELECT * FROM prod.sales.customers;
       practicalTips: [
         { es: '💡 Piensa en Catalog como "ambiente" (dev/staging/prod) y Schema como "base de datos".', en: '💡 Think of Catalog as "environment" (dev/staging/prod) and Schema as "database".', pt: '💡 Pense em Catalog como "ambiente" (dev/staging/prod) e Schema como "banco de dados".' },
         { es: '🎯 El 30% del examen de certificación es sobre Unity Catalog. Estudialo bien.', en: '🎯 30% of the certification exam is about Unity Catalog. Study it well.', pt: '🎯 30% do exame de certificação é sobre Unity Catalog. Estude bem.' },
-        { es: '⚠️ Unity Catalog requiere Databricks Premium o Enterprise, no está en Community Edition.', en: '⚠️ Unity Catalog requires Databricks Premium or Enterprise, not in Community Edition.', pt: '⚠️ Unity Catalog requer Databricks Premium ou Enterprise, não está no Community Edition.' }
+        { es: '🆓 Free Edition: Incluye Unity Catalog básico (1 metastore, 1 workspace). Features avanzados como cross-workspace sharing, row-level security y audit logs detallados requieren plan pago.', en: '🆓 Free Edition: Includes basic Unity Catalog (1 metastore, 1 workspace). Advanced features like cross-workspace sharing, row-level security and detailed audit logs require paid plan.', pt: '🆓 Free Edition: Inclui Unity Catalog básico (1 metastore, 1 workspace). Features avançados como cross-workspace sharing, row-level security e audit logs detalhados requerem plano pago.' }
       ],
       externalLinks: [
         { title: 'Unity Catalog Overview', url: 'https://docs.databricks.com/data-governance/unity-catalog/index.html', type: 'docs' },

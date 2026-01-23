@@ -291,7 +291,6 @@ const Members: React.FC<MembersProps> = ({ user }) => {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showQuickWin, setShowQuickWin] = useState(false);
   const [showLevel0CompleteModal, setShowLevel0CompleteModal] = useState(false);
-  const [showOIMigrationModal, setShowOIMigrationModal] = useState(false);
   const [savedRoadmapPosition, setSavedRoadmapPosition] = useState<RoadmapPosition | null>(null);
   const [showMoreDropdown, setShowMoreDropdown] = useState(false);
   const moreDropdownRef = useRef<HTMLDivElement>(null);
@@ -330,14 +329,6 @@ const Members: React.FC<MembersProps> = ({ user }) => {
     setSavedRoadmapPosition({ ...pos, timestamp: Date.now() });
   }, []);
   
-  // Show OI Migration modal if user needs to migrate from OneInfinite
-  useEffect(() => {
-    if ((user as any)?.oi_migrated) {
-      setShowOIMigrationModal(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [(user as any)?.oi_migrated]);
-  
   // Refresh subscription status on mount to ensure we have the latest data
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [subscriptionChecked, setSubscriptionChecked] = useState(false);
@@ -362,7 +353,6 @@ const Members: React.FC<MembersProps> = ({ user }) => {
                 subscribed: data.subscribed || false,
                 bootcamp_access: data.bootcamp_access || false,
                 is_trial: data.is_trial || false,
-                is_oneinfinite_trial: data.is_oneinfinite_trial || false,
                 trial_ends: data.trial_ends || null,
                 trial_days_left: data.trial_days_left || null,
               };
@@ -784,67 +774,6 @@ const Members: React.FC<MembersProps> = ({ user }) => {
         </div>
       )}
 
-      {/* OneInfinite Migration Modal */}
-      {showOIMigrationModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div 
-            className="absolute inset-0 bg-black/90 backdrop-blur-sm"
-          />
-          <div className="relative bg-gradient-to-br from-slate-900 via-orange-900/20 to-slate-900 rounded-2xl border border-orange-500/30 p-8 max-w-lg w-full shadow-2xl animate-in fade-in zoom-in duration-300">
-            {/* Warning icon */}
-            <div className="absolute -top-10 left-1/2 -translate-x-1/2 text-5xl">
-              ⚠️
-            </div>
-            
-            {/* Content */}
-            <div className="text-center space-y-4 mt-4">
-              <h2 className="text-2xl font-bold text-white">
-                Tu suscripción anterior fue cancelada
-              </h2>
-              <p className="text-lg text-orange-300">
-                Debido a problemas con OneInfinite
-              </p>
-              
-              <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700 my-6 text-left">
-                <p className="text-slate-300 text-sm leading-relaxed mb-3">
-                  OneInfinite (nuestra plataforma de pagos anterior) dejó de funcionar correctamente, 
-                  por lo que tu suscripción fue cancelada automáticamente.
-                </p>
-                <p className="text-slate-300 text-sm leading-relaxed">
-                  <span className="text-emerald-400 font-medium">¡Buenas noticias!</span> Migramos a Gumroad, una plataforma 
-                  más segura y confiable. <span className="text-emerald-400 font-bold">Suscribite de nuevo para continuar</span> 
-                  donde lo dejaste.
-                </p>
-              </div>
-              
-              {/* Benefits */}
-              <div className="grid grid-cols-2 gap-3 text-sm mb-4">
-                <div className="bg-slate-800/30 rounded-lg p-3 border border-slate-700/50">
-                  <div className="text-emerald-400 font-medium">✅ Solo $30/mes</div>
-                  <div className="text-slate-500 text-xs">Cancela cuando quieras</div>
-                </div>
-                <div className="bg-slate-800/30 rounded-lg p-3 border border-slate-700/50">
-                  <div className="text-emerald-400 font-medium">✅ Tu progreso</div>
-                  <div className="text-slate-500 text-xs">Sigue guardado</div>
-                </div>
-              </div>
-              
-              {/* CTA */}
-              <a
-                href={(user as any)?.migration_link || `https://iansaura.com/api/subscribe.php${user?.email ? `?email=${encodeURIComponent(user.email)}` : ''}`}
-                className="block w-full py-4 px-6 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-orange-500/30"
-              >
-                🔄 Suscribirme ahora - $30/mes
-              </a>
-              
-              <p className="text-xs text-slate-500">
-                Usamos Gumroad, una plataforma de pagos segura y confiable.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Global Search Modal */}
       <GlobalSearch 
         isOpen={showSearch} 
@@ -1253,7 +1182,7 @@ const Members: React.FC<MembersProps> = ({ user }) => {
 
         {/* Mobile Bottom Navigation - Fixed (5 items max) */}
         <div className="fixed bottom-0 left-0 right-0 bg-slate-950/98 backdrop-blur-md border-t border-slate-800 z-50 md:hidden safe-area-bottom">
-          <nav className="flex justify-around items-center py-2 px-1">
+          <nav className="flex justify-around items-center py-1 px-1">
             {[
               { id: 'dashboard', icon: TrendingUp, label: 'Home', locked: false },
               { id: 'roadmap', icon: Map, label: 'Roadmap', locked: false },
@@ -1272,16 +1201,16 @@ const Members: React.FC<MembersProps> = ({ user }) => {
                     setShowMoreDropdown(false);
                   }
                 }}
-                className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg transition-all relative ${
+                className={`flex flex-col items-center justify-center gap-0.5 min-w-[60px] min-h-[52px] px-2 py-2 rounded-lg transition-all relative touch-manipulation ${
                   tab.locked
                     ? 'text-slate-600 opacity-60'
                     : ('isMore' in tab && tab.isMore)
                       ? (showMoreDropdown || isSecondaryTabActive)
                         ? 'text-emerald-400 bg-emerald-500/10'
-                        : 'text-slate-500'
+                        : 'text-slate-500 active:text-emerald-400'
                       : activeTab === tab.id
                         ? 'text-emerald-400 bg-emerald-500/10'
-                        : 'text-slate-500'
+                        : 'text-slate-500 active:text-emerald-400'
                 }`}
               >
                 {tab.locked ? <Lock className="w-5 h-5" /> : <tab.icon className="w-5 h-5" />}
@@ -1293,39 +1222,50 @@ const Members: React.FC<MembersProps> = ({ user }) => {
 
           {/* Mobile More Dropdown */}
           {showMoreDropdown && (
-            <div className="absolute bottom-full left-0 right-0 bg-slate-900 border-t border-slate-700 rounded-t-2xl shadow-xl pb-2 animate-in slide-in-from-bottom duration-200">
-              <div className="p-4 grid grid-cols-4 gap-3">
-                {[
-                  { id: 'proyectos', icon: Target, label: t({ es: 'Proyectos', en: 'Projects', pt: 'Projetos' }), locked: isFreeUser },
-                  { id: 'datasets', icon: Database, label: 'Datasets', locked: isFreeUser },
-                  { id: 'grabaciones', icon: Video, label: 'Videos', locked: isFreeUser },
-                  { id: 'tienda', icon: ShoppingBag, label: t({ es: 'Tienda', en: 'Shop', pt: 'Loja' }), locked: isFreeUser, highlight: true },
-                ].map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => {
-                      setActiveTab(tab.id as any);
-                      setSearchParams({ tab: tab.id });
-                      setShowMoreDropdown(false);
-                    }}
-                    className={`flex flex-col items-center gap-1 p-3 rounded-xl transition-all ${
-                      tab.locked
-                        ? 'text-slate-600 bg-slate-800/30'
-                        : activeTab === tab.id
-                          ? 'text-emerald-400 bg-emerald-500/20'
-                          : 'highlight' in tab && tab.highlight
-                            ? 'text-yellow-400 bg-slate-800 hover:bg-yellow-500/10'
-                            : 'text-slate-400 bg-slate-800 hover:bg-slate-700'
-                    }`}
-                  >
-                    {tab.locked ? <Lock className="w-6 h-6" /> : <tab.icon className="w-6 h-6" />}
-                    <span className="text-[10px] font-medium">{tab.label}</span>
-                    {tab.locked && <span className="text-[8px]">🔒</span>}
-                    {'highlight' in tab && tab.highlight && !tab.locked && <span className="text-[8px]">💎</span>}
-                  </button>
-                ))}
+            <>
+              {/* Backdrop to close dropdown */}
+              <div 
+                className="fixed inset-0 z-40" 
+                onClick={() => setShowMoreDropdown(false)}
+              />
+              <div className="absolute bottom-full left-0 right-0 bg-slate-900 border-t border-slate-700 rounded-t-2xl shadow-xl pb-2 z-50 animate-in slide-in-from-bottom duration-200">
+                {/* Handle bar for visual feedback */}
+                <div className="flex justify-center py-2">
+                  <div className="w-10 h-1 bg-slate-700 rounded-full" />
+                </div>
+                <div className="px-4 pb-4 grid grid-cols-2 gap-3">
+                  {[
+                    { id: 'proyectos', icon: Target, label: t({ es: 'Proyectos', en: 'Projects', pt: 'Projetos' }), locked: isFreeUser },
+                    { id: 'datasets', icon: Database, label: 'Datasets', locked: isFreeUser },
+                    { id: 'grabaciones', icon: Video, label: 'Videos', locked: isFreeUser },
+                    { id: 'tienda', icon: ShoppingBag, label: t({ es: 'Tienda', en: 'Shop', pt: 'Loja' }), locked: isFreeUser, highlight: true },
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => {
+                        setActiveTab(tab.id as any);
+                        setSearchParams({ tab: tab.id });
+                        setShowMoreDropdown(false);
+                      }}
+                      className={`flex items-center gap-3 p-4 rounded-xl transition-all min-h-[56px] touch-manipulation ${
+                        tab.locked
+                          ? 'text-slate-600 bg-slate-800/30'
+                          : activeTab === tab.id
+                            ? 'text-emerald-400 bg-emerald-500/20'
+                            : 'highlight' in tab && tab.highlight
+                              ? 'text-yellow-400 bg-slate-800 active:bg-yellow-500/20'
+                              : 'text-slate-400 bg-slate-800 active:bg-slate-700'
+                      }`}
+                    >
+                      {tab.locked ? <Lock className="w-6 h-6" /> : <tab.icon className="w-6 h-6" />}
+                      <span className="text-sm font-medium">{tab.label}</span>
+                      {tab.locked && <span className="text-xs ml-auto">🔒</span>}
+                      {'highlight' in tab && tab.highlight && !tab.locked && <span className="text-xs ml-auto">💎</span>}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            </>
           )}
         </div>
 

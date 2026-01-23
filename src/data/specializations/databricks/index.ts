@@ -4,6 +4,13 @@
  * 
  * Especialización completa de Databricks para la Academia de Ian Saura
  * 
+ * ACTUALIZADO: Enero 2026 - Free Edition (reemplaza Community Edition)
+ * - Serverless compute (sin crear clusters)
+ * - Unity Catalog básico incluido
+ * - Delta Live Tables disponible
+ * - Databricks Assistant (IA) incluido
+ * - Solo Python y SQL (no R/Scala en Free Edition)
+ * 
  * Estructura:
  * - 12 Fases (100+ pasos)
  * - 20 Ejercicios prácticos
@@ -79,33 +86,33 @@ export const DATABRICKS_PREVIEW = {
   highlights: {
     es: [
       '✅ 12 fases con 100+ pasos detallados',
-      '✅ PySpark, Delta Lake: practica en Community Edition (gratis)',
-      '✅ Unity Catalog, DLT: teoría + labs de Databricks Academy',
+      '✅ 🆓 PySpark, Delta Lake, Unity Catalog, DLT: TODO gratis en Free Edition',
+      '✅ 🚀 Serverless compute + Databricks Assistant (IA) incluidos',
       '✅ 5 notebooks descargables (.dbc) listos para importar',
       '✅ 🎯 Simulador de examen DE Associate (45 preguntas)',
       '✅ 🏆 Certificado verificable + Badge LinkedIn',
       '✅ 4 casos de uso con datasets de la Academia (E-commerce, Finanzas, IoT)',
-      '✅ Trilingüe: ES, EN, PT'
+      '✅ Trilingüe: ES, EN, PT | Actualizado 2026'
     ],
     en: [
       '✅ 12 phases with 100+ detailed steps',
-      '✅ PySpark, Delta Lake: practice in Community Edition (free)',
-      '✅ Unity Catalog, DLT: theory + Databricks Academy labs',
+      '✅ 🆓 PySpark, Delta Lake, Unity Catalog, DLT: ALL free in Free Edition',
+      '✅ 🚀 Serverless compute + Databricks Assistant (AI) included',
       '✅ 5 downloadable notebooks (.dbc) ready to import',
       '✅ 🎯 DE Associate exam simulator (45 questions)',
       '✅ 🏆 Verifiable certificate + LinkedIn Badge',
       '✅ 4 use cases with Academy datasets (E-commerce, Finance, IoT)',
-      '✅ Trilingual: ES, EN, PT'
+      '✅ Trilingual: ES, EN, PT | Updated 2026'
     ],
     pt: [
       '✅ 12 fases com 100+ passos detalhados',
-      '✅ PySpark, Delta Lake: pratique no Community Edition (grátis)',
-      '✅ Unity Catalog, DLT: teoria + labs do Databricks Academy',
+      '✅ 🆓 PySpark, Delta Lake, Unity Catalog, DLT: TUDO grátis no Free Edition',
+      '✅ 🚀 Serverless compute + Databricks Assistant (IA) incluídos',
       '✅ 5 notebooks baixáveis (.dbc) prontos para importar',
       '✅ 🎯 Simulador de exame DE Associate (45 perguntas)',
       '✅ 🏆 Certificado verificável + Badge LinkedIn',
       '✅ 4 casos de uso com datasets da Academia (E-commerce, Finanças, IoT)',
-      '✅ Trilíngue: ES, EN, PT'
+      '✅ Trilíngue: ES, EN, PT | Atualizado 2026'
     ]
   },
   technologies: [

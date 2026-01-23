@@ -1,6 +1,12 @@
 /**
  * FASE 1: Setup & Fundamentos de Databricks
- * 10 pasos detallados para comenzar con Databricks
+ * 10 pasos detallados para comenzar con Databricks Free Edition (2026)
+ * 
+ * ACTUALIZADO: Enero 2026 - Migración de Community Edition a Free Edition
+ * - Serverless compute (no más clusters manuales)
+ * - Databricks Assistant incluido
+ * - Unity Catalog básico disponible
+ * - Solo Python y SQL (no R ni Scala)
  */
 
 import { DatabricksPhase } from '../types';
@@ -19,9 +25,9 @@ export const PHASE_1_SETUP: DatabricksPhase = {
     pt: 'Seu primeiro contato com Databricks'
   },
   description: {
-    es: 'Aprenderás a crear tu cuenta gratuita en Databricks Community Edition, entender la arquitectura básica, y ejecutar tu primer notebook. Esta fase sienta las bases para todo lo que viene.',
-    en: 'You will learn to create your free account on Databricks Community Edition, understand the basic architecture, and run your first notebook. This phase lays the foundation for everything that follows.',
-    pt: 'Você aprenderá a criar sua conta gratuita no Databricks Community Edition, entender a arquitetura básica e executar seu primeiro notebook. Esta fase estabelece as bases para tudo o que vem a seguir.'
+    es: 'Aprenderás a crear tu cuenta gratuita en Databricks Free Edition, entender la arquitectura básica con serverless compute, y ejecutar tu primer notebook con la ayuda del Databricks Assistant. Esta fase sienta las bases para todo lo que viene.',
+    en: 'You will learn to create your free account on Databricks Free Edition, understand the basic architecture with serverless compute, and run your first notebook with the help of Databricks Assistant. This phase lays the foundation for everything that follows.',
+    pt: 'Você aprenderá a criar sua conta gratuita no Databricks Free Edition, entender a arquitetura básica com serverless compute, e executar seu primeiro notebook com a ajuda do Databricks Assistant. Esta fase estabelece as bases para tudo o que vem a seguir.'
   },
   icon: '🚀',
   color: 'emerald',
@@ -131,14 +137,19 @@ Databricks introduziu o conceito de **Lakehouse**, que combina:
       },
       practicalTips: [
         {
-          es: '💡 Databricks Community Edition es GRATIS y suficiente para aprender todo lo básico e intermedio.',
-          en: '💡 Databricks Community Edition is FREE and sufficient to learn all basic and intermediate concepts.',
-          pt: '💡 Databricks Community Edition é GRATUITO e suficiente para aprender todos os conceitos básicos e intermediários.'
+          es: '💡 Databricks Free Edition es GRATIS y suficiente para aprender todo lo básico e intermedio. Incluye serverless compute, Delta Lake, Unity Catalog básico y Databricks Assistant.',
+          en: '💡 Databricks Free Edition is FREE and sufficient to learn all basic and intermediate concepts. Includes serverless compute, Delta Lake, basic Unity Catalog and Databricks Assistant.',
+          pt: '💡 Databricks Free Edition é GRATUITO e suficiente para aprender todos os conceitos básicos e intermediários. Inclui serverless compute, Delta Lake, Unity Catalog básico e Databricks Assistant.'
         },
         {
           es: '🎯 Agregá "Databricks" a tu LinkedIn ahora mismo. Es un keyword que atrae recruiters.',
           en: '🎯 Add "Databricks" to your LinkedIn right now. It\'s a keyword that attracts recruiters.',
           pt: '🎯 Adicione "Databricks" ao seu LinkedIn agora mesmo. É uma keyword que atrai recrutadores.'
+        },
+        {
+          es: '🤖 El Databricks Assistant (IA) está incluido gratis y te ayuda a escribir código, explicar errores y optimizar queries.',
+          en: '🤖 Databricks Assistant (AI) is included for free and helps you write code, explain errors and optimize queries.',
+          pt: '🤖 O Databricks Assistant (IA) está incluído gratuitamente e ajuda a escrever código, explicar erros e otimizar queries.'
         }
       ],
       externalLinks: [
@@ -153,9 +164,9 @@ Databricks introduziu o conceito de **Lakehouse**, que combina:
           type: 'docs'
         },
         {
-          title: 'The Data Lakehouse Architecture',
-          url: 'https://www.databricks.com/product/data-lakehouse',
-          type: 'article'
+          title: 'Databricks Free Edition',
+          url: 'https://www.databricks.com/try-databricks-free',
+          type: 'tool'
         }
       ],
       checkpoint: {
@@ -170,121 +181,151 @@ Databricks introduziu o conceito de **Lakehouse**, que combina:
     {
       id: 'db-1-2',
       title: {
-        es: 'Crear cuenta en Databricks Community Edition',
-        en: 'Create Databricks Community Edition account',
-        pt: 'Criar conta no Databricks Community Edition'
+        es: 'Crear cuenta en Databricks Free Edition',
+        en: 'Create Databricks Free Edition account',
+        pt: 'Criar conta no Databricks Free Edition'
       },
       description: {
-        es: 'Registrate gratis y configurá tu primer workspace de Databricks.',
-        en: 'Register for free and set up your first Databricks workspace.',
-        pt: 'Registre-se gratuitamente e configure seu primeiro workspace do Databricks.'
+        es: 'Registrate gratis y configurá tu primer workspace de Databricks con serverless compute.',
+        en: 'Register for free and set up your first Databricks workspace with serverless compute.',
+        pt: 'Registre-se gratuitamente e configure seu primeiro workspace do Databricks com serverless compute.'
       },
       theory: {
-        es: `## Databricks Community Edition
+        es: `## Databricks Free Edition (2026)
 
-**Community Edition** es la versión gratuita de Databricks, perfecta para aprender:
+**Free Edition** es la versión gratuita de Databricks, perfecta para aprender. Reemplaza a la antigua Community Edition con mejoras significativas:
 
 ### Qué incluye (GRATIS):
 - ✅ Workspace completo
 - ✅ Notebooks ilimitados
-- ✅ Cluster de 15GB RAM
-- ✅ Delta Lake
-- ✅ MLflow básico
+- ✅ **Serverless compute** (sin crear clusters manualmente)
+- ✅ Delta Lake completo
+- ✅ **Unity Catalog básico** (governance)
+- ✅ **Databricks Assistant** (IA para coding)
+- ✅ Delta Live Tables (DLT)
+- ✅ MLflow
 - ✅ Datasets de ejemplo
+- ✅ Acceso a Databricks Academy (cursos gratis)
 
-### Qué NO incluye:
-- ❌ Unity Catalog (governance)
-- ❌ Jobs scheduling avanzado
-- ❌ Clusters grandes
+### Qué NO incluye (requiere plan pago):
+- ❌ R y Scala (solo Python y SQL)
+- ❌ Clusters personalizados/GPU
+- ❌ Múltiples workspaces
+- ❌ SSO/SCIM empresarial
+- ❌ Acceso a internet sin restricciones
 - ❌ Soporte enterprise
 
 ### Paso a paso para crear la cuenta:
 
-1. **Ir a**: https://community.cloud.databricks.com/
-2. **Click en "Get started for free"**
+1. **Ir a**: https://www.databricks.com/try-databricks-free
+2. **Click en "Start for free"**
 3. **Completar el formulario**:
    - Email (usá uno profesional)
    - Nombre completo
-   - Empresa (podés poner "Learning")
    - País
 4. **Verificar email**
-5. **Crear password** (mínimo 8 caracteres, 1 número, 1 mayúscula)
-6. **¡Listo!** Ya tenés tu workspace
+5. **Crear password**
+6. **¡Listo!** Ya tenés tu workspace con serverless compute
 
-### Tips importantes:
-- El cluster se apaga automáticamente después de 2 horas de inactividad
-- Los datos persisten aunque el cluster esté apagado
-- Podés tener múltiples notebooks`,
-        en: `## Databricks Community Edition
+### Diferencias clave vs Community Edition (antigua):
 
-**Community Edition** is the free version of Databricks, perfect for learning:
+| Aspecto | Community Edition (vieja) | Free Edition (nueva) |
+|---------|--------------------------|---------------------|
+| Compute | Cluster 15GB manual | Serverless automático |
+| Unity Catalog | No disponible | Disponible (básico) |
+| DLT | No disponible | Disponible |
+| AI Assistant | No disponible | Incluido |
+| Lenguajes | Python, SQL, R, Scala | Solo Python y SQL |`,
+        en: `## Databricks Free Edition (2026)
+
+**Free Edition** is the free version of Databricks, perfect for learning. It replaces the old Community Edition with significant improvements:
 
 ### What's included (FREE):
 - ✅ Full workspace
 - ✅ Unlimited notebooks
-- ✅ 15GB RAM cluster
-- ✅ Delta Lake
-- ✅ Basic MLflow
+- ✅ **Serverless compute** (no manual cluster creation)
+- ✅ Complete Delta Lake
+- ✅ **Basic Unity Catalog** (governance)
+- ✅ **Databricks Assistant** (AI for coding)
+- ✅ Delta Live Tables (DLT)
+- ✅ MLflow
 - ✅ Sample datasets
+- ✅ Databricks Academy access (free courses)
 
-### What's NOT included:
-- ❌ Unity Catalog (governance)
-- ❌ Advanced job scheduling
-- ❌ Large clusters
+### What's NOT included (requires paid plan):
+- ❌ R and Scala (Python and SQL only)
+- ❌ Custom clusters/GPU
+- ❌ Multiple workspaces
+- ❌ Enterprise SSO/SCIM
+- ❌ Unrestricted internet access
 - ❌ Enterprise support
 
 ### Step by step to create account:
 
-1. **Go to**: https://community.cloud.databricks.com/
-2. **Click "Get started for free"**
+1. **Go to**: https://www.databricks.com/try-databricks-free
+2. **Click "Start for free"**
 3. **Fill the form**:
    - Email (use a professional one)
    - Full name
-   - Company (you can put "Learning")
    - Country
 4. **Verify email**
-5. **Create password** (min 8 chars, 1 number, 1 uppercase)
-6. **Done!** You have your workspace
+5. **Create password**
+6. **Done!** You have your workspace with serverless compute
 
-### Important tips:
-- The cluster auto-shuts down after 2 hours of inactivity
-- Data persists even when cluster is off
-- You can have multiple notebooks`,
-        pt: `## Databricks Community Edition
+### Key differences vs Community Edition (old):
 
-**Community Edition** é a versão gratuita do Databricks, perfeita para aprender:
+| Aspect | Community Edition (old) | Free Edition (new) |
+|--------|------------------------|-------------------|
+| Compute | 15GB manual cluster | Automatic serverless |
+| Unity Catalog | Not available | Available (basic) |
+| DLT | Not available | Available |
+| AI Assistant | Not available | Included |
+| Languages | Python, SQL, R, Scala | Python and SQL only |`,
+        pt: `## Databricks Free Edition (2026)
+
+**Free Edition** é a versão gratuita do Databricks, perfeita para aprender. Substitui o antigo Community Edition com melhorias significativas:
 
 ### O que inclui (GRÁTIS):
 - ✅ Workspace completo
 - ✅ Notebooks ilimitados
-- ✅ Cluster de 15GB RAM
-- ✅ Delta Lake
-- ✅ MLflow básico
+- ✅ **Serverless compute** (sem criar clusters manualmente)
+- ✅ Delta Lake completo
+- ✅ **Unity Catalog básico** (governance)
+- ✅ **Databricks Assistant** (IA para coding)
+- ✅ Delta Live Tables (DLT)
+- ✅ MLflow
 - ✅ Datasets de exemplo
+- ✅ Acesso ao Databricks Academy (cursos grátis)
 
-### O que NÃO inclui:
-- ❌ Unity Catalog (governance)
-- ❌ Jobs scheduling avançado
-- ❌ Clusters grandes
+### O que NÃO inclui (requer plano pago):
+- ❌ R e Scala (apenas Python e SQL)
+- ❌ Clusters personalizados/GPU
+- ❌ Múltiplos workspaces
+- ❌ SSO/SCIM empresarial
+- ❌ Acesso à internet sem restrições
 - ❌ Suporte enterprise
 
 ### Passo a passo para criar conta:
 
-1. **Ir para**: https://community.cloud.databricks.com/
-2. **Clicar em "Get started for free"**
+1. **Ir para**: https://www.databricks.com/try-databricks-free
+2. **Clicar em "Start for free"**
 3. **Preencher o formulário**:
    - Email (use um profissional)
    - Nome completo
-   - Empresa (pode colocar "Learning")
    - País
 4. **Verificar email**
-5. **Criar senha** (mín 8 caracteres, 1 número, 1 maiúscula)
-6. **Pronto!** Você tem seu workspace
+5. **Criar senha**
+6. **Pronto!** Você tem seu workspace com serverless compute
 
-### Dicas importantes:
-- O cluster desliga automaticamente após 2 horas de inatividade
-- Os dados persistem mesmo com o cluster desligado
-- Você pode ter múltiplos notebooks`
+### Diferenças chave vs Community Edition (antigo):
+
+| Aspecto | Community Edition (antigo) | Free Edition (novo) |
+|---------|---------------------------|-------------------|
+| Compute | Cluster 15GB manual | Serverless automático |
+| Unity Catalog | Não disponível | Disponível (básico) |
+| DLT | Não disponível | Disponível |
+| AI Assistant | Não disponível | Incluído |
+| Linguagens | Python, SQL, R, Scala | Apenas Python e SQL |`
       },
       practicalTips: [
         {
@@ -296,17 +337,27 @@ Databricks introduziu o conceito de **Lakehouse**, que combina:
           es: '💡 Guardá tus credenciales en un password manager. Las vas a necesitar seguido.',
           en: '💡 Save your credentials in a password manager. You\'ll need them often.',
           pt: '💡 Salve suas credenciais em um gerenciador de senhas. Você vai precisar delas frequentemente.'
+        },
+        {
+          es: '🚀 No necesitás crear un cluster - el serverless compute se activa automáticamente cuando ejecutás código.',
+          en: '🚀 You don\'t need to create a cluster - serverless compute activates automatically when you run code.',
+          pt: '🚀 Você não precisa criar um cluster - o serverless compute ativa automaticamente quando você executa código.'
         }
       ],
       externalLinks: [
         {
-          title: 'Databricks Community Edition Signup',
-          url: 'https://community.cloud.databricks.com/',
+          title: 'Databricks Free Edition Signup',
+          url: 'https://www.databricks.com/try-databricks-free',
           type: 'tool'
         },
         {
-          title: 'Community Edition vs Full Version',
-          url: 'https://docs.databricks.com/getting-started/community-edition.html',
+          title: 'Free Edition Documentation',
+          url: 'https://docs.databricks.com/en/getting-started/free-edition.html',
+          type: 'docs'
+        },
+        {
+          title: 'Free Edition Limitations',
+          url: 'https://docs.databricks.com/en/getting-started/free-edition-limitations.html',
           type: 'docs'
         }
       ],
@@ -332,15 +383,15 @@ Databricks introduziu o conceito de **Lakehouse**, que combina:
         pt: 'Conheça cada seção do workspace e entenda para que serve cada uma.'
       },
       theory: {
-        es: `## El Workspace de Databricks
+        es: `## El Workspace de Databricks Free Edition
 
-Cuando entrás a Databricks, ves una interfaz con varios elementos. Vamos a recorrerlos:
+Cuando entrás a Databricks, ves una interfaz moderna con varios elementos. Vamos a recorrerlos:
 
 ### 🏠 Home (Inicio)
 Tu página principal. Muestra:
 - Notebooks recientes
-- Clusters activos
-- Accesos rápidos
+- Accesos rápidos a recursos
+- Tutoriales y guías de inicio
 
 ### 📁 Workspace
 El "explorador de archivos" de Databricks:
@@ -348,17 +399,19 @@ El "explorador de archivos" de Databricks:
 - **Shared/**: Carpetas compartidas con el equipo
 - **Repos/**: Integración con Git
 
-### 🔧 Compute (Clusters)
-Donde creás y gestionás clusters:
-- Ver clusters activos
-- Crear nuevos clusters
-- Configurar recursos
+### 🔧 Compute
+En Free Edition, el compute es **serverless**:
+- Se activa automáticamente al ejecutar código
+- No necesitás crear ni gestionar clusters
+- Los recursos se asignan según demanda
 
-### 📊 Data
-Explora tus datos:
-- **Databases**: Bases de datos Hive
-- **Tables**: Tablas registradas
-- **DBFS**: Databricks File System
+> 💡 **Nota**: En planes pagos, aquí se crean clusters personalizados.
+
+### 📊 Catalog (Unity Catalog)
+Explora y gestiona tus datos:
+- **Catalogs**: Contenedores de nivel superior
+- **Schemas**: Agrupan tablas relacionadas
+- **Tables/Views**: Tus datos
 
 ### 🔄 Workflows (Jobs)
 Automatización y scheduling:
@@ -366,30 +419,33 @@ Automatización y scheduling:
 - Ver ejecuciones
 - Configurar triggers
 
+### 🤖 Databricks Assistant
+El asistente de IA integrado:
+- Ayuda a escribir código
+- Explica errores
+- Optimiza queries
+- Responde preguntas sobre Databricks
+
 ### 🧪 Machine Learning
 Herramientas de ML:
 - Experiments (MLflow)
 - Models (Registry)
-- Feature Store
 
 ### ⚙️ Settings
-Configuración:
-- Admin Console
-- User Settings
-- Workspace Settings
+Configuración de tu cuenta y workspace
 
 ### Navegación por teclado:
-- \`Ctrl + Shift + P\`: Command palette
+- \`Ctrl + Shift + P\` o \`Cmd + Shift + P\`: Command palette
 - \`Ctrl + Alt + N\`: Nuevo notebook`,
-        en: `## The Databricks Workspace
+        en: `## The Databricks Free Edition Workspace
 
-When you enter Databricks, you see an interface with several elements. Let's go through them:
+When you enter Databricks, you see a modern interface with several elements. Let's go through them:
 
 ### 🏠 Home
 Your main page. Shows:
 - Recent notebooks
-- Active clusters
-- Quick access
+- Quick access to resources
+- Tutorials and getting started guides
 
 ### 📁 Workspace
 Databricks "file explorer":
@@ -397,17 +453,19 @@ Databricks "file explorer":
 - **Shared/**: Folders shared with team
 - **Repos/**: Git integration
 
-### 🔧 Compute (Clusters)
-Where you create and manage clusters:
-- View active clusters
-- Create new clusters
-- Configure resources
+### 🔧 Compute
+In Free Edition, compute is **serverless**:
+- Activates automatically when you run code
+- No need to create or manage clusters
+- Resources allocated on demand
 
-### 📊 Data
-Explore your data:
-- **Databases**: Hive databases
-- **Tables**: Registered tables
-- **DBFS**: Databricks File System
+> 💡 **Note**: In paid plans, custom clusters are created here.
+
+### 📊 Catalog (Unity Catalog)
+Explore and manage your data:
+- **Catalogs**: Top-level containers
+- **Schemas**: Group related tables
+- **Tables/Views**: Your data
 
 ### 🔄 Workflows (Jobs)
 Automation and scheduling:
@@ -415,30 +473,33 @@ Automation and scheduling:
 - View executions
 - Configure triggers
 
+### 🤖 Databricks Assistant
+The integrated AI assistant:
+- Helps write code
+- Explains errors
+- Optimizes queries
+- Answers questions about Databricks
+
 ### 🧪 Machine Learning
 ML tools:
 - Experiments (MLflow)
 - Models (Registry)
-- Feature Store
 
 ### ⚙️ Settings
-Configuration:
-- Admin Console
-- User Settings
-- Workspace Settings
+Account and workspace configuration
 
 ### Keyboard navigation:
-- \`Ctrl + Shift + P\`: Command palette
+- \`Ctrl + Shift + P\` or \`Cmd + Shift + P\`: Command palette
 - \`Ctrl + Alt + N\`: New notebook`,
-        pt: `## O Workspace do Databricks
+        pt: `## O Workspace do Databricks Free Edition
 
-Quando você entra no Databricks, vê uma interface com vários elementos. Vamos percorrê-los:
+Quando você entra no Databricks, vê uma interface moderna com vários elementos. Vamos percorrê-los:
 
 ### 🏠 Home (Início)
 Sua página principal. Mostra:
 - Notebooks recentes
-- Clusters ativos
-- Acessos rápidos
+- Acessos rápidos a recursos
+- Tutoriais e guias de início
 
 ### 📁 Workspace
 O "explorador de arquivos" do Databricks:
@@ -446,17 +507,19 @@ O "explorador de arquivos" do Databricks:
 - **Shared/**: Pastas compartilhadas com a equipe
 - **Repos/**: Integração com Git
 
-### 🔧 Compute (Clusters)
-Onde você cria e gerencia clusters:
-- Ver clusters ativos
-- Criar novos clusters
-- Configurar recursos
+### 🔧 Compute
+No Free Edition, o compute é **serverless**:
+- Ativa automaticamente ao executar código
+- Não precisa criar nem gerenciar clusters
+- Recursos alocados sob demanda
 
-### 📊 Data
-Explore seus dados:
-- **Databases**: Bancos de dados Hive
-- **Tables**: Tabelas registradas
-- **DBFS**: Databricks File System
+> 💡 **Nota**: Em planos pagos, clusters personalizados são criados aqui.
+
+### 📊 Catalog (Unity Catalog)
+Explore e gerencie seus dados:
+- **Catalogs**: Containers de nível superior
+- **Schemas**: Agrupam tabelas relacionadas
+- **Tables/Views**: Seus dados
 
 ### 🔄 Workflows (Jobs)
 Automação e scheduling:
@@ -464,27 +527,30 @@ Automação e scheduling:
 - Ver execuções
 - Configurar triggers
 
+### 🤖 Databricks Assistant
+O assistente de IA integrado:
+- Ajuda a escrever código
+- Explica erros
+- Otimiza queries
+- Responde perguntas sobre Databricks
+
 ### 🧪 Machine Learning
 Ferramentas de ML:
 - Experiments (MLflow)
 - Models (Registry)
-- Feature Store
 
 ### ⚙️ Settings
-Configuração:
-- Admin Console
-- User Settings
-- Workspace Settings
+Configuração da sua conta e workspace
 
 ### Navegação por teclado:
-- \`Ctrl + Shift + P\`: Command palette
+- \`Ctrl + Shift + P\` ou \`Cmd + Shift + P\`: Command palette
 - \`Ctrl + Alt + N\`: Novo notebook`
       },
       practicalTips: [
         {
-          es: '🎯 Explorá cada sección sin miedo. No podés romper nada en Community Edition.',
-          en: '🎯 Explore each section without fear. You can\'t break anything in Community Edition.',
-          pt: '🎯 Explore cada seção sem medo. Você não pode quebrar nada no Community Edition.'
+          es: '🎯 Explorá cada sección sin miedo. No podés romper nada en Free Edition.',
+          en: '🎯 Explore each section without fear. You can\'t break anything in Free Edition.',
+          pt: '🎯 Explore cada seção sem medo. Você não pode quebrar nada no Free Edition.'
         },
         {
           es: '💡 Creá una carpeta personal dentro de Workspace > Users > tu_usuario para organizar tus notebooks.',
@@ -511,179 +577,212 @@ Configuração:
     {
       id: 'db-1-4',
       title: {
-        es: 'Crear tu primer Cluster',
-        en: 'Create your first Cluster',
-        pt: 'Criar seu primeiro Cluster'
+        es: 'Entendiendo Serverless Compute',
+        en: 'Understanding Serverless Compute',
+        pt: 'Entendendo Serverless Compute'
       },
       description: {
-        es: 'Un cluster es el "motor" que ejecuta tu código. Aprendé a crear y configurar uno.',
-        en: 'A cluster is the "engine" that runs your code. Learn to create and configure one.',
-        pt: 'Um cluster é o "motor" que executa seu código. Aprenda a criar e configurar um.'
+        es: 'En Free Edition, Databricks usa serverless compute. No necesitás crear clusters - el poder de cómputo se asigna automáticamente.',
+        en: 'In Free Edition, Databricks uses serverless compute. You don\'t need to create clusters - computing power is assigned automatically.',
+        pt: 'No Free Edition, o Databricks usa serverless compute. Você não precisa criar clusters - o poder de computação é atribuído automaticamente.'
       },
       theory: {
-        es: `## ¿Qué es un Cluster en Databricks?
+        es: `## Serverless Compute en Free Edition
 
-Un **cluster** es un conjunto de máquinas virtuales que ejecutan Apache Spark. Es donde corre tu código.
+En Databricks Free Edition, el compute es **serverless**. Esto significa que NO necesitás crear ni gestionar clusters manualmente.
 
-### Anatomía de un Cluster:
-
-\`\`\`
-┌─────────────────────────────────────┐
-│           DRIVER NODE               │
-│  (Coordina el trabajo, tu notebook) │
-└─────────────────┬───────────────────┘
-                  │
-    ┌─────────────┼─────────────┐
-    │             │             │
-┌───▼───┐   ┌────▼────┐   ┌────▼────┐
-│Worker │   │ Worker  │   │ Worker  │
-│ Node  │   │  Node   │   │  Node   │
-└───────┘   └─────────┘   └─────────┘
-\`\`\`
-
-### En Community Edition:
-- Solo podés crear **1 cluster**
-- Configuración fija: **15GB RAM, 2 cores**
-- Se apaga después de **2 horas** de inactividad
-- Databricks Runtime: versión de Spark + bibliotecas
-
-### Crear un Cluster - Paso a paso:
-
-1. Ir a **Compute** en el menú lateral
-2. Click en **Create Cluster**
-3. **Cluster Name**: Ponele un nombre (ej: "mi-cluster-aprendizaje")
-4. **Cluster Mode**: Standard (única opción en CE)
-5. **Databricks Runtime**: Elegir la última LTS (Long Term Support)
-   - Ej: "13.3 LTS (Spark 3.4.1, Scala 2.12)"
-6. Click en **Create Cluster**
-7. Esperar 3-5 minutos a que inicie
-
-### Estados del Cluster:
-- 🟡 **Pending**: Iniciando
-- 🟢 **Running**: Listo para usar
-- 🔴 **Terminated**: Apagado
-- 🟠 **Restarting**: Reiniciando`,
-        en: `## What is a Cluster in Databricks?
-
-A **cluster** is a set of virtual machines that run Apache Spark. It's where your code runs.
-
-### Anatomy of a Cluster:
+### ¿Cómo funciona?
 
 \`\`\`
-┌─────────────────────────────────────┐
-│           DRIVER NODE               │
-│  (Coordinates work, your notebook)  │
-└─────────────────┬───────────────────┘
-                  │
-    ┌─────────────┼─────────────┐
-    │             │             │
-┌───▼───┐   ┌────▼────┐   ┌────▼────┐
-│Worker │   │ Worker  │   │ Worker  │
-│ Node  │   │  Node   │   │  Node   │
-└───────┘   └─────────┘   └─────────┘
+┌─────────────────────────────────────────────────────────┐
+│                    TU NOTEBOOK                          │
+│              Escribís y ejecutás código                 │
+└─────────────────────────┬───────────────────────────────┘
+                          │ Click "Run"
+                          ▼
+┌─────────────────────────────────────────────────────────┐
+│               SERVERLESS COMPUTE                        │
+│  • Se activa automáticamente                            │
+│  • Recursos asignados según necesidad                   │
+│  • Sin configuración manual                             │
+│  • Sin tiempos de espera de inicio                     │
+└─────────────────────────────────────────────────────────┘
 \`\`\`
 
-### In Community Edition:
-- You can only create **1 cluster**
-- Fixed configuration: **15GB RAM, 2 cores**
-- Auto-shuts down after **2 hours** of inactivity
-- Databricks Runtime: Spark version + libraries
+### Ventajas del Serverless:
+- ✅ **Sin esperas**: No hay que esperar 5 min para que inicie un cluster
+- ✅ **Sin configuración**: No elegís RAM, cores, runtime
+- ✅ **Sin gestión**: No hay que apagar/encender nada
+- ✅ **Costo eficiente**: Solo pagás por lo que usás (en planes pagos)
 
-### Create a Cluster - Step by step:
+### Comparación con Clusters Tradicionales:
 
-1. Go to **Compute** in the sidebar
-2. Click **Create Cluster**
-3. **Cluster Name**: Give it a name (e.g., "my-learning-cluster")
-4. **Cluster Mode**: Standard (only option in CE)
-5. **Databricks Runtime**: Choose latest LTS (Long Term Support)
-   - E.g., "13.3 LTS (Spark 3.4.1, Scala 2.12)"
-6. Click **Create Cluster**
-7. Wait 3-5 minutes for it to start
+| Aspecto | Clusters (Plan Pago) | Serverless (Free Edition) |
+|---------|---------------------|---------------------------|
+| Setup | Manual (3-5 min) | Automático (~segundos) |
+| Configuración | RAM, cores, runtime | Ninguna |
+| Gestión | Encender/apagar | Automático |
+| Lenguajes | Python, SQL, R, Scala | Python, SQL |
+| Costo | Por hora de cluster | Por uso |
 
-### Cluster States:
-- 🟡 **Pending**: Starting
-- 🟢 **Running**: Ready to use
-- 🔴 **Terminated**: Shut down
-- 🟠 **Restarting**: Restarting`,
-        pt: `## O que é um Cluster no Databricks?
+### Lo que ves en Compute:
 
-Um **cluster** é um conjunto de máquinas virtuais que executam Apache Spark. É onde seu código roda.
+En Free Edition, la sección Compute muestra:
+- Tu uso de serverless
+- Historial de ejecuciones
+- No hay botón "Create Cluster" (no lo necesitás)
 
-### Anatomia de um Cluster:
+### ¿Cómo ejecutar código?
+
+1. Abrí un notebook
+2. Escribí código en una celda
+3. Click en **Run** o presioná **Shift + Enter**
+4. ¡El serverless compute se activa automáticamente!
+
+> 💡 **Para usuarios avanzados**: En planes pagos, podés crear clusters personalizados con configuraciones específicas (GPU, más RAM, etc.).`,
+        en: `## Serverless Compute in Free Edition
+
+In Databricks Free Edition, compute is **serverless**. This means you DON'T need to create or manage clusters manually.
+
+### How does it work?
 
 \`\`\`
-┌─────────────────────────────────────┐
-│           DRIVER NODE               │
-│  (Coordena o trabalho, seu notebook)│
-└─────────────────┬───────────────────┘
-                  │
-    ┌─────────────┼─────────────┐
-    │             │             │
-┌───▼───┐   ┌────▼────┐   ┌────▼────┐
-│Worker │   │ Worker  │   │ Worker  │
-│ Node  │   │  Node   │   │  Node   │
-└───────┘   └─────────┘   └─────────┘
+┌─────────────────────────────────────────────────────────┐
+│                    YOUR NOTEBOOK                        │
+│              Write and execute code                     │
+└─────────────────────────┬───────────────────────────────┘
+                          │ Click "Run"
+                          ▼
+┌─────────────────────────────────────────────────────────┐
+│               SERVERLESS COMPUTE                        │
+│  • Activates automatically                              │
+│  • Resources assigned as needed                         │
+│  • No manual configuration                              │
+│  • No startup wait times                                │
+└─────────────────────────────────────────────────────────┘
 \`\`\`
 
-### No Community Edition:
-- Você só pode criar **1 cluster**
-- Configuração fixa: **15GB RAM, 2 cores**
-- Desliga automaticamente após **2 horas** de inatividade
-- Databricks Runtime: versão do Spark + bibliotecas
+### Serverless Advantages:
+- ✅ **No waiting**: No need to wait 5 min for cluster startup
+- ✅ **No configuration**: Don't choose RAM, cores, runtime
+- ✅ **No management**: Nothing to turn on/off
+- ✅ **Cost efficient**: Only pay for what you use (in paid plans)
 
-### Criar um Cluster - Passo a passo:
+### Comparison with Traditional Clusters:
 
-1. Ir para **Compute** no menu lateral
-2. Clicar em **Create Cluster**
-3. **Cluster Name**: Dê um nome (ex: "meu-cluster-aprendizado")
-4. **Cluster Mode**: Standard (única opção no CE)
-5. **Databricks Runtime**: Escolher a última LTS (Long Term Support)
-   - Ex: "13.3 LTS (Spark 3.4.1, Scala 2.12)"
-6. Clicar em **Create Cluster**
-7. Esperar 3-5 minutos para iniciar
+| Aspect | Clusters (Paid Plan) | Serverless (Free Edition) |
+|--------|---------------------|---------------------------|
+| Setup | Manual (3-5 min) | Automatic (~seconds) |
+| Configuration | RAM, cores, runtime | None |
+| Management | Turn on/off | Automatic |
+| Languages | Python, SQL, R, Scala | Python, SQL |
+| Cost | Per cluster hour | Per use |
 
-### Estados do Cluster:
-- 🟡 **Pending**: Iniciando
-- 🟢 **Running**: Pronto para usar
-- 🔴 **Terminated**: Desligado
-- 🟠 **Restarting**: Reiniciando`
+### What you see in Compute:
+
+In Free Edition, the Compute section shows:
+- Your serverless usage
+- Execution history
+- No "Create Cluster" button (you don't need it)
+
+### How to run code?
+
+1. Open a notebook
+2. Write code in a cell
+3. Click **Run** or press **Shift + Enter**
+4. Serverless compute activates automatically!
+
+> 💡 **For advanced users**: In paid plans, you can create custom clusters with specific configurations (GPU, more RAM, etc.).`,
+        pt: `## Serverless Compute no Free Edition
+
+No Databricks Free Edition, o compute é **serverless**. Isso significa que você NÃO precisa criar nem gerenciar clusters manualmente.
+
+### Como funciona?
+
+\`\`\`
+┌─────────────────────────────────────────────────────────┐
+│                    SEU NOTEBOOK                         │
+│              Escreve e executa código                   │
+└─────────────────────────┬───────────────────────────────┘
+                          │ Click "Run"
+                          ▼
+┌─────────────────────────────────────────────────────────┐
+│               SERVERLESS COMPUTE                        │
+│  • Ativa automaticamente                                │
+│  • Recursos atribuídos conforme necessidade             │
+│  • Sem configuração manual                              │
+│  • Sem tempos de espera de início                       │
+└─────────────────────────────────────────────────────────┘
+\`\`\`
+
+### Vantagens do Serverless:
+- ✅ **Sem esperas**: Não precisa esperar 5 min para iniciar cluster
+- ✅ **Sem configuração**: Não escolhe RAM, cores, runtime
+- ✅ **Sem gestão**: Nada para ligar/desligar
+- ✅ **Custo eficiente**: Só paga pelo que usa (em planos pagos)
+
+### Comparação com Clusters Tradicionais:
+
+| Aspecto | Clusters (Plano Pago) | Serverless (Free Edition) |
+|---------|----------------------|---------------------------|
+| Setup | Manual (3-5 min) | Automático (~segundos) |
+| Configuração | RAM, cores, runtime | Nenhuma |
+| Gestão | Ligar/desligar | Automático |
+| Linguagens | Python, SQL, R, Scala | Python, SQL |
+| Custo | Por hora de cluster | Por uso |
+
+### O que você vê em Compute:
+
+No Free Edition, a seção Compute mostra:
+- Seu uso de serverless
+- Histórico de execuções
+- Sem botão "Create Cluster" (você não precisa)
+
+### Como executar código?
+
+1. Abra um notebook
+2. Escreva código em uma célula
+3. Clique em **Run** ou pressione **Shift + Enter**
+4. O serverless compute ativa automaticamente!
+
+> 💡 **Para usuários avançados**: Em planos pagos, você pode criar clusters personalizados com configurações específicas (GPU, mais RAM, etc.).`
       },
       practicalTips: [
         {
-          es: '⏰ El cluster tarda ~5 minutos en iniciar. Aprovechá para leer el siguiente paso.',
-          en: '⏰ The cluster takes ~5 minutes to start. Use the time to read the next step.',
-          pt: '⏰ O cluster leva ~5 minutos para iniciar. Aproveite para ler o próximo passo.'
+          es: '🚀 En Free Edition, solo ejecutá tu código. El compute se encarga solo.',
+          en: '🚀 In Free Edition, just run your code. Compute takes care of itself.',
+          pt: '🚀 No Free Edition, apenas execute seu código. O compute cuida de si mesmo.'
         },
         {
-          es: '💰 En versión paga, siempre usá "Terminate after X minutes of inactivity" para ahorrar costos.',
-          en: '💰 In paid version, always use "Terminate after X minutes of inactivity" to save costs.',
-          pt: '💰 Na versão paga, sempre use "Terminate after X minutes of inactivity" para economizar custos.'
+          es: '💡 La primera celda puede tardar unos segundos mientras se inicializa el serverless. Las siguientes son instantáneas.',
+          en: '💡 The first cell may take a few seconds while serverless initializes. Following ones are instant.',
+          pt: '💡 A primeira célula pode levar alguns segundos enquanto o serverless inicializa. As seguintes são instantâneas.'
         },
         {
-          es: '🔄 Si el cluster se apaga, podés reiniciarlo desde la misma página de Compute.',
-          en: '🔄 If the cluster shuts down, you can restart it from the same Compute page.',
-          pt: '🔄 Se o cluster desligar, você pode reiniciá-lo da mesma página de Compute.'
+          es: '📚 Entender clusters tradicionales sigue siendo importante para trabajos enterprise. Lo cubrimos en la Fase 2.',
+          en: '📚 Understanding traditional clusters is still important for enterprise jobs. We cover it in Phase 2.',
+          pt: '📚 Entender clusters tradicionais ainda é importante para trabalhos enterprise. Cobrimos isso na Fase 2.'
         }
       ],
       externalLinks: [
         {
-          title: 'Cluster Configuration Best Practices',
-          url: 'https://docs.databricks.com/clusters/configure.html',
+          title: 'Serverless Compute Documentation',
+          url: 'https://docs.databricks.com/en/compute/serverless.html',
           type: 'docs'
         },
         {
-          title: 'Databricks Runtime Versions',
-          url: 'https://docs.databricks.com/release-notes/runtime/releases.html',
+          title: 'Free Edition Compute Limitations',
+          url: 'https://docs.databricks.com/en/getting-started/free-edition-limitations.html',
           type: 'docs'
         }
       ],
       checkpoint: {
-        es: '✅ ¿Tu cluster está en estado "Running" (verde)?',
-        en: '✅ Is your cluster in "Running" state (green)?',
-        pt: '✅ Seu cluster está no estado "Running" (verde)?'
+        es: '✅ ¿Entendés por qué no necesitás crear un cluster en Free Edition?',
+        en: '✅ Do you understand why you don\'t need to create a cluster in Free Edition?',
+        pt: '✅ Você entende por que não precisa criar um cluster no Free Edition?'
       },
       xpReward: 25,
-      estimatedMinutes: 20
+      estimatedMinutes: 15
     },
     // PASO 1.5
     {
@@ -702,9 +801,11 @@ Um **cluster** é um conjunto de máquinas virtuais que executam Apache Spark. �
         es: `## Notebooks en Databricks
 
 Un notebook es un documento interactivo con **celdas** que pueden contener:
-- Código (Python, SQL, Scala, R)
+- Código (Python, SQL)
 - Markdown (documentación)
 - Visualizaciones
+
+> ⚠️ **Free Edition**: Solo soporta Python y SQL. R y Scala requieren plan pago.
 
 ### Crear un Notebook:
 
@@ -712,14 +813,15 @@ Un notebook es un documento interactivo con **celdas** que pueden contener:
 2. Click derecho > **Create** > **Notebook**
 3. **Name**: "01-Mi-Primer-Notebook"
 4. **Default Language**: Python
-5. **Cluster**: Seleccionar tu cluster
-6. Click **Create**
+5. Click **Create**
+
+> 💡 No necesitás seleccionar un cluster - el serverless compute se activa automáticamente cuando ejecutás.
 
 ### Anatomía del Notebook:
 
 \`\`\`
 ┌────────────────────────────────────────┐
-│  📓 01-Mi-Primer-Notebook    [Attach ▼]│
+│  📓 01-Mi-Primer-Notebook              │
 ├────────────────────────────────────────┤
 │  [+ Code] [+ Text] [+ SQL]             │
 ├────────────────────────────────────────┤
@@ -739,11 +841,17 @@ Un notebook es un documento interactivo con **celdas** que pueden contener:
 Podés cambiar el lenguaje de una celda individual:
 - \`%python\` - Ejecutar Python
 - \`%sql\` - Ejecutar SQL
-- \`%scala\` - Ejecutar Scala
-- \`%r\` - Ejecutar R
 - \`%md\` - Markdown (documentación)
 - \`%sh\` - Shell commands
 - \`%fs\` - Comandos de DBFS
+
+> ⚠️ \`%scala\` y \`%r\` NO están disponibles en Free Edition.
+
+### Databricks Assistant (IA):
+
+Podés usar el asistente de IA integrado:
+- Click en el ícono de IA o escribí \`/\` en una celda vacía
+- Pedile que genere código, explique errores, o optimice queries
 
 ### Atajos de teclado:
 - \`Shift + Enter\`: Ejecutar celda y avanzar
@@ -753,9 +861,11 @@ Podés cambiar el lenguaje de una celda individual:
         en: `## Notebooks in Databricks
 
 A notebook is an interactive document with **cells** that can contain:
-- Code (Python, SQL, Scala, R)
+- Code (Python, SQL)
 - Markdown (documentation)
 - Visualizations
+
+> ⚠️ **Free Edition**: Only supports Python and SQL. R and Scala require paid plan.
 
 ### Create a Notebook:
 
@@ -763,14 +873,15 @@ A notebook is an interactive document with **cells** that can contain:
 2. Right click > **Create** > **Notebook**
 3. **Name**: "01-My-First-Notebook"
 4. **Default Language**: Python
-5. **Cluster**: Select your cluster
-6. Click **Create**
+5. Click **Create**
+
+> 💡 You don't need to select a cluster - serverless compute activates automatically when you run.
 
 ### Notebook Anatomy:
 
 \`\`\`
 ┌────────────────────────────────────────┐
-│  📓 01-My-First-Notebook    [Attach ▼] │
+│  📓 01-My-First-Notebook               │
 ├────────────────────────────────────────┤
 │  [+ Code] [+ Text] [+ SQL]             │
 ├────────────────────────────────────────┤
@@ -790,11 +901,17 @@ A notebook is an interactive document with **cells** that can contain:
 You can change the language of an individual cell:
 - \`%python\` - Run Python
 - \`%sql\` - Run SQL
-- \`%scala\` - Run Scala
-- \`%r\` - Run R
 - \`%md\` - Markdown (documentation)
 - \`%sh\` - Shell commands
 - \`%fs\` - DBFS commands
+
+> ⚠️ \`%scala\` and \`%r\` are NOT available in Free Edition.
+
+### Databricks Assistant (AI):
+
+You can use the integrated AI assistant:
+- Click the AI icon or type \`/\` in an empty cell
+- Ask it to generate code, explain errors, or optimize queries
 
 ### Keyboard shortcuts:
 - \`Shift + Enter\`: Run cell and advance
@@ -804,9 +921,11 @@ You can change the language of an individual cell:
         pt: `## Notebooks no Databricks
 
 Um notebook é um documento interativo com **células** que podem conter:
-- Código (Python, SQL, Scala, R)
+- Código (Python, SQL)
 - Markdown (documentação)
 - Visualizações
+
+> ⚠️ **Free Edition**: Suporta apenas Python e SQL. R e Scala requerem plano pago.
 
 ### Criar um Notebook:
 
@@ -814,14 +933,15 @@ Um notebook é um documento interativo com **células** que podem conter:
 2. Clique direito > **Create** > **Notebook**
 3. **Name**: "01-Meu-Primeiro-Notebook"
 4. **Default Language**: Python
-5. **Cluster**: Selecionar seu cluster
-6. Clicar em **Create**
+5. Clicar em **Create**
+
+> 💡 Você não precisa selecionar um cluster - o serverless compute ativa automaticamente quando você executa.
 
 ### Anatomia do Notebook:
 
 \`\`\`
 ┌────────────────────────────────────────┐
-│  📓 01-Meu-Primeiro-Notebook [Attach ▼]│
+│  📓 01-Meu-Primeiro-Notebook           │
 ├────────────────────────────────────────┤
 │  [+ Code] [+ Text] [+ SQL]             │
 ├────────────────────────────────────────┤
@@ -841,11 +961,17 @@ Um notebook é um documento interativo com **células** que podem conter:
 Você pode mudar a linguagem de uma célula individual:
 - \`%python\` - Executar Python
 - \`%sql\` - Executar SQL
-- \`%scala\` - Executar Scala
-- \`%r\` - Executar R
 - \`%md\` - Markdown (documentação)
 - \`%sh\` - Comandos Shell
 - \`%fs\` - Comandos DBFS
+
+> ⚠️ \`%scala\` e \`%r\` NÃO estão disponíveis no Free Edition.
+
+### Databricks Assistant (IA):
+
+Você pode usar o assistente de IA integrado:
+- Clique no ícone de IA ou digite \`/\` em uma célula vazia
+- Peça para gerar código, explicar erros ou otimizar queries
 
 ### Atalhos de teclado:
 - \`Shift + Enter\`: Executar célula e avançar
@@ -1130,9 +1256,9 @@ display(df)`,
           pt: '📂 Os datasets em /databricks-datasets/ são perfeitos para praticar sem precisar fazer upload de dados próprios.'
         },
         {
-          es: '⚠️ En Community Edition, los datos en DBFS se eliminan si no usás tu cuenta por 14 días.',
-          en: '⚠️ In Community Edition, DBFS data is deleted if you don\'t use your account for 14 days.',
-          pt: '⚠️ No Community Edition, os dados no DBFS são deletados se você não usar sua conta por 14 dias.'
+          es: '⚠️ En Free Edition, los datos pueden eliminarse si no usás tu cuenta por un período prolongado. Hacé backups de datos importantes.',
+          en: '⚠️ In Free Edition, data may be deleted if you don\'t use your account for an extended period. Backup important data.',
+          pt: '⚠️ No Free Edition, os dados podem ser deletados se você não usar sua conta por um período prolongado. Faça backup de dados importantes.'
         }
       ],
       externalLinks: [
@@ -1357,9 +1483,14 @@ dbutils.fs.cp(f"file:{local_path}", f"dbfs:{dbfs_path}")
           pt: '📊 Sempre que puder, converta seus dados para Parquet ou Delta. São muito mais eficientes.'
         },
         {
-          es: '💡 El límite de upload en Community Edition es ~2GB por archivo.',
-          en: '💡 The upload limit in Community Edition is ~2GB per file.',
-          pt: '💡 O limite de upload no Community Edition é ~2GB por arquivo.'
+          es: '💡 Free Edition tiene límites de almacenamiento. Para datasets grandes, considerá un plan pago.',
+          en: '💡 Free Edition has storage limits. For large datasets, consider a paid plan.',
+          pt: '💡 Free Edition tem limites de armazenamento. Para datasets grandes, considere um plano pago.'
+        },
+        {
+          es: '⚠️ El acceso a internet externo está limitado a dominios confiables en Free Edition.',
+          en: '⚠️ External internet access is limited to trusted domains in Free Edition.',
+          pt: '⚠️ O acesso à internet externa é limitado a domínios confiáveis no Free Edition.'
         }
       ],
       externalLinks: [

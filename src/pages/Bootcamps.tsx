@@ -28,7 +28,7 @@ export default function Bootcamps({ user }: BootcampsProps) {
   }
 
   const handleEnroll = () => {
-    window.open('https://onei.la/ihw', '_blank', 'noopener,noreferrer');
+    window.open('https://iansaura.gumroad.com/l/bykys', '_blank', 'noopener,noreferrer');
   };
 
   // Testimonials data
@@ -105,7 +105,7 @@ export default function Bootcamps({ user }: BootcampsProps) {
             className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-5 py-2.5 rounded-full text-sm font-bold mb-6 shadow-lg shadow-orange-500/25"
           >
             <Zap className="w-4 h-4" />
-            PRÓXIMA COHORTE: 13 Enero 2025 • Solo 10 cupos
+            PRÓXIMA EDICIÓN POR CONFIRMAR
           </motion.div>
 
           <motion.h1
@@ -126,8 +126,8 @@ export default function Bootcamps({ user }: BootcampsProps) {
             transition={{ delay: 0.1 }}
             className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto"
           >
-            El bootcamp más práctico de LATAM. Con feedback directo de Ian en cada entrega 
-            y un proyecto final para tu portfolio.
+            El bootcamp más práctico de LATAM. Reservá tu lugar ahora para la próxima edición (dentro de los próximos 6 meses). 
+            Feedback directo de Ian en cada entrega y un proyecto final para tu portfolio.
           </motion.p>
 
           {/* Quick Stats */}
@@ -176,7 +176,7 @@ export default function Bootcamps({ user }: BootcampsProps) {
             transition={{ delay: 0.4 }}
             className="text-slate-400 mt-4 text-sm"
           >
-            🔥 Early Bird: Ahorrá $100 USD hasta el 3 de Enero
+            🔥 Precio pre-inscripción: $400 USD. Una vez confirmada la fecha, el precio sube a $500 USD
           </motion.p>
         </div>
       </section>

@@ -1,6 +1,9 @@
 /**
  * FASE 4: Spark Avanzado
  * 9 pasos para dominar técnicas avanzadas de Spark
+ * 
+ * ACTUALIZADO: Enero 2026 - Compatible con Free Edition (Python + SQL)
+ * Nota: Los ejemplos de Scala/R están marcados como "solo plan pago"
  */
 
 import { DatabricksPhase } from '../types';
@@ -10,7 +13,7 @@ export const PHASE_4_SPARK_ADVANCED: DatabricksPhase = {
   number: 4,
   title: { es: 'Spark Avanzado', en: 'Advanced Spark', pt: 'Spark Avançado' },
   subtitle: { es: 'Optimización y técnicas avanzadas', en: 'Optimization and advanced techniques', pt: 'Otimização e técnicas avançadas' },
-  description: { es: 'Llevá tu conocimiento de Spark al siguiente nivel con UDFs, broadcast, particionamiento y debugging.', en: 'Take your Spark knowledge to the next level with UDFs, broadcast, partitioning and debugging.', pt: 'Leve seu conhecimento de Spark ao próximo nível com UDFs, broadcast, particionamento e debugging.' },
+  description: { es: 'Llevá tu conocimiento de Spark al siguiente nivel con UDFs, broadcast, particionamiento y debugging. Todo compatible con Free Edition (Python y SQL).', en: 'Take your Spark knowledge to the next level with UDFs, broadcast, partitioning and debugging. All compatible with Free Edition (Python and SQL).', pt: 'Leve seu conhecimento de Spark ao próximo nível com UDFs, broadcast, particionamento e debugging. Tudo compatível com Free Edition (Python e SQL).' },
   icon: '🔥',
   color: 'red',
   estimatedDays: '5-6 días',

@@ -2,7 +2,12 @@ import { DatabricksLab } from './types';
 
 /**
  * Labs de Fundamentos de Databricks
- * Diseñados para Community Edition (GRATIS)
+ * Diseñados para Databricks Free Edition (GRATIS) - 2026
+ * 
+ * ACTUALIZADO: Enero 2026 - Free Edition
+ * - Serverless compute (sin crear clusters manualmente)
+ * - Unity Catalog y DLT disponibles
+ * - Databricks Assistant (IA) incluido
  */
 export const DATABRICKS_LABS_FUNDAMENTALS: DatabricksLab[] = [
   // =====================================================
@@ -16,14 +21,14 @@ export const DATABRICKS_LABS_FUNDAMENTALS: DatabricksLab[] = [
       pt: '🚀 Seu Primeiro Notebook no Databricks'
     },
     subtitle: {
-      es: 'Aprende a usar Databricks Community Edition',
-      en: 'Learn to use Databricks Community Edition',
-      pt: 'Aprenda a usar o Databricks Community Edition'
+      es: 'Aprende a usar Databricks Free Edition',
+      en: 'Learn to use Databricks Free Edition',
+      pt: 'Aprenda a usar o Databricks Free Edition'
     },
     description: {
-      es: 'En este lab aprenderás a crear tu cuenta gratuita en Databricks Community Edition, crear tu primer notebook, ejecutar código Python y SQL, y entender la interfaz del workspace.',
-      en: 'In this lab you will learn to create your free Databricks Community Edition account, create your first notebook, run Python and SQL code, and understand the workspace interface.',
-      pt: 'Neste lab você aprenderá a criar sua conta gratuita no Databricks Community Edition, criar seu primeiro notebook, executar código Python e SQL, e entender a interface do workspace.'
+      es: 'En este lab aprenderás a crear tu cuenta gratuita en Databricks Free Edition, crear tu primer notebook con serverless compute, ejecutar código Python y SQL, y usar el Databricks Assistant.',
+      en: 'In this lab you will learn to create your free Databricks Free Edition account, create your first notebook with serverless compute, run Python and SQL code, and use Databricks Assistant.',
+      pt: 'Neste lab você aprenderá a criar sua conta gratuita no Databricks Free Edition, criar seu primeiro notebook com serverless compute, executar código Python e SQL, e usar o Databricks Assistant.'
     },
     difficulty: 'beginner',
     estimatedMinutes: 30,
@@ -33,7 +38,7 @@ export const DATABRICKS_LABS_FUNDAMENTALS: DatabricksLab[] = [
       { es: 'Conocimientos básicos de Python', en: 'Basic Python knowledge', pt: 'Conhecimentos básicos de Python' }
     ],
     objectives: [
-      { es: 'Crear cuenta en Databricks Community Edition', en: 'Create Databricks Community Edition account', pt: 'Criar conta no Databricks Community Edition' },
+      { es: 'Crear cuenta en Databricks Free Edition', en: 'Create Databricks Free Edition account', pt: 'Criar conta no Databricks Free Edition' },
       { es: 'Navegar el workspace', en: 'Navigate the workspace', pt: 'Navegar pelo workspace' },
       { es: 'Crear y ejecutar un notebook', en: 'Create and run a notebook', pt: 'Criar e executar um notebook' },
       { es: 'Usar celdas Python y SQL', en: 'Use Python and SQL cells', pt: 'Usar células Python e SQL' }
@@ -43,9 +48,9 @@ export const DATABRICKS_LABS_FUNDAMENTALS: DatabricksLab[] = [
         id: 'lab001-step1',
         title: { es: 'Crear cuenta gratuita', en: 'Create free account', pt: 'Criar conta gratuita' },
         description: {
-          es: 'Ve a community.cloud.databricks.com y crea tu cuenta gratuita. Usa tu email personal (no empresarial) para evitar restricciones.',
-          en: 'Go to community.cloud.databricks.com and create your free account. Use your personal email (not corporate) to avoid restrictions.',
-          pt: 'Vá para community.cloud.databricks.com e crie sua conta gratuita. Use seu email pessoal (não corporativo) para evitar restrições.'
+          es: 'Ve a databricks.com/try-databricks-free y crea tu cuenta gratuita. Usa tu email personal (no empresarial) para evitar restricciones.',
+          en: 'Go to databricks.com/try-databricks-free and create your free account. Use your personal email (not corporate) to avoid restrictions.',
+          pt: 'Vá para databricks.com/try-databricks-free e crie sua conta gratuita. Use seu email pessoal (não corporativo) para evitar restrições.'
         },
         tip: { es: '💡 La verificación puede tardar unos minutos', en: '💡 Verification may take a few minutes', pt: '💡 A verificação pode demorar alguns minutos' }
       },
@@ -78,13 +83,13 @@ spark.version`,
       },
       {
         id: 'lab001-step4',
-        title: { es: 'Crear un cluster', en: 'Create a cluster', pt: 'Criar um cluster' },
+        title: { es: 'Entender Serverless Compute', en: 'Understand Serverless Compute', pt: 'Entender Serverless Compute' },
         description: {
-          es: 'Ve a Compute > Create Cluster. En Community Edition se crea automáticamente un cluster básico. Espera a que el estado sea "Running" (verde).',
-          en: 'Go to Compute > Create Cluster. In Community Edition a basic cluster is created automatically. Wait for the status to be "Running" (green).',
-          pt: 'Vá para Compute > Create Cluster. No Community Edition um cluster básico é criado automaticamente. Espere o status ficar "Running" (verde).'
+          es: 'En Free Edition, el compute es serverless. No necesitas crear clusters manualmente - cuando ejecutas código, el compute se activa automáticamente. ¡Es más rápido y simple!',
+          en: 'In Free Edition, compute is serverless. You don\'t need to create clusters manually - when you run code, compute activates automatically. It\'s faster and simpler!',
+          pt: 'No Free Edition, o compute é serverless. Você não precisa criar clusters manualmente - quando você executa código, o compute ativa automaticamente. É mais rápido e simples!'
         },
-        warning: { es: '⚠️ El cluster se apaga después de 2 horas de inactividad', en: '⚠️ The cluster shuts down after 2 hours of inactivity', pt: '⚠️ O cluster desliga após 2 horas de inatividade' }
+        tip: { es: '🚀 La primera celda puede tardar unos segundos mientras se inicializa el serverless', en: '🚀 The first cell may take a few seconds while serverless initializes', pt: '🚀 A primeira célula pode levar alguns segundos enquanto o serverless inicializa' }
       },
       {
         id: 'lab001-step5',
@@ -133,10 +138,10 @@ LIMIT 10;`,
       icon: '📓'
     },
     resources: [
-      { title: 'Databricks Community Edition', url: 'https://community.cloud.databricks.com/', type: 'docs' },
+      { title: 'Databricks Free Edition', url: 'https://www.databricks.com/try-databricks-free', type: 'docs' },
       { title: 'Getting Started Guide', url: 'https://docs.databricks.com/getting-started/index.html', type: 'docs' }
     ],
-    tags: ['beginner', 'notebook', 'workspace', 'community-edition'],
+    tags: ['beginner', 'notebook', 'workspace', 'free-edition'],
     services: ['Notebooks', 'Clusters', 'Workspace']
   },
 
