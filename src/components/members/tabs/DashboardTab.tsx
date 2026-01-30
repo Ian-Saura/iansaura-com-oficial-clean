@@ -15,7 +15,7 @@ import { USER_RANKS } from '../../../types/members';
 import { CertificateCard } from '../../CertificateGenerator';
 // API Token functionality moved to DatasetsTab
 import { LeaderboardSection } from '../LeaderboardSection';
-import { ReferralProgram } from '../../ReferralProgram';
+import { AmbassadorProgram } from '../../AmbassadorProgram';
 import { DiscordLinkSection, DiscordQuickButton } from '../DiscordLinkSection';
 
 // Roadmap position storage - for returning to exact position
@@ -114,8 +114,8 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
         <StreakCard progress={progress} />
       </div>
 
-      {/* 🎁 Referral Program - VISIBLE (not hidden) */}
-      <ReferralProgram userEmail={userEmail} userName={userName} isPremium={!isFreeUser} />
+      {/* 🤝 Ambassador Program - Contact for commissions */}
+      <AmbassadorProgram userEmail={userEmail} userName={userName} />
 
       {/* 🔧 Tools Section - Collapsible */}
       <details className="group">
