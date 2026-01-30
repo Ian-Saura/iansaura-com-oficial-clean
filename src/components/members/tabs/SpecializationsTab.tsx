@@ -8,8 +8,9 @@ import { useLanguage } from '../../../i18n/LanguageContext';
 import { LocalizedContent as LC, t as tLocalized } from '../../../types/i18n';
 import { DatabricksSpecializationView } from '../DatabricksSpecializationView';
 import { LockedContentPreview } from '../MembersUtils';
-// Deep Dives - Habilitado para hints en roadmap (Febrero 2026)
+// Deep Dives - Disponible ahora
 import { DeepDiveViewer } from '../DeepDiveViewer';
+import { DeepDivesTab } from './DeepDivesTab';
 import { getDeepDiveById } from '../../../data/deepDives';
 
 interface SpecializationsTabProps {
@@ -75,6 +76,9 @@ export const SpecializationsTab: React.FC<SpecializationsTabProps> = ({ isFreeUs
 
   const [showDatabricks, setShowDatabricks] = useState(() => getActiveSpecialization() === 'databricks');
   
+  // Deep Dives list view - muestra todos los deep dives
+  const [showDeepDives, setShowDeepDives] = useState(false);
+  
   // Deep Dive viewer state - se activa cuando viene de un hint del roadmap
   const [selectedDeepDiveId, setSelectedDeepDiveId] = useState<string | null>(null);
   
@@ -118,7 +122,21 @@ export const SpecializationsTab: React.FC<SpecializationsTabProps> = ({ isFreeUs
     return <DatabricksSpecializationView onBack={() => setShowDatabricks(false)} />;
   }
   
-  // 🎓 Deep Dive Viewer - Cuando viene de un hint del roadmap
+  // 🎓 Deep Dives List - Muestra todos los deep dives disponibles
+  if (showDeepDives) {
+    return (
+      <DeepDivesTab 
+        onViewContent={(deepDiveId) => {
+          setSelectedDeepDiveId(deepDiveId);
+          setShowDeepDives(false);
+        }}
+        completedDives={[]} // TODO: cargar desde progreso del usuario
+        onBack={() => setShowDeepDives(false)}
+      />
+    );
+  }
+  
+  // 🎓 Deep Dive Viewer - Cuando viene de un hint del roadmap o selección
   if (selectedDeepDiveId) {
     const deepDive = getDeepDiveById(selectedDeepDiveId);
     if (deepDive) {
@@ -231,10 +249,8 @@ export const SpecializationsTab: React.FC<SpecializationsTabProps> = ({ isFreeUs
           {/* CTA Button */}
           <button
             onClick={() => {
-              // Navigate to Deep Dives tab
-              setSearchParams({ tab: 'especializaciones', view: 'deep-dives' });
-              // Show first deep dive or the list
-              setSelectedDeepDiveId('deep-python-fundamentals');
+              // Mostrar la lista completa de Deep Dives
+              setShowDeepDives(true);
             }}
             className="w-full py-4 rounded-xl bg-gradient-to-r from-violet-500 to-purple-500 text-white font-bold text-lg hover:from-violet-400 hover:to-purple-400 transition-all flex items-center justify-center gap-2 shadow-lg shadow-violet-500/30 group-hover:scale-[1.02]"
           >
