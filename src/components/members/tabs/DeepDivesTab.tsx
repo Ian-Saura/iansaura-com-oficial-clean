@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { 
   BookOpen, Search, Clock, Award, ChevronRight, Sparkles, 
   GraduationCap, FileText, ExternalLink, Filter, CheckCircle,
-  BookMarked, Brain, Target, TrendingUp
+  BookMarked, Brain, Target, TrendingUp, ArrowLeft
 } from 'lucide-react';
 import { useLanguage } from '../../../i18n/LanguageContext';
 import { LocalizedContent as LC, t as tLocalized } from '../../../types/i18n';
@@ -12,6 +12,7 @@ import { DeepDiveContent } from '../../../types/deepDives';
 interface DeepDivesTabProps {
   onViewContent: (deepDiveId: string) => void;
   completedDives?: string[];
+  onBack?: () => void;
 }
 
 /**
@@ -21,7 +22,8 @@ interface DeepDivesTabProps {
  */
 export const DeepDivesTab: React.FC<DeepDivesTabProps> = ({ 
   onViewContent,
-  completedDives = []
+  completedDives = [],
+  onBack
 }) => {
   const { language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
@@ -62,6 +64,17 @@ export const DeepDivesTab: React.FC<DeepDivesTabProps> = ({
 
   return (
     <div className="space-y-6">
+      {/* Back Button */}
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group"
+        >
+          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+          {t({ es: 'Volver a Especializaciones', en: 'Back to Specializations', pt: 'Voltar para Especializações' })}
+        </button>
+      )}
+
       {/* Hero Header */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-500/20 via-purple-500/10 to-fuchsia-500/20 border border-violet-500/30 p-8">
         <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-violet-500/10 to-transparent rounded-full blur-3xl" />
