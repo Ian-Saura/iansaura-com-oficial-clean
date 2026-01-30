@@ -13,14 +13,13 @@ import { roadmapLevels, getLevelStepIds } from '../../../data/roadmapData';
 import { projects } from '../../../data/projectsData';
 import { DISCORD_INVITE_LINK } from '../../../data/videosData';
 import { ResourceButton, TabType, renderMarkdown } from '../MembersUtils';
-// Deep Dives imports - Hints para "Fundamentos Teóricos" (Febrero 2026)
-// NOTA: Habilitado pero con fecha de lanzamiento - solo aparece después del 1 Feb 2026
+// Deep Dives imports - Hints para "Fundamentos Teóricos"
+// 🚀 LANZADO - Enero 2026
 import { DeepDiveHint } from '../DeepDiveHint';
 import { getDeepDivesForPhase } from '../../../data/deepDives';
 
-// Fecha de lanzamiento de la especialización Fundamentos Teóricos
-const DEEP_DIVES_LAUNCH_DATE = new Date('2026-02-01T00:00:00');
-const isDeepDivesLaunched = () => new Date() >= DEEP_DIVES_LAUNCH_DATE;
+// Deep Dives ya está disponible
+const isDeepDivesLaunched = () => true;
 
 // XP System
 export const XP_PER_STEP = 10;
@@ -813,7 +812,7 @@ const RoadmapTab: React.FC<{
               );
             })}
 
-            {/* 🎓 Deep Dive Hint - Solo aparece después del 1 Feb 2026 */}
+            {/* 🎓 Deep Dive Hint - Disponible ahora */}
             {isDeepDivesLaunched() && (() => {
               const phaseDeepDives = getDeepDivesForPhase(currentPhase.id);
               if (phaseDeepDives.length === 0) return null;

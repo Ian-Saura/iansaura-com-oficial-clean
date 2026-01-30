@@ -163,13 +163,13 @@ export const SpecializationsTab: React.FC<SpecializationsTabProps> = ({ isFreeUs
       {/* Specializations Grid */}
       <div className="grid md:grid-cols-2 gap-6">
         
-        {/* 🎓 FUNDAMENTOS TEÓRICOS - PRÓXIMAMENTE FEBRERO 2026 */}
+        {/* 🎓 FUNDAMENTOS TEÓRICOS - DISPONIBLE AHORA */}
         <div className="bg-gradient-to-br from-violet-500/20 to-slate-900 rounded-2xl p-6 border-2 border-violet-500/50 shadow-lg shadow-violet-500/10 relative overflow-hidden group hover:border-violet-400 transition-all">
-          {/* Badge PRÓXIMAMENTE */}
+          {/* Badge NUEVO */}
           <div className="absolute top-4 right-4">
-            <span className="bg-gradient-to-r from-violet-500 to-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 animate-pulse">
-              <Clock className="w-3 h-3" />
-              {t({ es: 'PRÓXIMAMENTE', en: 'COMING SOON', pt: 'EM BREVE' })}
+            <span className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+              <Play className="w-3 h-3" />
+              {t({ es: 'DISPONIBLE', en: 'AVAILABLE', pt: 'DISPONÍVEL' })}
             </span>
           </div>
 
@@ -220,14 +220,6 @@ export const SpecializationsTab: React.FC<SpecializationsTabProps> = ({ isFreeUs
             ))}
           </div>
 
-          {/* Countdown */}
-          <div className="bg-slate-900/80 rounded-xl p-4 mb-6 border border-violet-500/20">
-            <p className="text-violet-400 text-sm font-semibold mb-3 text-center">
-              🚀 {t({ es: 'Lanzamiento: 1 de Febrero 2026', en: 'Launch: February 1, 2026', pt: 'Lançamento: 1 de Fevereiro 2026' })}
-            </p>
-            <CountdownTimer targetDate="2026-02-01T00:00:00" />
-          </div>
-
           {/* Optional Badge */}
           <div className="flex items-center gap-2 mb-4 bg-emerald-500/10 text-emerald-400 px-3 py-2 rounded-lg border border-emerald-500/20">
             <CheckCircle className="w-4 h-4" />
@@ -236,13 +228,19 @@ export const SpecializationsTab: React.FC<SpecializationsTabProps> = ({ isFreeUs
             </span>
           </div>
 
-          {/* Disabled CTA Button */}
+          {/* CTA Button */}
           <button
-            disabled
-            className="w-full py-4 rounded-xl bg-slate-700 text-slate-400 font-bold text-lg cursor-not-allowed flex items-center justify-center gap-2"
+            onClick={() => {
+              // Navigate to Deep Dives tab
+              setSearchParams({ tab: 'especializaciones', view: 'deep-dives' });
+              // Show first deep dive or the list
+              setSelectedDeepDiveId('deep-python-fundamentals');
+            }}
+            className="w-full py-4 rounded-xl bg-gradient-to-r from-violet-500 to-purple-500 text-white font-bold text-lg hover:from-violet-400 hover:to-purple-400 transition-all flex items-center justify-center gap-2 shadow-lg shadow-violet-500/30 group-hover:scale-[1.02]"
           >
-            <Lock className="w-5 h-5" />
-            {t({ es: 'Disponible en Febrero', en: 'Available in February', pt: 'Disponível em Fevereiro' })}
+            <BookOpen className="w-5 h-5" />
+            {t({ es: 'Explorar Deep Dives', en: 'Explore Deep Dives', pt: 'Explorar Deep Dives' })}
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
         
@@ -373,9 +371,9 @@ export const SpecializationsTab: React.FC<SpecializationsTabProps> = ({ isFreeUs
           {/* Countdown */}
           <div className="bg-slate-900/80 rounded-xl p-4 mb-6 border border-amber-500/20">
             <p className="text-amber-400 text-sm font-semibold mb-3 text-center">
-              🚀 {t({ es: 'Lanzamiento: Febrero 2025', en: 'Launch: February 2025', pt: 'Lançamento: Fevereiro 2025' })}
+              🚀 {t({ es: 'Lanzamiento: Marzo 2026', en: 'Launch: March 2026', pt: 'Lançamento: Março 2026' })}
             </p>
-            <CountdownTimer targetDate="2025-02-01T00:00:00" />
+            <CountdownTimer targetDate="2026-03-01T00:00:00" />
           </div>
 
           {/* Disabled Button */}
@@ -384,7 +382,7 @@ export const SpecializationsTab: React.FC<SpecializationsTabProps> = ({ isFreeUs
             className="w-full py-4 rounded-xl bg-slate-700 text-slate-400 font-bold text-lg cursor-not-allowed flex items-center justify-center gap-2"
           >
             <Lock className="w-5 h-5" />
-            {t({ es: 'Disponible en Febrero', en: 'Available in February', pt: 'Disponível em Fevereiro' })}
+            {t({ es: 'Disponible en Marzo 2026', en: 'Available March 2026', pt: 'Disponível em Março 2026' })}
           </button>
         </div>
       </div>
