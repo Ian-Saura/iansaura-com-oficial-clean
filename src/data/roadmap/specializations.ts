@@ -5,7 +5,7 @@ import { DEEP_DIVES_STATS } from '../deepDives';
 // import { DATABRICKS_STATS, DATABRICKS_PREVIEW } from '../specializations/databricks';
 
 export const specializations: Specialization[] = [
-  // 🎓 FUNDAMENTOS TEÓRICOS - 🔥 PRÓXIMAMENTE FEBRERO 2026
+  // 🎓 FUNDAMENTOS TEÓRICOS - 🚀 DISPONIBLE - Lanzado Enero 2026
   {
     id: 'spec-theoretical-foundations',
     title: { es: 'Fundamentos Teóricos', en: 'Theoretical Foundations', pt: 'Fundamentos Teóricos' },
@@ -13,12 +13,11 @@ export const specializations: Specialization[] = [
     description: { es: 'Contenido académico profundo que complementa cada fase del roadmap. 20+ Deep Dives con mapas mentales Mermaid, cheat sheets técnicos, bibliografía de papers clásicos (Kleppmann, Kimball, Google Papers, Amazon Dynamo) y gotchas de nivel senior. Opcional pero poderoso: te convierte en un ingeniero con bases sólidas que entiende el "por qué" detrás de cada herramienta.', en: 'Deep academic content that complements each roadmap phase. 20+ Deep Dives with Mermaid mind maps, technical cheat sheets, bibliography of classic papers (Kleppmann, Kimball, Google Papers, Amazon Dynamo) and senior-level gotchas. Optional but powerful: turns you into an engineer with solid foundations who understands the "why" behind each tool.', pt: 'Conteúdo acadêmico profundo que complementa cada fase do roadmap. 20+ Deep Dives com mapas mentais Mermaid, cheat sheets técnicos, bibliografia de papers clássicos (Kleppmann, Kimball, Google Papers, Amazon Dynamo) e gotchas de nível sênior. Opcional mas poderoso: transforma você em um engenheiro com bases sólidas que entende o "porquê" por trás de cada ferramenta.' },
     icon: '🎓',
     color: 'violet',
-    status: 'coming_soon',
-    isNext: true, // 🔥 PRÓXIMA EN LANZARSE - Febrero 2026
-    isHidden: false, // ✅ VISIBLE como coming soon
-    isNew: false,
-    releaseDate: '1 de Febrero 2026',
-    releaseDateISO: '2026-02-01T00:00:00',
+    status: 'available', // 🚀 LANZADO - Enero 2026
+    isNext: false, // Ya está disponible
+    isHidden: false,
+    isNew: true, // Mostrar badge de nuevo
+    releaseDate: 'Disponible ahora',
     prerequisites: [], // No tiene prerequisitos - aplica a cualquier nivel
     duration: '40+ horas de lectura',
     skills: [

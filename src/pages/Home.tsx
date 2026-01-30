@@ -637,7 +637,7 @@ export default function Home({ user }: HomeProps) {
         </div>
       </section>
 
-      {/* 🎓 PRÓXIMAMENTE - Fundamentos Teóricos (Febrero 2026) */}
+      {/* 🎓 NUEVO - Fundamentos Teóricos (Deep Dives) */}
       <section className="py-16 bg-gradient-to-br from-slate-900 via-violet-900/10 to-slate-900 relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-20 left-10 w-72 h-72 bg-violet-500/30 rounded-full blur-3xl"></div>
@@ -652,9 +652,9 @@ export default function Home({ user }: HomeProps) {
             viewport={{ once: true }}
             className="text-center"
           >
-            <div className="inline-flex items-center gap-2 bg-violet-500/20 text-violet-400 px-4 py-2 rounded-full text-sm font-semibold mb-4 border border-violet-500/30 animate-pulse">
-              <Clock className="w-4 h-4" />
-              {({ es: 'PRÓXIMAMENTE - FEBRERO 2026', en: 'COMING SOON - FEBRUARY 2026', pt: 'EM BREVE - FEVEREIRO 2026' } as any)[language]}
+            <div className="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-400 px-4 py-2 rounded-full text-sm font-semibold mb-4 border border-emerald-500/30 animate-pulse">
+              <span>🚀</span>
+              {({ es: '¡NUEVO LANZAMIENTO!', en: 'NEW LAUNCH!', pt: 'NOVO LANÇAMENTO!' } as any)[language]}
             </div>
             
             <div className="flex items-center justify-center gap-4 mb-4">
@@ -705,10 +705,37 @@ export default function Home({ user }: HomeProps) {
               ))}
             </div>
 
-            <p className="text-emerald-400 text-sm flex items-center justify-center gap-2">
+            <p className="text-emerald-400 text-sm flex items-center justify-center gap-2 mb-6">
               <CheckCircle className="w-4 h-4" />
               {({ es: 'OPCIONAL - Complementa cualquier nivel del roadmap', en: 'OPTIONAL - Complements any roadmap level', pt: 'OPCIONAL - Complementa qualquer nível do roadmap' } as any)[language]}
             </p>
+
+            {/* CTA Button */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              viewport={{ once: true }}
+            >
+              <Button
+                onClick={() => {
+                  trackCTAClick('landing_deep_dives_cta');
+                  if (user) {
+                    navigate('/members?tab=especializaciones');
+                  } else {
+                    navigate('/auth?redirect=/members?tab=especializaciones');
+                  }
+                }}
+                className="bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-400 hover:to-purple-400 text-white px-8 py-4 text-lg font-bold rounded-xl shadow-lg shadow-violet-500/30 hover:scale-105 transition-all"
+              >
+                <BookOpen className="w-5 h-5 mr-2" />
+                {({ es: 'Explorar Deep Dives', en: 'Explore Deep Dives', pt: 'Explorar Deep Dives' } as any)[language]}
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+              <p className="text-slate-500 text-sm mt-4">
+                {({ es: '✨ Incluido gratis con tu suscripción Premium', en: '✨ Included free with your Premium subscription', pt: '✨ Incluído grátis com sua assinatura Premium' } as any)[language]}
+              </p>
+            </motion.div>
           </motion.div>
         </div>
       </section>
