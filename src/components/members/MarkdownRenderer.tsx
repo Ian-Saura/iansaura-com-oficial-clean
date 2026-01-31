@@ -37,19 +37,127 @@ interface MarkdownRendererProps {
   className?: string;
 }
 
+// Parse mindmap content into a tree structure for fallback display
+const parseMindmapToTree = (chart: string): { title: string; branches: { name: string; items: string[] }[] } => {
+  const lines = chart.split('\n').filter(l => l.trim());
+  let title = 'Mapa Conceptual';
+  const branches: { name: string; items: string[] }[] = [];
+  let currentBranch: { name: string; items: string[] } | null = null;
+  
+  for (const line of lines) {
+    // Skip mindmap declaration and root
+    if (line.includes('mindmap') || line.includes('root(')) {
+      const rootMatch = line.match(/root\(\((.+?)\)\)/);
+      if (rootMatch) {
+        title = rootMatch[1].replace(/\n/g, ' ').trim();
+      }
+      continue;
+    }
+    
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    
+    // Count leading spaces to determine depth
+    const indent = line.search(/\S/);
+    
+    // Top-level branches (usually have emojis)
+    if (indent <= 4 && trimmed.match(/^[🔬🛠️⚡📦🎯🔗💡⚠️📊🏗️📋🔒🌐💾🔄✅]/)) {
+      if (currentBranch) branches.push(currentBranch);
+      currentBranch = { name: trimmed, items: [] };
+    } else if (currentBranch && indent > 4) {
+      currentBranch.items.push(trimmed);
+    }
+  }
+  
+  if (currentBranch) branches.push(currentBranch);
+  
+  return { title, branches };
+};
+
+// Mindmap Fallback Visual Component
+const MindmapFallback: React.FC<{ chart: string }> = ({ chart }) => {
+  const { title, branches } = parseMindmapToTree(chart);
+  
+  const branchColors = [
+    'from-violet-500/20 to-purple-500/20 border-violet-500/30',
+    'from-emerald-500/20 to-teal-500/20 border-emerald-500/30',
+    'from-blue-500/20 to-cyan-500/20 border-blue-500/30',
+    'from-orange-500/20 to-amber-500/20 border-orange-500/30',
+    'from-rose-500/20 to-pink-500/20 border-rose-500/30',
+    'from-indigo-500/20 to-violet-500/20 border-indigo-500/30',
+  ];
+  
+  return (
+    <div className="my-6 p-6 bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-2xl border border-slate-700/50">
+      {/* Central node */}
+      <div className="text-center mb-6">
+        <div className="inline-block px-6 py-3 bg-gradient-to-r from-violet-500/30 to-purple-500/30 rounded-2xl border border-violet-500/40">
+          <h4 className="text-lg font-bold text-white">{title}</h4>
+        </div>
+      </div>
+      
+      {/* Branches */}
+      <div className="grid md:grid-cols-2 gap-4">
+        {branches.map((branch, i) => (
+          <div 
+            key={i}
+            className={`p-4 rounded-xl bg-gradient-to-br ${branchColors[i % branchColors.length]} border`}
+          >
+            <h5 className="font-semibold text-white mb-2">{branch.name}</h5>
+            {branch.items.length > 0 && (
+              <ul className="space-y-1">
+                {branch.items.slice(0, 6).map((item, j) => (
+                  <li key={j} className="text-sm text-slate-300 flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-500 flex-shrink-0"></span>
+                    {item}
+                  </li>
+                ))}
+                {branch.items.length > 6 && (
+                  <li className="text-xs text-slate-500">+{branch.items.length - 6} más...</li>
+                )}
+              </ul>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Pre-process mermaid chart to fix common issues
+const preprocessMermaidChart = (chart: string): string => {
+  let processed = chart.trim();
+  
+  // Fix multi-line root nodes in mindmaps
+  processed = processed.replace(/root\(\(([^)]+)\n\s*([^)]+)\)\)/g, (_, p1, p2) => {
+    return `root((${p1.trim()} ${p2.trim()}))`;
+  });
+  
+  // Replace problematic characters in mindmaps
+  if (processed.startsWith('mindmap')) {
+    // Remove or escape special characters that cause issues
+    processed = processed
+      .replace(/O\(1\)/g, 'O1')
+      .replace(/O\(n\)/g, 'On')
+      .replace(/O\(n²\)/g, 'On2');
+  }
+  
+  return processed;
+};
+
 // Mermaid Diagram Component
 const MermaidDiagram: React.FC<{ chart: string }> = ({ chart }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [svg, setSvg] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+  const isMindmap = chart.trim().startsWith('mindmap');
 
   useEffect(() => {
     const renderChart = async () => {
       if (!containerRef.current) return;
       
       try {
-        // Clean up the chart - remove any leading/trailing whitespace
-        const cleanChart = chart.trim();
+        const cleanChart = preprocessMermaidChart(chart);
         const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
         const { svg } = await mermaid.render(id, cleanChart);
         setSvg(svg);
@@ -60,10 +168,14 @@ const MermaidDiagram: React.FC<{ chart: string }> = ({ chart }) => {
       }
     };
 
-    // Small delay to ensure DOM is ready
     const timer = setTimeout(renderChart, 100);
     return () => clearTimeout(timer);
   }, [chart]);
+
+  // For mindmaps that fail, show a nice fallback
+  if (error && isMindmap) {
+    return <MindmapFallback chart={chart} />;
+  }
 
   if (error) {
     return (
