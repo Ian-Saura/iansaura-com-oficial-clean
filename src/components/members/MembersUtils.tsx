@@ -469,7 +469,7 @@ export const LockedContentPreview: React.FC<{
         
         {/* CTA */}
         <a
-          href={`https://iansaura.com/api/subscribe.php${userEmail ? `?email=${encodeURIComponent(userEmail)}` : ''}`}
+          href={`https://iansaura.com/subscribe.php${userEmail ? `?email=${encodeURIComponent(userEmail)}` : ''}`}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white font-bold py-4 px-8 rounded-xl transition-all transform hover:scale-105 shadow-lg shadow-emerald-500/30"

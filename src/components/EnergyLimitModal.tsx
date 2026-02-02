@@ -79,7 +79,7 @@ export const EnergyLimitModal: React.FC<EnergyLimitModalProps> = ({
             </p>
             
             <a
-              href="https://iansaura.com/api/subscribe.php"
+              href="https://iansaura.com/subscribe.php"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 w-full justify-center bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-bold py-4 px-6 rounded-xl text-lg transition-all transform hover:scale-105 shadow-lg"

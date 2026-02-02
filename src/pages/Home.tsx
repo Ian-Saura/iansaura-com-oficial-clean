@@ -54,7 +54,7 @@ export default function Home({ user }: HomeProps) {
     if (!user) {
       navigate('/auth?redirect=/suscripcion&action=subscribe');
     } else {
-      window.location.href = 'https://iansaura.com/api/subscribe.php';
+      window.location.href = 'https://iansaura.com/subscribe.php';
     }
   };
 
@@ -162,7 +162,7 @@ export default function Home({ user }: HomeProps) {
               <span className="text-yellow-300 font-bold"> {t('landing.banner.noRisk')}</span>
             </p>
             <a
-              href="https://iansaura.com/api/subscribe.php"
+              href="https://iansaura.com/subscribe.php"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackCTAClick('banner_trial', 'gumroad')}
@@ -392,7 +392,7 @@ export default function Home({ user }: HomeProps) {
                         <li>✓ {t('landing.banner.noRisk')}</li>
                       </ul>
                       <a
-                        href="https://iansaura.com/api/subscribe.php"
+                        href="https://iansaura.com/subscribe.php"
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => trackCTAClick('hero_trial_premium', 'gumroad')}

@@ -1323,7 +1323,7 @@ const ComingSoonRoadmap: React.FC<ComingSoonRoadmapProps> = ({ isFreeUser }) => 
                 </div>
               </div>
               <a
-                href="https://iansaura.com/api/subscribe.php"
+                href="https://iansaura.com/subscribe.php"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-6 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all shadow-lg shadow-amber-500/25 whitespace-nowrap"
