@@ -751,7 +751,7 @@ const Members: React.FC<MembersProps> = ({ user }) => {
               
               {/* CTA */}
               <a
-                href={`https://iansaura.com/api/subscribe.php${user?.email ? `?email=${encodeURIComponent(user.email)}` : ''}`}
+                href={`https://iansaura.com/subscribe.php${user?.email ? `?email=${encodeURIComponent(user.email)}` : ''}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-purple-500/30"
@@ -978,7 +978,7 @@ const Members: React.FC<MembersProps> = ({ user }) => {
               <div className="grid md:grid-cols-3 gap-4 mb-4">
                 {/* Mensual */}
                 <a
-                  href="https://iansaura.com/api/subscribe.php"
+                  href="https://iansaura.com/subscribe.php"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block p-4 bg-slate-800/50 rounded-xl border border-slate-600 hover:border-emerald-500/50 transition-all group"

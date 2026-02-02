@@ -405,7 +405,7 @@ export default function Auth({ onLogin }: AuthProps) {
           // Handle different redirect scenarios
           if (wantsSubscription) {
             // Redirect to Gumroad checkout via subscribe.php
-            window.location.href = 'https://iansaura.com/api/subscribe.php';
+            window.location.href = 'https://iansaura.com/subscribe.php';
           } else if (needsUpgrade) {
             handleSubscription(result.user);
           } else if (redirectPath) {

@@ -43,7 +43,7 @@ export default function Suscripcion({ user }: SuscripcionProps) {
     if (!user) {
       navigate('/auth?redirect=/suscripcion&action=subscribe');
     } else {
-      window.location.href = 'https://iansaura.com/api/subscribe.php';
+      window.location.href = 'https://iansaura.com/subscribe.php';
     }
   };
 
