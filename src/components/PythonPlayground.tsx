@@ -69,6 +69,7 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
   });
   
   // Estado para el código guardado por ejercicio (persistir respuestas)
+  // Arquitectura: localStorage = caché rápido, database = fuente de verdad
   const [savedCode, setSavedCode] = useState<Record<string, string>>(() => {
     try {
       const saved = localStorage.getItem('python_saved_code');
@@ -77,6 +78,9 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
       return {};
     }
   });
+  
+  // Flag para evitar sincronización duplicada
+  const [answersLoadedFromDB, setAnswersLoadedFromDB] = useState(false);
   
   const [code, setCode] = useState('');
   const [output, setOutput] = useState('');
@@ -138,20 +142,85 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
     };
   }, [isResizing]);
   
-  // Guardar código por ejercicio en localStorage
+  // Guardar código por ejercicio en localStorage (caché rápido)
   useEffect(() => {
     localStorage.setItem('python_saved_code', JSON.stringify(savedCode));
   }, [savedCode]);
   
-  // Función para guardar código actual
-  const saveCurrentCode = useCallback((exerciseId: string, codeText: string) => {
+  // Cargar respuestas desde la base de datos al montar (fuente de verdad)
+  useEffect(() => {
+    if (!userEmail || answersLoadedFromDB) return;
+    
+    const loadFromDatabase = async () => {
+      try {
+        const response = await fetch(`/api/exercise-answers.php?email=${encodeURIComponent(userEmail)}&type=python`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.answers) {
+            // Merge: database tiene prioridad, pero no perder datos locales
+            const dbAnswers: Record<string, string> = {};
+            Object.entries(data.answers).forEach(([id, ans]: [string, any]) => {
+              if (ans.code) dbAnswers[id] = ans.code;
+            });
+            
+            setSavedCode(prev => {
+              const merged = { ...prev, ...dbAnswers };
+              localStorage.setItem('python_saved_code', JSON.stringify(merged));
+              return merged;
+            });
+            console.log(`[Python] Loaded ${Object.keys(dbAnswers).length} answers from database`);
+          }
+        }
+      } catch (err) {
+        console.log('[Python] Database offline, using localStorage');
+      }
+      setAnswersLoadedFromDB(true);
+    };
+    
+    loadFromDatabase();
+  }, [userEmail, answersLoadedFromDB]);
+  
+  // Función para guardar código a la base de datos (background sync)
+  const saveToDatabase = useCallback(async (exerciseId: string, codeText: string, correct: boolean = false) => {
+    if (!userEmail || !codeText.trim()) return;
+    
+    try {
+      await fetch('/api/exercise-answers.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: userEmail,
+          exerciseId,
+          exerciseType: 'python',
+          code: codeText,
+          isCorrect: correct
+        })
+      });
+    } catch (err) {
+      // Silent fail - localStorage tiene la copia
+    }
+  }, [userEmail]);
+  
+  // Función para guardar código actual (localStorage inmediato + DB en background)
+  const saveCurrentCode = useCallback((exerciseId: string, codeText: string, syncToDb: boolean = false) => {
     if (codeText.trim()) {
       setSavedCode(prev => ({ ...prev, [exerciseId]: codeText }));
+      if (syncToDb) {
+        saveToDatabase(exerciseId, codeText);
+      }
     }
-  }, []);
+  }, [saveToDatabase]);
   
   // Ref para guardar código del ejercicio anterior antes de cambiar
   const previousExerciseRef = useRef<string | null>(null);
+  
+  // Ref para mantener el código actual (evita problemas de closure stale)
+  const codeRef = useRef<string>('');
+  
+  // Mantener codeRef sincronizado con code
+  useEffect(() => {
+    codeRef.current = code;
+  }, [code]);
   
   const outputRef = useRef<string[]>([]);
 
@@ -305,15 +374,17 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
   
   // Auto-reset cuando cambia el ejercicio - guardar código anterior y cargar guardado
   useEffect(() => {
-    // Guardar el código del ejercicio anterior antes de cambiar
-    if (previousExerciseRef.current && code.trim()) {
-      saveCurrentCode(previousExerciseRef.current, code);
+    // Guardar el código del ejercicio anterior antes de cambiar (usar ref para evitar stale closure)
+    if (previousExerciseRef.current && codeRef.current.trim()) {
+      saveCurrentCode(previousExerciseRef.current, codeRef.current, true); // Sync to DB on exercise change
     }
     
     // Cargar el código guardado del nuevo ejercicio (o starterCode si no hay guardado)
     if (currentExercise) {
       const savedCodeForExercise = savedCode[currentExercise.id];
-      setCode(savedCodeForExercise || currentExercise.starterCode);
+      const codeToLoad = savedCodeForExercise || currentExercise.starterCode;
+      setCode(codeToLoad);
+      codeRef.current = codeToLoad; // Sync ref
       previousExerciseRef.current = currentExercise.id;
     }
     
@@ -468,9 +539,9 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
   const executeCode = useCallback(async () => {
     if (!pyodide || !code.trim()) return;
 
-    // Guardar el código al ejecutar
+    // Guardar el código al ejecutar (localStorage + database)
     if (currentExercise) {
-      saveCurrentCode(currentExercise.id, code);
+      saveCurrentCode(currentExercise.id, code, true); // syncToDb = true
     }
 
     setIsRunning(true);

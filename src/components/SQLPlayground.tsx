@@ -82,6 +82,7 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
   }, [exerciseIndex]);
   
   // Estado para las queries guardadas por ejercicio
+  // Arquitectura: localStorage = caché rápido, database = fuente de verdad
   const [savedQueries, setSavedQueries] = useState<Record<string, string>>(() => {
     try {
       const saved = localStorage.getItem('sql_saved_queries');
@@ -90,6 +91,9 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
       return {};
     }
   });
+  
+  // Flag para evitar sincronización duplicada
+  const [answersLoadedFromDB, setAnswersLoadedFromDB] = useState(false);
   
   const [query, setQuery] = useState('');
   const [result, setResult] = useState<{ columns: string[]; values: any[][] } | null>(null);
@@ -268,17 +272,74 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
     }
   }, [completedExercises, userEmail]);
   
-  // Guardar queries por ejercicio
+  // Guardar queries por ejercicio (caché rápido)
   useEffect(() => {
     localStorage.setItem('sql_saved_queries', JSON.stringify(savedQueries));
   }, [savedQueries]);
   
-  // Guardar query actual cuando cambia (con debounce implícito al cambiar de ejercicio)
-  const saveCurrentQuery = useCallback((exerciseId: string, queryText: string) => {
+  // Cargar respuestas desde la base de datos al montar (fuente de verdad)
+  useEffect(() => {
+    if (!userEmail || answersLoadedFromDB) return;
+    
+    const loadFromDatabase = async () => {
+      try {
+        const response = await fetch(`/api/exercise-answers.php?email=${encodeURIComponent(userEmail)}&type=sql`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.answers) {
+            // Merge: database tiene prioridad
+            const dbAnswers: Record<string, string> = {};
+            Object.entries(data.answers).forEach(([id, ans]: [string, any]) => {
+              if (ans.code) dbAnswers[id] = ans.code;
+            });
+            
+            setSavedQueries(prev => {
+              const merged = { ...prev, ...dbAnswers };
+              localStorage.setItem('sql_saved_queries', JSON.stringify(merged));
+              return merged;
+            });
+            console.log(`[SQL] Loaded ${Object.keys(dbAnswers).length} answers from database`);
+          }
+        }
+      } catch (err) {
+        console.log('[SQL] Database offline, using localStorage');
+      }
+      setAnswersLoadedFromDB(true);
+    };
+    
+    loadFromDatabase();
+  }, [userEmail, answersLoadedFromDB]);
+  
+  // Función para guardar query a la base de datos (background sync)
+  const saveToDatabase = useCallback(async (exerciseId: string, queryText: string, correct: boolean = false) => {
+    if (!userEmail || !queryText.trim()) return;
+    
+    try {
+      await fetch('/api/exercise-answers.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: userEmail,
+          exerciseId,
+          exerciseType: 'sql',
+          code: queryText,
+          isCorrect: correct
+        })
+      });
+    } catch (err) {
+      // Silent fail - localStorage tiene la copia
+    }
+  }, [userEmail]);
+  
+  // Guardar query actual (localStorage inmediato + DB opcional)
+  const saveCurrentQuery = useCallback((exerciseId: string, queryText: string, syncToDb: boolean = false) => {
     if (queryText.trim()) {
       setSavedQueries(prev => ({ ...prev, [exerciseId]: queryText }));
+      if (syncToDb) {
+        saveToDatabase(exerciseId, queryText);
+      }
     }
-  }, []);
+  }, [saveToDatabase]);
 
   // FREE USER LIMIT: Max 5 Easy exercises
   const FREE_EXERCISE_LIMIT = 5;
@@ -347,9 +408,9 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
   
   // Auto-reset cuando cambia el ejercicio
   useEffect(() => {
-    // Guardar la query del ejercicio anterior antes de cambiar
+    // Guardar la query del ejercicio anterior antes de cambiar (sync to DB)
     if (previousExerciseRef.current && query.trim()) {
-      saveCurrentQuery(previousExerciseRef.current, query);
+      saveCurrentQuery(previousExerciseRef.current, query, true); // syncToDb = true
     }
     
     // Cargar la query guardada del nuevo ejercicio
@@ -526,9 +587,9 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
   const executeQuery = useCallback(() => {
     if (!db || !query.trim()) return;
 
-    // Guardar la query al ejecutar
+    // Guardar la query al ejecutar (localStorage + database)
     if (currentExercise) {
-      saveCurrentQuery(currentExercise.id, query);
+      saveCurrentQuery(currentExercise.id, query, true); // syncToDb = true
     }
 
     try {
