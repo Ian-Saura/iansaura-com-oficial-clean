@@ -67,6 +67,17 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
       return 0;
     }
   });
+  
+  // Estado para el código guardado por ejercicio (persistir respuestas)
+  const [savedCode, setSavedCode] = useState<Record<string, string>>(() => {
+    try {
+      const saved = localStorage.getItem('python_saved_code');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+  
   const [code, setCode] = useState('');
   const [output, setOutput] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -126,6 +137,21 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isResizing]);
+  
+  // Guardar código por ejercicio en localStorage
+  useEffect(() => {
+    localStorage.setItem('python_saved_code', JSON.stringify(savedCode));
+  }, [savedCode]);
+  
+  // Función para guardar código actual
+  const saveCurrentCode = useCallback((exerciseId: string, codeText: string) => {
+    if (codeText.trim()) {
+      setSavedCode(prev => ({ ...prev, [exerciseId]: codeText }));
+    }
+  }, []);
+  
+  // Ref para guardar código del ejercicio anterior antes de cambiar
+  const previousExerciseRef = useRef<string | null>(null);
   
   const outputRef = useRef<string[]>([]);
 
@@ -261,9 +287,9 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
   // Estado para evitar clicks rápidos
   const [isTransitioning, setIsTransitioning] = useState(false);
   
-  // Reset ejercicio
-  const resetExercise = useCallback(() => {
-    if (currentExercise) {
+  // Reset ejercicio (loadSavedCode: true = cargar código guardado, false = cargar starterCode)
+  const resetExercise = useCallback((loadSavedCodeOption: boolean = true) => {
+    if (!loadSavedCodeOption && currentExercise) {
       setCode(currentExercise.starterCode);
     }
     setOutput('');
@@ -277,15 +303,28 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
     setElapsedTime(0);
   }, [currentExercise]);
   
-  // Auto-reset cuando cambia el ejercicio
+  // Auto-reset cuando cambia el ejercicio - guardar código anterior y cargar guardado
   useEffect(() => {
-    resetExercise();
+    // Guardar el código del ejercicio anterior antes de cambiar
+    if (previousExerciseRef.current && code.trim()) {
+      saveCurrentCode(previousExerciseRef.current, code);
+    }
+    
+    // Cargar el código guardado del nuevo ejercicio (o starterCode si no hay guardado)
+    if (currentExercise) {
+      const savedCodeForExercise = savedCode[currentExercise.id];
+      setCode(savedCodeForExercise || currentExercise.starterCode);
+      previousExerciseRef.current = currentExercise.id;
+    }
+    
+    resetExercise(false); // No resetear código, ya lo cargamos arriba
+    
     // Pequeño delay para evitar clicks rápidos
     setIsTransitioning(true);
     const timer = setTimeout(() => setIsTransitioning(false), 150);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exerciseIndex]); // Solo cuando cambia el índice, no resetExercise para evitar loop
+  }, [currentExercise?.id]); // Cuando cambia el ejercicio
 
   // Estadísticas de progreso
   const progressStats = useMemo(() => {
@@ -340,19 +379,9 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
     loadPyodideLib();
   }, [t]);
 
-  // Inicializar código cuando cambia ejercicio
-  useEffect(() => {
-    if (currentExercise) {
-      setCode(currentExercise.starterCode);
-      setOutput('');
-      setError(null);
-      setIsCorrect(null);
-      setShowHint(false);
-      setShowSolution(false);
-      setStartTime(Date.now());
-      setElapsedTime(0);
-    }
-  }, [currentExercise]);
+  // NOTA: La inicialización del código cuando cambia ejercicio se maneja en el useEffect
+  // que guarda/carga código guardado (líneas anteriores). Este effect está deshabilitado
+  // para evitar sobrescribir el código guardado del usuario.
 
   // Timer - solo corre si hasStarted Y no es correcto aún - pausa cuando la pestaña está oculta
   const elapsedTimerRef = useRef<number | null>(null);
@@ -438,6 +467,11 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
   // Ejecutar código Python
   const executeCode = useCallback(async () => {
     if (!pyodide || !code.trim()) return;
+
+    // Guardar el código al ejecutar
+    if (currentExercise) {
+      saveCurrentCode(currentExercise.id, code);
+    }
 
     setIsRunning(true);
     setOutput('');
