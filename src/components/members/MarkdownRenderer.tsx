@@ -234,9 +234,9 @@ const CodeBlock: React.FC<{
   return (
     <div className="relative group my-4">
       <div className="absolute top-2 right-2 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-        {language && (
+      {language && (
           <span className="text-xs text-slate-500 bg-slate-800 px-2 py-1 rounded">
-            {language}
+          {language}
           </span>
         )}
         <button
@@ -245,7 +245,7 @@ const CodeBlock: React.FC<{
         >
           {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
         </button>
-      </div>
+        </div>
       <pre className={`p-4 bg-slate-900 rounded-xl border border-slate-700/50 overflow-x-auto text-sm ${langColors[language || ''] || 'text-slate-300'}`}>
         <code className="block whitespace-pre">{children}</code>
       </pre>
@@ -256,27 +256,27 @@ const CodeBlock: React.FC<{
 // Callout/Admonition Component
 const Callout: React.FC<{ type: string; title?: string; children: React.ReactNode }> = ({ type, title, children }) => {
   const styles: Record<string, { bg: string; border: string; icon: React.ReactNode; defaultTitle: string; titleColor: string }> = {
-    WARNING: {
-      bg: 'bg-amber-500/10',
-      border: 'border-amber-500/30',
+      WARNING: { 
+        bg: 'bg-amber-500/10', 
+        border: 'border-amber-500/30', 
       icon: <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0" />,
       defaultTitle: 'Gotcha de Senior',
       titleColor: 'text-amber-400'
-    },
-    IMPORTANT: {
+      },
+      IMPORTANT: { 
       bg: 'bg-violet-500/10',
       border: 'border-violet-500/30',
       icon: <Info className="w-5 h-5 text-violet-400 flex-shrink-0" />,
       defaultTitle: 'Importante',
       titleColor: 'text-violet-400'
-    },
-    TIP: {
-      bg: 'bg-emerald-500/10',
-      border: 'border-emerald-500/30',
+      },
+      TIP: { 
+        bg: 'bg-emerald-500/10', 
+        border: 'border-emerald-500/30', 
       icon: <Lightbulb className="w-5 h-5 text-emerald-400 flex-shrink-0" />,
       defaultTitle: 'Tip',
       titleColor: 'text-emerald-400'
-    },
+      },
     NOTE: {
       bg: 'bg-blue-500/10',
       border: 'border-blue-500/30',
@@ -284,13 +284,13 @@ const Callout: React.FC<{ type: string; title?: string; children: React.ReactNod
       defaultTitle: 'Nota',
       titleColor: 'text-blue-400'
     }
-  };
+    };
 
   const style = styles[type] || styles.NOTE;
 
-  return (
+    return (
     <div className={`my-6 p-4 rounded-xl ${style.bg} border ${style.border}`}>
-      <div className="flex items-start gap-3">
+        <div className="flex items-start gap-3">
         {style.icon}
         <div className="flex-1 min-w-0">
           <span className={`font-bold ${style.titleColor} block mb-2`}>
@@ -302,7 +302,7 @@ const Callout: React.FC<{ type: string; title?: string; children: React.ReactNod
         </div>
       </div>
     </div>
-  );
+    );
 };
 
 // Pre-process content to convert GitHub-style admonitions to a parseable format
@@ -392,7 +392,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, cla
             
             return (
               <blockquote className="my-6 pl-4 border-l-4 border-violet-500/50 text-slate-400 italic">
-                {children}
+              {children}
               </blockquote>
             );
           },
