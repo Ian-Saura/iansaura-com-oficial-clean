@@ -70,14 +70,16 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
   
   // Estado para el código guardado por ejercicio (persistir respuestas)
   // Arquitectura: localStorage = caché rápido, database = fuente de verdad
-  const [savedCode, setSavedCode] = useState<Record<string, string>>(() => {
+  const getInitialSavedCode = (): Record<string, string> => {
     try {
       const saved = localStorage.getItem('python_saved_code');
       return saved ? JSON.parse(saved) : {};
     } catch {
       return {};
     }
-  });
+  };
+  
+  const [savedCode, setSavedCode] = useState<Record<string, string>>(getInitialSavedCode);
   
   // Flag para evitar sincronización duplicada
   const [answersLoadedFromDB, setAnswersLoadedFromDB] = useState(false);
@@ -217,10 +219,18 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
   // Ref para mantener el código actual (evita problemas de closure stale)
   const codeRef = useRef<string>('');
   
-  // Mantener codeRef sincronizado con code
+  // Ref para mantener savedCode actualizado (evita stale closures)
+  // Inicializar con el mismo valor que el state
+  const savedCodeRef = useRef<Record<string, string>>(getInitialSavedCode());
+  
+  // Mantener refs sincronizados
   useEffect(() => {
     codeRef.current = code;
   }, [code]);
+  
+  useEffect(() => {
+    savedCodeRef.current = savedCode;
+  }, [savedCode]);
   
   const outputRef = useRef<string[]>([]);
 
@@ -374,14 +384,24 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
   
   // Auto-reset cuando cambia el ejercicio - guardar código anterior y cargar guardado
   useEffect(() => {
-    // Guardar el código del ejercicio anterior antes de cambiar (usar ref para evitar stale closure)
+    // Guardar el código del ejercicio anterior antes de cambiar (usar refs para evitar stale closure)
     if (previousExerciseRef.current && codeRef.current.trim()) {
-      saveCurrentCode(previousExerciseRef.current, codeRef.current, true); // Sync to DB on exercise change
+      // Guardar inmediatamente en el ref y state
+      const prevId = previousExerciseRef.current;
+      const prevCode = codeRef.current;
+      setSavedCode(prev => {
+        const updated = { ...prev, [prevId]: prevCode };
+        savedCodeRef.current = updated;
+        localStorage.setItem('python_saved_code', JSON.stringify(updated));
+        return updated;
+      });
+      saveToDatabase(prevId, prevCode); // Sync to DB
     }
     
     // Cargar el código guardado del nuevo ejercicio (o starterCode si no hay guardado)
     if (currentExercise) {
-      const savedCodeForExercise = savedCode[currentExercise.id];
+      // Usar ref que tiene el valor más actualizado
+      const savedCodeForExercise = savedCodeRef.current[currentExercise.id];
       const codeToLoad = savedCodeForExercise || currentExercise.starterCode;
       setCode(codeToLoad);
       codeRef.current = codeToLoad; // Sync ref
