@@ -890,7 +890,7 @@ INSERT INTO customers VALUES (5, 'Laura Martín', 'laura@email.com');`,
     },
     description: {
       es: 'Seleccioná nombre como "producto" y precio como "precio_usd".',
-      en: 'Select name as "product" and price as "price_usd".',
+      en: 'Select the name as "producto" and price as "precio_usd" using AS aliases.',
       pt: 'Selecione o nome como "produto" e o preço como "preco_usd".'
     },
     theory: {

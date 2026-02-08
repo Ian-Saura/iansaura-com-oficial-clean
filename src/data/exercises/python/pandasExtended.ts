@@ -169,8 +169,17 @@ print(resultado_iloc)
 print("\\nloc result:")
 print(resultado_loc)`,
     testCode: `
-assert len(resultado_iloc) == 3, "iloc should return 3 rows"
-assert len(resultado_loc) == 3, "loc should return 3 rows (Bob, Carlos, Eva)"
+# Accept both Spanish and English variable names
+try:
+    _ri = resultado_iloc
+except NameError:
+    _ri = result_iloc
+try:
+    _rl = resultado_loc
+except NameError:
+    _rl = result_loc
+assert len(_ri) == 3, "iloc should return 3 rows"
+assert len(_rl) == 3, "loc should return 3 rows (Bob, Carlos, Eva)"
 print("✅ ¡Correcto!")
 `,
   },
@@ -337,10 +346,20 @@ print(top_3_caros)
 print("\\nTop 2 más baratos:")
 print(top_2_baratos)`,
     testCode: `
-assert len(top_3_caros) == 3, "Should have 3 expensive products"
-assert len(top_2_baratos) == 2, "Should have 2 cheap products"
-assert top_3_caros.iloc[0]['precio'] == 999, "Most expensive should be 999"
-assert top_2_baratos.iloc[0]['precio'] == 29, "Cheapest should be 29"
+# Accept both Spanish and English variable/column names
+try:
+    _t3 = top_3_caros
+except NameError:
+    _t3 = top_3_expensive
+try:
+    _t2 = top_2_baratos
+except NameError:
+    _t2 = top_2_cheap
+_pk = 'precio' if 'precio' in _t3.columns else 'price'
+assert len(_t3) == 3, "Should have 3 expensive products"
+assert len(_t2) == 2, "Should have 2 cheap products"
+assert _t3.iloc[0][_pk] == 999, "Most expensive should be 999"
+assert _t2.iloc[0][_pk] == 29, "Cheapest should be 29"
 print("✅ ¡Correcto!")
 `,
   },
@@ -490,11 +509,17 @@ empleados['diferencia'] = empleados['salario'] - empleados['salario_promedio_dep
 
 print(empleados)`,
     testCode: `
-assert 'salario_promedio_dept' in empleados.columns, "Should have salario_promedio_dept column"
-assert 'diferencia' in empleados.columns, "Should have diferencia column"
+# Accept both Spanish and English variable/column names
+try:
+    _df = empleados
+except NameError:
+    _df = employees
+_avg_col = 'salario_promedio_dept' if 'salario_promedio_dept' in _df.columns else ('dept_avg_salary' if 'dept_avg_salary' in _df.columns else 'avg_salary_dept')
+_diff_col = 'diferencia' if 'diferencia' in _df.columns else 'difference'
+assert _avg_col in _df.columns, f"Should have avg salary column (salario_promedio_dept or dept_avg_salary)"
+assert _diff_col in _df.columns, f"Should have difference column (diferencia or difference)"
 # IT avg = (5000+5500+4800)/3 = 5100
-# Sales avg = (4000+4500+5000)/3 = 4500
-assert abs(empleados.loc[0, 'salario_promedio_dept'] - 5100) < 1, "IT avg should be 5100"
+assert abs(_df.loc[0, _avg_col] - 5100) < 1, "IT avg should be 5100"
 print("✅ ¡Correcto!")
 `,
   },
@@ -684,9 +709,17 @@ print(ventas_ancho)
 print("\\nFormato largo:")
 print(ventas_largo)`,
     testCode: `
-assert len(ventas_largo) == 12, "Should have 12 rows (3 products * 4 quarters)"
-assert 'trimestre' in ventas_largo.columns, "Should have trimestre column"
-assert 'ventas' in ventas_largo.columns, "Should have ventas column"
+# Accept both Spanish and English variable names
+try:
+    _vl = ventas_largo
+except NameError:
+    _vl = sales_long
+assert len(_vl) == 12, "Should have 12 rows (3 products * 4 quarters)"
+# Accept either Spanish or English column names for var_name and value_name
+_has_quarter = 'trimestre' in _vl.columns or 'quarter' in _vl.columns
+_has_sales = 'ventas' in _vl.columns or 'sales' in _vl.columns
+assert _has_quarter, "Should have a quarter/trimestre column"
+assert _has_sales, "Should have a sales/ventas column"
 print("✅ ¡Correcto!")
 `,
   },
@@ -822,9 +855,16 @@ ventas['pct_acumulado'] = ventas['ventas'].cumsum() / ventas['ventas'].sum() * 1
 
 print(ventas)`,
     testCode: `
-assert ventas['ventas_acumuladas'].iloc[-1] == 7500, "Total cumulative should be 7500"
-assert abs(ventas['pct_acumulado'].iloc[-1] - 100) < 0.01, "Last pct should be 100%"
-assert abs(ventas['pct_acumulado'].iloc[0] - 13.33) < 0.1, "First pct should be ~13.33%"
+# Accept both Spanish and English variable/column names
+try:
+    _df = ventas
+except NameError:
+    _df = sales
+_cum_col = 'ventas_acumuladas' if 'ventas_acumuladas' in _df.columns else 'cumulative_sales'
+_pct_col = 'pct_acumulado' if 'pct_acumulado' in _df.columns else ('cumulative_pct' if 'cumulative_pct' in _df.columns else 'cum_pct')
+assert _df[_cum_col].iloc[-1] == 7500, "Total cumulative should be 7500"
+assert abs(_df[_pct_col].iloc[-1] - 100) < 0.01, "Last pct should be 100%"
+assert abs(_df[_pct_col].iloc[0] - 13.33) < 0.1, "First pct should be ~13.33%"
 print("✅ ¡Correcto!")
 `,
   },
@@ -973,9 +1013,17 @@ usuarios['dominio'] = usuarios['email_clean'].str.split('@').str[1]
 
 print(usuarios)`,
     testCode: `
-assert usuarios['email_clean'].iloc[0] == 'ana.garcia@gmail.com', "Should be cleaned and lowercase"
-assert usuarios['usuario'].iloc[1] == 'bob.smith', "User should be bob.smith"
-assert usuarios['dominio'].iloc[2] == 'empresa.org', "Domain should be empresa.org"
+# Accept both Spanish and English variable/column names
+try:
+    _df = usuarios
+except NameError:
+    _df = users
+_clean = 'email_clean' if 'email_clean' in _df.columns else 'clean_email'
+_user = 'usuario' if 'usuario' in _df.columns else 'user'
+_dom = 'dominio' if 'dominio' in _df.columns else 'domain'
+assert _df[_clean].iloc[0] == 'ana.garcia@gmail.com', "Should be cleaned and lowercase"
+assert _df[_user].iloc[1] == 'bob.smith', "User should be bob.smith"
+assert _df[_dom].iloc[2] == 'empresa.org', "Domain should be empresa.org"
 print("✅ ¡Correcto!")
 `,
   },
@@ -1130,9 +1178,17 @@ pedidos['dias_desde_primero'] = (pedidos['fecha'] - pedidos['fecha'].min()).dt.d
 
 print(pedidos)`,
     testCode: `
-assert pedidos['año'].iloc[0] == 2024, "Year should be 2024"
-assert pedidos['mes'].iloc[1] == 2, "Month of second order should be 2"
-assert pedidos['dias_desde_primero'].iloc[0] == 0, "First order should have 0 days"
+# Accept both Spanish and English variable/column names
+try:
+    _df = pedidos
+except NameError:
+    _df = orders
+_yr = 'año' if 'año' in _df.columns else 'year'
+_mo = 'mes' if 'mes' in _df.columns else 'month'
+_dd = 'dias_desde_primero' if 'dias_desde_primero' in _df.columns else ('days_since_first' if 'days_since_first' in _df.columns else 'days_from_first')
+assert _df[_yr].iloc[0] == 2024, "Year should be 2024"
+assert _df[_mo].iloc[1] == 2, "Month of second order should be 2"
+assert _df[_dd].iloc[0] == 0, "First order should have 0 days"
 print("✅ ¡Correcto!")
 `,
   },
@@ -1302,10 +1358,18 @@ resumen = ventas.groupby('categoria').agg(
 
 print(resumen)`,
     testCode: `
-assert 'total_ventas' in resumen.columns, "Should have total_ventas column"
-assert 'promedio_monto' in resumen.columns, "Should have promedio_monto column"
-electro = resumen[resumen['categoria'] == 'Electro']
-assert electro['total_ventas'].values[0] == 2300, "Electro total should be 2300"
+# Accept both Spanish and English variable/column names
+try:
+    _r = resumen
+except NameError:
+    _r = summary
+_ts = 'total_ventas' if 'total_ventas' in _r.columns else 'total_sales'
+_avg = 'promedio_monto' if 'promedio_monto' in _r.columns else ('avg_amount' if 'avg_amount' in _r.columns else 'average_amount')
+_cat = 'categoria' if 'categoria' in _r.columns else 'category'
+assert _ts in _r.columns, f"Should have total sales column ({_ts})"
+assert _avg in _r.columns, f"Should have average column ({_avg})"
+electro = _r[_r[_cat] == 'Electro']
+assert electro[_ts].values[0] == 2300, "Electro total should be 2300"
 print("✅ ¡Correcto!")
 `,
   },
@@ -1487,8 +1551,17 @@ print(f"\\nEmails duplicados: {duplicados}")
 print("\\nUsuarios únicos:")
 print(usuarios_unicos)`,
     testCode: `
-assert duplicados == 2, f"Should have 2 duplicates, got {duplicados}"
-assert len(usuarios_unicos) == 3, f"Should have 3 unique users, got {len(usuarios_unicos)}"
+# Accept both Spanish and English variable names
+try:
+    _d = duplicados
+except NameError:
+    _d = duplicates
+try:
+    _u = usuarios_unicos
+except NameError:
+    _u = unique_users
+assert _d == 2, f"Should have 2 duplicates, got {_d}"
+assert len(_u) == 3, f"Should have 3 unique users, got {len(_u)}"
 print("✅ ¡Correcto!")
 `,
   },
@@ -1682,8 +1755,13 @@ ventas_totales = pd.concat([ventas_enero, ventas_febrero, ventas_marzo], ignore_
 
 print(ventas_totales)`,
     testCode: `
-assert len(ventas_totales) == 6, f"Should have 6 rows, got {len(ventas_totales)}"
-assert list(ventas_totales.index) == [0, 1, 2, 3, 4, 5], "Index should be reset"
+# Accept both Spanish and English variable names
+try:
+    _vt = ventas_totales
+except NameError:
+    _vt = total_sales
+assert len(_vt) == 6, f"Should have 6 rows, got {len(_vt)}"
+assert list(_vt.index) == [0, 1, 2, 3, 4, 5], "Index should be reset"
 print("✅ ¡Correcto!")
 `,
   },
@@ -1858,8 +1936,18 @@ print(conteo)
 print("\\nPorcentaje por estado:")
 print(porcentajes)`,
     testCode: `
-assert conteo['entregado'] == 6, "Should have 6 delivered"
-assert abs(porcentajes['entregado'] - 60) < 0.1, "Delivered should be 60%"
+# Accept both Spanish and English variable names and data values
+try:
+    _c = conteo
+except NameError:
+    _c = count
+try:
+    _p = porcentajes
+except NameError:
+    _p = percentages
+_key = 'entregado' if 'entregado' in _c.index else 'delivered'
+assert _c[_key] == 6, "Should have 6 delivered"
+assert abs(_p[_key] - 60) < 0.1, "Delivered should be 60%"
 print("✅ ¡Correcto!")
 `,
   },
@@ -2031,8 +2119,14 @@ filtrados = productos.query("categoria == 'Electronics' and precio < 500 and sto
 
 print(filtrados)`,
     testCode: `
-assert len(filtrados) == 3, f"Should have 3 products, got {len(filtrados)}"
-assert 'Laptop Pro' not in filtrados['nombre'].values, "Laptop Pro should be excluded (price > 500)"
+# Accept both Spanish and English variable/column names
+try:
+    _f = filtrados
+except NameError:
+    _f = filtered
+_nk = 'nombre' if 'nombre' in _f.columns else 'name'
+assert len(_f) == 3, f"Should have 3 products, got {len(_f)}"
+assert 'Laptop Pro' not in _f[_nk].values, "Laptop Pro should be excluded (price > 500)"
 print("✅ ¡Correcto!")
 `,
   },

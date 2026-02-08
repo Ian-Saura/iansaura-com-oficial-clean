@@ -341,8 +341,12 @@ print(f"Média: {resultado}")`
 resultado = calcular_promedio([10, 20, 30, 40, 50])
 print(f"Promedio: {resultado}")`,
     testCode: `
-assert calcular_promedio([10, 20, 30, 40, 50]) == 30, "Average of [10,20,30,40,50] should be 30"
-assert calcular_promedio([1, 2, 3]) == 2, "Average of [1,2,3] should be 2"
+try:
+    _fn = calcular_promedio
+except NameError:
+    _fn = calculate_average
+assert _fn([10, 20, 30, 40, 50]) == 30, "Average of [10,20,30,40,50] should be 30"
+assert _fn([1, 2, 3]) == 2, "Average of [1,2,3] should be 2"
 print("✅ ¡Correcto!")
 `,
   },
@@ -465,8 +469,14 @@ print(ordenados)`
 ordenados = sorted(productos, key=lambda p: p['precio'])
 print(ordenados)`,
     testCode: `
-assert ordenados[0]['precio'] == 29, "First should be cheapest"
-assert ordenados[-1]['precio'] == 999, "Last should be most expensive"
+# Accept both Spanish and English variable/key names
+try:
+    _s = ordenados
+except NameError:
+    _s = sorted_products
+_pk = 'precio' if 'precio' in _s[0] else 'price'
+assert _s[0][_pk] == 29, "First should be cheapest"
+assert _s[-1][_pk] == 999, "Last should be most expensive"
 print("✅ ¡Correcto!")
 `,
   },
@@ -2134,16 +2144,21 @@ ordenados = sorted(empleados, key=lambda x: x["salario"], reverse=True)
 
 print(ordenados)`,
     testCode: `
+# Accept both Spanish and English variable names
+try:
+    _sorted = ordenados
+except NameError:
+    _sorted = sorted_employees
 # Detectar error común: lista dentro de lista
-if isinstance(ordenados, list) and len(ordenados) == 1 and isinstance(ordenados[0], list):
-    raise AssertionError("Tenés una lista dentro de otra lista. Probablemente escribiste [sorted(...)] en vez de sorted(...). Sacá los corchetes externos.")
-assert isinstance(ordenados, list), "ordenados debería ser una lista"
-assert len(ordenados) == 4, f"Deberían ser 4 empleados, hay {len(ordenados)}"
-# Usamos índices seguros para evitar error si la lista está vacía
-if len(ordenados) > 0:
-    assert ordenados[0].get("nombre", "") == "Diana", f"Expected primero Diana (70000), got {ordenados[0].get('nombre')}"
-    assert ordenados[1].get("nombre", "") == "Bob", f"Expected segundo Bob (65000), got {ordenados[1].get('nombre')}"
-    assert ordenados[3].get("nombre", "") == "Carlos", f"Expected último Carlos (45000), got {ordenados[3].get('nombre')}"
+if isinstance(_sorted, list) and len(_sorted) == 1 and isinstance(_sorted[0], list):
+    raise AssertionError("You have a list inside a list. You probably wrote [sorted(...)] instead of sorted(...). Remove the outer brackets.")
+assert isinstance(_sorted, list), "Result should be a list"
+assert len(_sorted) == 4, f"Should have 4 employees, got {len(_sorted)}"
+if len(_sorted) > 0:
+    _nk = "nombre" if "nombre" in _sorted[0] else "name"
+    assert _sorted[0].get(_nk, "") == "Diana", f"First should be Diana (70000), got {_sorted[0].get(_nk)}"
+    assert _sorted[1].get(_nk, "") == "Bob", f"Second should be Bob (65000), got {_sorted[1].get(_nk)}"
+    assert _sorted[3].get(_nk, "") == "Carlos", f"Last should be Carlos (45000), got {_sorted[3].get(_nk)}"
 print("✅ ¡Correcto!")
 `,
   },
@@ -2262,11 +2277,18 @@ personas = [{"nombre": n, "edad": e} for n, e in zip(nombres, edades)]
 
 print(personas)`,
     testCode: `
-assert len(personas) == 4, "Should have 4 personas"
-if len(personas) > 0:
-    assert personas[0].get("nombre") == "Ana", "First name should be Ana"
-    assert personas[0].get("edad") == 28, "First age should be 28"
-    assert personas[3].get("nombre") == "Diana", "Last name should be Diana"
+# Accept both Spanish and English variable names
+try:
+    _p = personas
+except NameError:
+    _p = people
+assert len(_p) == 4, "Should have 4 items"
+if len(_p) > 0:
+    _nk = "nombre" if "nombre" in _p[0] else "name"
+    _ak = "edad" if "edad" in _p[0] else "age"
+    assert _p[0].get(_nk) == "Ana", "First name should be Ana"
+    assert _p[0].get(_ak) == 28, "First age should be 28"
+    assert _p[3].get(_nk) == "Diana", "Last name should be Diana"
 print("✅ ¡Correcto!")
 `,
   },

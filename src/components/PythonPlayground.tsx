@@ -144,6 +144,15 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
     };
   }, [isResizing]);
   
+  // Estado para guardar el status isCorrect por ejercicio desde la DB
+  const [savedAnswerStatus, setSavedAnswerStatus] = useState<Record<string, boolean>>({});
+  
+  // Ref for current exercise ID (set after currentExercise is defined below)
+  const currentExerciseIdRef = useRef<string | null>(null);
+  
+  // Auto-save debounce ref
+  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  
   // Guardar código por ejercicio en localStorage (caché rápido)
   useEffect(() => {
     localStorage.setItem('python_saved_code', JSON.stringify(savedCode));
@@ -161,8 +170,10 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
           if (data.success && data.answers) {
             // Merge: database tiene prioridad, pero no perder datos locales
             const dbAnswers: Record<string, string> = {};
+            const dbStatus: Record<string, boolean> = {};
             Object.entries(data.answers).forEach(([id, ans]: [string, any]) => {
               if (ans.code) dbAnswers[id] = ans.code;
+              if (ans.isCorrect !== undefined) dbStatus[id] = ans.isCorrect;
             });
             
             setSavedCode(prev => {
@@ -170,6 +181,23 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
               localStorage.setItem('python_saved_code', JSON.stringify(merged));
               return merged;
             });
+            setSavedAnswerStatus(prev => ({ ...prev, ...dbStatus }));
+            
+            // Fix race condition: if the current exercise has a DB answer
+            // and the editor is still empty or has starter code, update it
+            const currentId = currentExerciseIdRef.current;
+            if (currentId && dbAnswers[currentId]) {
+              setCode(prev => {
+                // Only update if the editor is empty or still has starter code
+                if (!prev.trim() || prev === savedCodeRef.current[currentId]) return dbAnswers[currentId];
+                return prev;
+              });
+              codeRef.current = dbAnswers[currentId];
+            }
+            
+            // Also update savedCodeRef to reflect merged state
+            savedCodeRef.current = { ...savedCodeRef.current, ...dbAnswers };
+            
             console.log(`[Python] Loaded ${Object.keys(dbAnswers).length} answers from database`);
           }
         }
@@ -180,11 +208,17 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
     };
     
     loadFromDatabase();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userEmail, answersLoadedFromDB]);
   
   // Función para guardar código a la base de datos (background sync)
   const saveToDatabase = useCallback(async (exerciseId: string, codeText: string, correct: boolean = false) => {
     if (!userEmail || !codeText.trim()) return;
+    
+    // Update local isCorrect status when saving a correct answer
+    if (correct) {
+      setSavedAnswerStatus(prev => ({ ...prev, [exerciseId]: true }));
+    }
     
     try {
       await fetch('/api/exercise-answers.php', {
@@ -398,6 +432,9 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
       saveToDatabase(prevId, prevCode); // Sync to DB
     }
     
+    // Reset UI state first (output, hints, timer, etc.) WITHOUT touching the code
+    resetExercise(true); // true = don't clear code, we load it below
+    
     // Cargar el código guardado del nuevo ejercicio (o starterCode si no hay guardado)
     if (currentExercise) {
       // Usar ref que tiene el valor más actualizado
@@ -408,14 +445,63 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
       previousExerciseRef.current = currentExercise.id;
     }
     
-    resetExercise(false); // No resetear código, ya lo cargamos arriba
-    
     // Pequeño delay para evitar clicks rápidos
     setIsTransitioning(true);
     const timer = setTimeout(() => setIsTransitioning(false), 150);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentExercise?.id]); // Cuando cambia el ejercicio
+
+  // Sync currentExerciseIdRef (used by beforeunload, auto-save, and DB load effects)
+  useEffect(() => {
+    currentExerciseIdRef.current = currentExercise?.id || null;
+  }, [currentExercise?.id]);
+
+  // Auto-save on typing (debounced 3s - localStorage only to avoid API spam)
+  useEffect(() => {
+    if (!currentExercise || !code.trim()) return;
+    
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    autoSaveTimerRef.current = setTimeout(() => {
+      saveCurrentCode(currentExercise.id, code, false); // localStorage only
+    }, 3000);
+    
+    return () => {
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [code, currentExercise?.id]);
+
+  // Save answer on page close / navigate away (beforeunload + unmount cleanup)
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      const currentCode = codeRef.current;
+      const exerciseId = currentExerciseIdRef.current;
+      if (exerciseId && currentCode.trim()) {
+        // Save to localStorage synchronously
+        const updated = { ...savedCodeRef.current, [exerciseId]: currentCode };
+        localStorage.setItem('python_saved_code', JSON.stringify(updated));
+        // Attempt DB save via sendBeacon (fire-and-forget, works during unload)
+        if (userEmail) {
+          const blob = new Blob([JSON.stringify({
+            email: userEmail,
+            exerciseId,
+            exerciseType: 'python',
+            code: currentCode
+          })], { type: 'application/json' });
+          navigator.sendBeacon('/api/exercise-answers.php', blob);
+        }
+      }
+    };
+    
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      // Also save on unmount (e.g. tab switch within the app)
+      handleBeforeUnload();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentExercise?.id, userEmail]);
 
   // Estadísticas de progreso
   const progressStats = useMemo(() => {
@@ -559,9 +645,9 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
   const executeCode = useCallback(async () => {
     if (!pyodide || !code.trim()) return;
 
-    // Guardar el código al ejecutar (localStorage + database)
+    // Save code to localStorage immediately (DB sync happens after we know correctness)
     if (currentExercise) {
-      saveCurrentCode(currentExercise.id, code, true); // syncToDb = true
+      saveCurrentCode(currentExercise.id, code, false); // localStorage only first
     }
 
     setIsRunning(true);
@@ -613,6 +699,8 @@ sys.stdout = StringIO()
         if (testOutput.includes('✅')) {
           setIsCorrect(true);
           setOutput(conceptualMessage + testOutput);
+          // Sync to DB with isCorrect = true
+          saveToDatabase(currentExercise.id, code, true);
           
           if (!completedExercises.includes(currentExercise.id)) {
             if (isFreeUser && energySystem) {
@@ -646,6 +734,8 @@ sys.stdout = StringIO()
         } else {
           setIsCorrect(false);
           setOutput(conceptualMessage + '❌ Revisá la estructura de tu código');
+          // Sync to DB even if incorrect (saves user's work)
+          saveToDatabase(currentExercise.id, code, false);
         }
         
         pyodide.runPython('sys.stdout = sys.__stdout__');
@@ -690,6 +780,8 @@ sys.stdout = StringIO()
         if (testOutput.includes('✅')) {
           setIsCorrect(true);
           setOutput(testOutput);
+          // Sync to DB with isCorrect = true
+          saveToDatabase(currentExercise.id, code, true);
           
           if (!completedExercises.includes(currentExercise.id)) {
             // 🔋 ENERGY CHECK: Si es usuario FREE, verificar energía antes de dar recompensa
@@ -727,9 +819,13 @@ sys.stdout = StringIO()
           }
         } else {
           setIsCorrect(false);
+          // Sync to DB even if incorrect (saves user's work)
+          saveToDatabase(currentExercise.id, code, false);
         }
       } catch (testErr: any) {
         setIsCorrect(false);
+        // Save on test error too
+        saveToDatabase(currentExercise.id, code, false);
         // Parsear AssertionError para mensaje más amigable
         const errMsg = testErr.message || '';
         if (errMsg.includes('AssertionError')) {
@@ -753,6 +849,10 @@ sys.stdout = StringIO()
     } catch (err: any) {
       setError(err.message);
       setIsCorrect(false);
+      // Save on error too so user doesn't lose their work
+      if (currentExercise) {
+        saveToDatabase(currentExercise.id, code, false);
+      }
     } finally {
       setIsRunning(false);
       // Restaurar stdout
@@ -896,6 +996,7 @@ sys.stdout = StringIO()
           <div className="max-h-[250px] overflow-y-auto">
             {filteredExercises.map((ex, idx) => {
               const isCompleted = completedExercises.includes(ex.id);
+              const hasSavedAnswer = !isCompleted && !!savedCode[ex.id];
               const isCurrent = idx === exerciseIndex;
               return (
                 <button
@@ -903,14 +1004,15 @@ sys.stdout = StringIO()
                   onClick={() => { if (!isTransitioning) setExerciseIndex(idx); }}
                   className={`w-full p-3 text-left flex items-center gap-3 transition-all ${
                     isCurrent ? 'bg-gradient-to-r from-yellow-500/20 to-orange-500/10 border-l-4 border-yellow-500' : 
-                    isCompleted ? 'bg-emerald-500/5 hover:bg-emerald-500/10' : 'hover:bg-slate-700/50'
+                    isCompleted ? 'bg-emerald-500/5 hover:bg-emerald-500/10' : 
+                    hasSavedAnswer ? 'bg-amber-500/5 hover:bg-amber-500/10' : 'hover:bg-slate-700/50'
                   }`}
                 >
                   <span className="text-lg w-6 text-center">
-                    {isCompleted ? '✅' : isCurrent ? '⚡' : '○'}
+                    {isCompleted ? '✅' : hasSavedAnswer ? '✏️' : isCurrent ? '⚡' : '○'}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <div className={`text-sm truncate ${isCurrent ? 'text-yellow-300 font-bold' : isCompleted ? 'text-emerald-300' : 'text-white'}`}>
+                    <div className={`text-sm truncate ${isCurrent ? 'text-yellow-300 font-bold' : isCompleted ? 'text-emerald-300' : hasSavedAnswer ? 'text-amber-300' : 'text-white'}`}>
                       {ex.title}
                     </div>
                     <div className="text-xs text-slate-500">+{ex.xpReward} XP</div>
@@ -1234,20 +1336,21 @@ sys.stdout = StringIO()
                       {filteredExercises.map((ex, idx) => {
                         const exerciseTitle = typeof ex.title === 'string' ? ex.title : (ex.title as any).es || (ex.title as any).en || ex.title;
                         const isCompleted = completedExercises.includes(ex.id);
+                        const hasSavedAnswer = !isCompleted && !!savedCode[ex.id];
                         const isCurrent = idx === exerciseIndex;
                         return (
                           <button
                             key={ex.id}
                             onClick={() => setExerciseIndex(idx)}
                             className={`w-full text-left p-2 rounded-lg transition-all text-xs ${
-                              isCurrent ? 'bg-blue-500/20 border border-blue-500/50 text-white' : 'hover:bg-slate-800/50 text-slate-400'
+                              isCurrent ? 'bg-blue-500/20 border border-blue-500/50 text-white' : hasSavedAnswer ? 'bg-amber-500/10 hover:bg-amber-500/20 text-amber-300' : 'hover:bg-slate-800/50 text-slate-400'
                             }`}
                           >
                             <div className="flex items-center gap-2">
                               <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                                isCompleted ? 'bg-emerald-500/20 text-emerald-400' : isCurrent ? 'bg-blue-500 text-white' : 'bg-slate-700'
+                                isCompleted ? 'bg-emerald-500/20 text-emerald-400' : hasSavedAnswer ? 'bg-amber-500/20 text-amber-400' : isCurrent ? 'bg-blue-500 text-white' : 'bg-slate-700'
                               }`}>
-                                {isCompleted ? <CheckCircle className="w-2.5 h-2.5" /> : idx + 1}
+                                {isCompleted ? <CheckCircle className="w-2.5 h-2.5" /> : hasSavedAnswer ? '✏️' : idx + 1}
                               </span>
                               <span className="flex-1 truncate">{exerciseTitle}</span>
                             </div>

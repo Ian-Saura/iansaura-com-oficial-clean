@@ -296,9 +296,14 @@ mayores_30 = df[df['age'] > 30]
 
 print(mayores_30)`,
     testCode: `
-assert len(mayores_30) == 3, "Should have 3 people > 30"
-assert 34 in mayores_30['age'].values, "Should include 34"
-assert 22 not in mayores_30['age'].values, "Should not include 22"
+# Accept both Spanish and English variable names
+try:
+    _f = mayores_30
+except NameError:
+    _f = over_30
+assert len(_f) == 3, "Should have 3 people > 30"
+assert 34 in _f['age'].values, "Should include 34"
+assert 22 not in _f['age'].values, "Should not include 22"
 print("✅ ¡Correcto!")
 `,
   },

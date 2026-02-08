@@ -993,7 +993,7 @@ const Members: React.FC<MembersProps> = ({ user }) => {
                 
                 {/* 6 Meses - Destacado - OneInfinite pago único */}
                 <a
-                  href="https://onei.la/56P"
+                  href="https://iansaura.gumroad.com/l/dgyzxi"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block p-4 bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 rounded-xl border-2 border-emerald-500 hover:border-emerald-400 transition-all relative group"
@@ -1011,7 +1011,7 @@ const Members: React.FC<MembersProps> = ({ user }) => {
                 
                 {/* 12 Meses - OneInfinite pago único */}
                 <a
-                  href="https://onei.la/0KX"
+                  href="https://iansaura.gumroad.com/l/dgyzxi"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block p-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl border border-purple-500/50 hover:border-purple-400 transition-all group"

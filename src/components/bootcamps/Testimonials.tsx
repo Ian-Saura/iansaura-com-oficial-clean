@@ -259,7 +259,7 @@ export default function Testimonials({ onOpenWaitlist, bootcampTitle }: Testimon
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-xl mx-auto">
               <a
-                href="https://onei.la/ihw"
+                href="https://iansaura.gumroad.com/l/dgyzxi"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto text-center bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-purple-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"

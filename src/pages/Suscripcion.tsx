@@ -437,7 +437,7 @@ export default function Suscripcion({ user }: SuscripcionProps) {
                 </ul>
 
                 <a
-                  href="https://onei.la/56P"
+                  href="https://iansaura.gumroad.com/l/dgyzxi"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-bold py-3 px-6 rounded-xl text-center transition-all transform hover:scale-105 shadow-lg"
@@ -470,7 +470,7 @@ export default function Suscripcion({ user }: SuscripcionProps) {
                 </ul>
 
                 <a
-                  href="https://onei.la/0KX"
+                  href="https://iansaura.gumroad.com/l/dgyzxi"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-6 rounded-xl text-center transition-all"

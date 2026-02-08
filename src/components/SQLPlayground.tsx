@@ -277,6 +277,9 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
     localStorage.setItem('sql_saved_queries', JSON.stringify(savedQueries));
   }, [savedQueries]);
   
+  // Estado para guardar el status isCorrect por ejercicio desde la DB
+  const [savedAnswerStatus, setSavedAnswerStatus] = useState<Record<string, boolean>>({});
+  
   // Cargar respuestas desde la base de datos al montar (fuente de verdad)
   useEffect(() => {
     if (!userEmail || answersLoadedFromDB) return;
@@ -289,8 +292,10 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
           if (data.success && data.answers) {
             // Merge: database tiene prioridad
             const dbAnswers: Record<string, string> = {};
+            const dbStatus: Record<string, boolean> = {};
             Object.entries(data.answers).forEach(([id, ans]: [string, any]) => {
               if (ans.code) dbAnswers[id] = ans.code;
+              if (ans.isCorrect !== undefined) dbStatus[id] = ans.isCorrect;
             });
             
             setSavedQueries(prev => {
@@ -298,6 +303,15 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
               localStorage.setItem('sql_saved_queries', JSON.stringify(merged));
               return merged;
             });
+            setSavedAnswerStatus(prev => ({ ...prev, ...dbStatus }));
+            
+            // Fix race condition: if the current exercise has a DB answer
+            // and the editor is still empty, update it
+            const currentId = currentExerciseIdRef.current;
+            if (currentId && dbAnswers[currentId]) {
+              setQuery(prev => prev.trim() ? prev : dbAnswers[currentId]);
+            }
+            
             console.log(`[SQL] Loaded ${Object.keys(dbAnswers).length} answers from database`);
           }
         }
@@ -308,11 +322,17 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
     };
     
     loadFromDatabase();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userEmail, answersLoadedFromDB]);
   
   // Función para guardar query a la base de datos (background sync)
   const saveToDatabase = useCallback(async (exerciseId: string, queryText: string, correct: boolean = false) => {
     if (!userEmail || !queryText.trim()) return;
+    
+    // Update local isCorrect status when saving a correct answer
+    if (correct) {
+      setSavedAnswerStatus(prev => ({ ...prev, [exerciseId]: true }));
+    }
     
     try {
       await fetch('/api/exercise-answers.php', {
@@ -340,6 +360,19 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
       }
     }
   }, [saveToDatabase]);
+
+  // Refs para mantener valores actuales (evita stale closures en beforeunload/auto-save)
+  const queryRef = useRef<string>('');
+  useEffect(() => { queryRef.current = query; }, [query]);
+  
+  const savedQueriesRef = useRef<Record<string, string>>({});
+  useEffect(() => { savedQueriesRef.current = savedQueries; }, [savedQueries]);
+  
+  // Ref for current exercise ID (set after currentExercise is defined below)
+  const currentExerciseIdRef = useRef<string | null>(null);
+
+  // Auto-save debounce ref
+  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // FREE USER LIMIT: Max 5 Easy exercises
   const FREE_EXERCISE_LIMIT = 5;
@@ -409,18 +442,29 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
   // Auto-reset cuando cambia el ejercicio
   useEffect(() => {
     // Guardar la query del ejercicio anterior antes de cambiar (sync to DB)
-    if (previousExerciseRef.current && query.trim()) {
-      saveCurrentQuery(previousExerciseRef.current, query, true); // syncToDb = true
+    if (previousExerciseRef.current && queryRef.current.trim()) {
+      // Save using refs to avoid stale closures
+      const prevId = previousExerciseRef.current;
+      const prevQuery = queryRef.current;
+      setSavedQueries(prev => {
+        const updated = { ...prev, [prevId]: prevQuery };
+        savedQueriesRef.current = updated;
+        localStorage.setItem('sql_saved_queries', JSON.stringify(updated));
+        return updated;
+      });
+      saveToDatabase(prevId, prevQuery); // Sync to DB
     }
     
-    // Cargar la query guardada del nuevo ejercicio
+    // Reset UI state first (results, hints, timer, etc.) WITHOUT touching the query
+    resetExercise(true); // true = don't clear query, we load it below
+    
+    // Cargar la query guardada del nuevo ejercicio (use ref for latest data)
     if (currentExercise) {
-      const savedQuery = savedQueries[currentExercise.id] || '';
+      const savedQuery = savedQueriesRef.current[currentExercise.id] || '';
       setQuery(savedQuery);
+      queryRef.current = savedQuery; // Sync ref
       previousExerciseRef.current = currentExercise.id;
     }
-    
-    resetExercise(false); // No resetear query, ya la cargamos arriba
     
     // Pequeño delay para evitar clicks rápidos
     setIsTransitioning(true);
@@ -428,6 +472,57 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentExercise?.id]); // Cuando cambia el ejercicio
+
+  // Sync currentExerciseIdRef (used by beforeunload, auto-save, and DB load effects)
+  useEffect(() => {
+    currentExerciseIdRef.current = currentExercise?.id || null;
+  }, [currentExercise?.id]);
+
+  // Auto-save on typing (debounced 3s - localStorage only to avoid API spam)
+  useEffect(() => {
+    if (!currentExercise || !query.trim()) return;
+    
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    autoSaveTimerRef.current = setTimeout(() => {
+      saveCurrentQuery(currentExercise.id, query, false); // localStorage only
+    }, 3000);
+    
+    return () => {
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, currentExercise?.id]);
+
+  // Save answer on page close / navigate away (beforeunload + unmount cleanup)
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      const currentQuery = queryRef.current;
+      const exerciseId = currentExerciseIdRef.current;
+      if (exerciseId && currentQuery.trim()) {
+        // Save to localStorage synchronously
+        const updated = { ...savedQueriesRef.current, [exerciseId]: currentQuery };
+        localStorage.setItem('sql_saved_queries', JSON.stringify(updated));
+        // Attempt DB save via sendBeacon (fire-and-forget, works during unload)
+        if (userEmail) {
+          const blob = new Blob([JSON.stringify({
+            email: userEmail,
+            exerciseId,
+            exerciseType: 'sql',
+            code: currentQuery
+          })], { type: 'application/json' });
+          navigator.sendBeacon('/api/exercise-answers.php', blob);
+        }
+      }
+    };
+    
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      // Also save on unmount (e.g. tab switch within the app)
+      handleBeforeUnload();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentExercise?.id, userEmail]);
 
   // Estadísticas de progreso
   const progressStats = useMemo(() => {
@@ -587,11 +682,6 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
   const executeQuery = useCallback(() => {
     if (!db || !query.trim()) return;
 
-    // Guardar la query al ejecutar (localStorage + database)
-    if (currentExercise) {
-      saveCurrentQuery(currentExercise.id, query, true); // syncToDb = true
-    }
-
     try {
       const results = db.exec(query);
       
@@ -617,6 +707,15 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
         
         setIsCorrect(isMatch);
         
+        // Guardar la query al ejecutar (localStorage + database) con estado de corrección
+        if (currentExercise) {
+          saveCurrentQuery(currentExercise.id, query, true); // syncToDb = true
+          // Also save isCorrect status to DB
+          if (isMatch) {
+            saveToDatabase(currentExercise.id, query, true);
+          }
+        }
+        
         if (isMatch && !completedExercises.includes(currentExercise.id)) {
           // 🔋 ENERGY CHECK: Si es usuario FREE, verificar energía antes de dar recompensa
           if (isFreeUser && energySystem) {
@@ -634,14 +733,22 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
       } else {
         setResult({ columns: [], values: [] });
         setIsCorrect(false);
+        // Save even incorrect attempts
+        if (currentExercise) {
+          saveCurrentQuery(currentExercise.id, query, true);
+        }
       }
       setError(null);
     } catch (err: any) {
       setError(err.message);
       setResult(null);
       setIsCorrect(false);
+      // Save even on error so user doesn't lose their work
+      if (currentExercise) {
+        saveCurrentQuery(currentExercise.id, query, true);
+      }
     }
-  }, [db, query, currentExercise, elapsedTime, completedExercises, onComplete, saveCurrentQuery, isFreeUser, energySystem]);
+  }, [db, query, currentExercise, elapsedTime, completedExercises, onComplete, saveCurrentQuery, saveToDatabase, isFreeUser, energySystem]);
 
   // Siguiente ejercicio
   const nextExercise = () => {
@@ -777,6 +884,7 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
           <div className="max-h-[250px] overflow-y-auto">
             {filteredExercises.map((ex, idx) => {
               const isCompleted = completedExercises.includes(ex.id);
+              const hasSavedAnswer = !isCompleted && !!savedQueries[ex.id];
               const isCurrent = idx === exerciseIndex;
               return (
                 <button
@@ -784,14 +892,15 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
                   onClick={() => { if (!isTransitioning) setExerciseIndex(idx); }}
                   className={`w-full p-3 text-left flex items-center gap-3 transition-all ${
                     isCurrent ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/10 border-l-4 border-cyan-500' : 
-                    isCompleted ? 'bg-emerald-500/5 hover:bg-emerald-500/10' : 'hover:bg-slate-700/50'
+                    isCompleted ? 'bg-emerald-500/5 hover:bg-emerald-500/10' : 
+                    hasSavedAnswer ? 'bg-amber-500/5 hover:bg-amber-500/10' : 'hover:bg-slate-700/50'
                   }`}
                 >
                   <span className="text-lg w-6 text-center">
-                    {isCompleted ? '✅' : isCurrent ? '⚡' : '○'}
+                    {isCompleted ? '✅' : hasSavedAnswer ? '✏️' : isCurrent ? '⚡' : '○'}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <div className={`text-sm truncate ${isCurrent ? 'text-cyan-300 font-bold' : isCompleted ? 'text-emerald-300' : 'text-white'}`}>
+                    <div className={`text-sm truncate ${isCurrent ? 'text-cyan-300 font-bold' : isCompleted ? 'text-emerald-300' : hasSavedAnswer ? 'text-amber-300' : 'text-white'}`}>
                       {ex.title}
                     </div>
                     <div className="text-xs text-slate-500">+{ex.xpReward} XP</div>
@@ -1192,11 +1301,12 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
                       {filteredExercises.map((ex, idx) => {
                         const exerciseTitle = typeof ex.title === 'string' ? ex.title : (ex.title as any).es || (ex.title as any).en || ex.title;
                         const isCompleted = completedExercises.includes(ex.id);
+                        const hasSavedAnswer = !isCompleted && !!savedQueries[ex.id];
                         const isCurrent = idx === exerciseIndex;
                         return (
-                          <button key={ex.id} onClick={() => setExerciseIndex(idx)} className={`w-full text-left p-2 rounded-lg transition-all text-xs ${isCurrent ? 'bg-emerald-500/20 border border-emerald-500/50 text-white' : 'hover:bg-slate-800/50 text-slate-400'}`}>
+                          <button key={ex.id} onClick={() => setExerciseIndex(idx)} className={`w-full text-left p-2 rounded-lg transition-all text-xs ${isCurrent ? 'bg-emerald-500/20 border border-emerald-500/50 text-white' : hasSavedAnswer ? 'bg-amber-500/10 hover:bg-amber-500/20 text-amber-300' : 'hover:bg-slate-800/50 text-slate-400'}`}>
                             <div className="flex items-center gap-2">
-                              <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${isCompleted ? 'bg-emerald-500/20 text-emerald-400' : isCurrent ? 'bg-emerald-500 text-white' : 'bg-slate-700'}`}>{isCompleted ? <CheckCircle className="w-2.5 h-2.5" /> : idx + 1}</span>
+                              <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${isCompleted ? 'bg-emerald-500/20 text-emerald-400' : hasSavedAnswer ? 'bg-amber-500/20 text-amber-400' : isCurrent ? 'bg-emerald-500 text-white' : 'bg-slate-700'}`}>{isCompleted ? <CheckCircle className="w-2.5 h-2.5" /> : hasSavedAnswer ? '✏️' : idx + 1}</span>
                               <span className="flex-1 truncate">{exerciseTitle}</span>
                             </div>
                           </button>

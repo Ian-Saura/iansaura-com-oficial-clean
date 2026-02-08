@@ -241,7 +241,7 @@ export default function Store({ user }: StoreProps) {
                     {/* Purchase Button */}
                     <div className="space-y-3">
                       <a
-                        href="https://onei.la/10x"
+                        href="https://iansaura.gumroad.com/l/dgyzxi"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="block w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 px-6 rounded-full text-center font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
@@ -346,7 +346,7 @@ export default function Store({ user }: StoreProps) {
                     {/* Purchase Button */}
                     <div className="space-y-3">
                       <a
-                        href="https://onei.la/10x"
+                        href="https://iansaura.gumroad.com/l/dgyzxi"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="block w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-3 px-6 rounded-full text-center font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
