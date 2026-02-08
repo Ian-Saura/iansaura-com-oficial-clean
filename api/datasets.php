@@ -86,7 +86,12 @@ try {
  * El usuario siempre tendrá la misma key mientras sea suscriptor
  */
 function generateApiKeyForEmail($email) {
-    $secret = '***REMOVED***'; // Salt secreto
+    // Load secret from secure config - never hardcode
+    $secret = defined('DATASETS_API_SECRET') ? DATASETS_API_SECRET : (getenv('DATASETS_API_SECRET') ?: '');
+    if (empty($secret)) {
+        error_log('WARNING: DATASETS_API_SECRET not configured');
+        return '';
+    }
     $hash = hash('sha256', strtolower($email) . $secret);
     return 'ds_' . substr($hash, 0, 32);
 }

@@ -65,36 +65,51 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing session and refresh from server
+    // Check for existing session and ALWAYS verify with server
     const initUser = async () => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       try {
           const parsedUser = JSON.parse(savedUser);
-          setUser(parsedUser);
           
-          // Refresh user data from server to get latest permissions
+          // SECURITY: Set user with subscribed=false initially
+          // Server will confirm the real subscription status
+          setUser({ ...parsedUser, subscribed: false });
+          
+          // Verify user data with server (source of truth) - retry up to 2 times
           if (parsedUser.email) {
-            try {
-              const response = await fetch(`/api/check-subscriber.php?email=${encodeURIComponent(parsedUser.email)}`);
-              if (response.ok) {
-                const data = await response.json();
-                if (data.success) {
-                  const updatedUser = {
-                    ...parsedUser,
-                    subscribed: data.subscribed || false,
-                    bootcamp_access: data.bootcamp_access || false,
-                    is_trial: data.is_trial || false,
-                    is_oneinfinite_trial: data.is_oneinfinite_trial || false, // true = con tarjeta
-                    trial_ends: data.trial_ends || null,
-                    trial_days_left: data.trial_days_left || null,
-                  };
-                  setUser(updatedUser);
-                  localStorage.setItem('user', JSON.stringify(updatedUser));
+            let verified = false;
+            for (let attempt = 1; attempt <= 2; attempt++) {
+              try {
+                const response = await fetch(`/api/check-subscriber.php?email=${encodeURIComponent(parsedUser.email)}`);
+                if (response.ok) {
+                  const data = await response.json();
+                  if (data.success) {
+                    const updatedUser = {
+                      ...parsedUser,
+                      subscribed: data.subscribed || false,
+                      bootcamp_access: data.bootcamp_access || false,
+                      is_trial: data.is_trial || false,
+                      is_oneinfinite_trial: data.is_oneinfinite_trial || false,
+                      trial_ends: data.trial_ends || null,
+                      trial_days_left: data.trial_days_left || null,
+                    };
+                    setUser(updatedUser);
+                    localStorage.setItem('user', JSON.stringify(updatedUser));
+                    verified = true;
+                    break;
+                  }
                 }
+              } catch (err) {
+                console.warn(`User verification attempt ${attempt} failed:`, err);
+                if (attempt < 2) await new Promise(r => setTimeout(r, 1500));
               }
-            } catch (err) {
-              console.error('Error refreshing user data:', err);
+            }
+            if (!verified) {
+              // All attempts failed - use cached value as fallback for existing subscribers
+              // This prevents subscribers from losing access due to temporary server issues
+              console.error('Could not verify subscription with server');
+              setUser({ ...parsedUser, subscribed: parsedUser.subscribed || false });
             }
           }
       } catch (error) {

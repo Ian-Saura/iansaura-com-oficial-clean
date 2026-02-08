@@ -1905,10 +1905,10 @@ function migrateLastActivityColumn($db) {
         ];
         
     } catch (Exception $e) {
+        error_log('Admin error: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
         return [
             'success' => false,
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
+            'error' => 'Internal server error'
         ];
     }
 }
@@ -2107,10 +2107,10 @@ function getActivityTimeline($db) {
         return $result;
         
     } catch (Exception $e) {
+        error_log('Admin error: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
         return [
             'success' => false,
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
+            'error' => 'Internal server error'
         ];
     }
 }

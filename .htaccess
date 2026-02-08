@@ -160,6 +160,24 @@ Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains
     Deny from all
 </FilesMatch>
 
+# Block migration, setup, and fix scripts (should NEVER be public)
+<FilesMatch "^(fix-|setup-|run-|migration|install).*\.php$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Block debug/info PHP files
+<FilesMatch "^(phpinfo|info|test|debug|adminer|phpmyadmin)\.php$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Block sensitive JSON files (credentials, secrets)
+<FilesMatch "^(credentials|secrets|client_secret).*\.json$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
 # Also protect any file starting with a dot
 <FilesMatch "^\\.">
     Order allow,deny

@@ -408,7 +408,8 @@ export default function Auth({ onLogin }: AuthProps) {
             window.location.href = 'https://iansaura.com/subscribe.php';
           } else if (needsUpgrade) {
             handleSubscription(result.user);
-          } else if (redirectPath) {
+          } else if (redirectPath && redirectPath.startsWith('/') && !redirectPath.startsWith('//')) {
+            // Only allow relative paths (prevent open redirect to external sites)
             navigate(redirectPath);
           } else {
             navigate('/');

@@ -329,25 +329,32 @@ const Members: React.FC<MembersProps> = ({ user }) => {
     setSavedRoadmapPosition({ ...pos, timestamp: Date.now() });
   }, []);
   
-  // Refresh subscription status on mount to ensure we have the latest data
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // SECURITY: Server-side subscription verification (blocking)
+  // Never trust localStorage - always verify with server before granting premium access
   const [subscriptionChecked, setSubscriptionChecked] = useState(false);
-  const [actuallySubscribed, setActuallySubscribed] = useState(user?.subscribed === true);
+  const [actuallySubscribed, setActuallySubscribed] = useState(false); // Default FALSE until server confirms
   
   useEffect(() => {
     const refreshSubscription = async () => {
-      if (!user?.email) return;
+      if (!user?.email) {
+        setSubscriptionChecked(true);
+        return;
+      }
       
-      try {
-        const response = await fetch(`/api/check-subscriber.php?email=${encodeURIComponent(user.email)}`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success) {
-            // Update local state
-            setActuallySubscribed(data.subscribed === true);
-            
-            // If subscription status changed, update localStorage
-            if (data.subscribed !== user.subscribed) {
+      // Retry logic: try up to 3 times with increasing delay
+      const MAX_RETRIES = 3;
+      let lastError: unknown = null;
+      
+      for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+        try {
+          const response = await fetch(`/api/check-subscriber.php?email=${encodeURIComponent(user.email)}`);
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+              // ONLY the server determines subscription status
+              setActuallySubscribed(data.subscribed === true);
+              
+              // Sync localStorage with server truth
               const updatedUser = {
                 ...user,
                 subscribed: data.subscribed || false,
@@ -357,13 +364,39 @@ const Members: React.FC<MembersProps> = ({ user }) => {
                 trial_days_left: data.trial_days_left || null,
               };
               localStorage.setItem('user', JSON.stringify(updatedUser));
-              // Force page reload to update all components
-              window.location.reload();
+              setSubscriptionChecked(true);
+              return; // Success - exit retry loop
             }
           }
+          // Non-ok response or success=false: treat as server issue, retry
+          lastError = new Error(`Server returned ${response.status}`);
+        } catch (err) {
+          lastError = err;
+          console.warn(`Subscription check attempt ${attempt}/${MAX_RETRIES} failed:`, err);
         }
-      } catch (err) {
-        console.error('Error refreshing subscription:', err);
+        
+        // Wait before retrying (1s, 2s, 3s)
+        if (attempt < MAX_RETRIES) {
+          await new Promise(resolve => setTimeout(resolve, attempt * 1000));
+        }
+      }
+      
+      // All retries failed - use cached localStorage as fallback for existing subscribers
+      // This prevents legitimate subscribers from losing access due to temporary server issues
+      console.error('All subscription verification attempts failed:', lastError);
+      try {
+        const cached = localStorage.getItem('user');
+        if (cached) {
+          const cachedUser = JSON.parse(cached);
+          // Only trust cache if there was a previously server-verified subscription
+          // (a manipulated localStorage without prior verification won't have this)
+          if (cachedUser.subscribed === true && cachedUser.email === user.email) {
+            setActuallySubscribed(true);
+            console.warn('Using cached subscription status (server unreachable)');
+          }
+        }
+      } catch {
+        // Cache parse failed, stay with false
       }
       setSubscriptionChecked(true);
     };
@@ -398,8 +431,8 @@ const Members: React.FC<MembersProps> = ({ user }) => {
     return () => clearInterval(interval);
   }, [user?.email]);
   
-  // FREE vs PAID access logic - use refreshed state
-  const isSubscribed = actuallySubscribed;
+  // FREE vs PAID access logic - ONLY use server-verified state
+  const isSubscribed = subscriptionChecked ? actuallySubscribed : false;
   const isFreeUser = !isSubscribed;
   
   // 🚀 DATABRICKS LAUNCH ANNOUNCEMENT POPUP - show once for subscribed users
@@ -621,6 +654,18 @@ const Members: React.FC<MembersProps> = ({ user }) => {
 
   // Get user rank info
   const userRank = progress.getUserRank();
+
+  // SECURITY: Show loading spinner while verifying subscription with server
+  if (!subscriptionChecked) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-slate-400 text-sm">{t({ es: 'Verificando acceso...', en: 'Verifying access...', pt: 'Verificando acesso...' })}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

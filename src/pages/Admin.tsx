@@ -1141,7 +1141,8 @@ const Admin: React.FC<AdminProps> = ({ user }) => {
     setError(null);
     try {
       // Cargar nuevas métricas de analytics completas
-      const analyticsRes = await fetch(`/api/analytics-metrics.php?admin_password=***REMOVED***`);
+      const adminKey = ADMIN_EMAILS.map(e => generateAdminKey(e)).find(Boolean) || '';
+      const analyticsRes = await fetch(`/api/analytics-metrics.php?key=${encodeURIComponent(adminKey)}`);
       if (analyticsRes.ok) {
         const analyticsData = await analyticsRes.json();
         if (!analyticsData.error) {
@@ -1150,7 +1151,8 @@ const Admin: React.FC<AdminProps> = ({ user }) => {
       }
       
       // Cargar métricas de retención (legacy)
-      const res = await fetch(`/api/retention-metrics.php?admin_password=***REMOVED***`);
+      const retentionKey = ADMIN_EMAILS.map(e => generateAdminKey(e)).find(Boolean) || '';
+      const res = await fetch(`/api/retention-metrics.php?key=${encodeURIComponent(retentionKey)}`);
       if (res.ok) {
         const data = await res.json();
         if (data.error) {

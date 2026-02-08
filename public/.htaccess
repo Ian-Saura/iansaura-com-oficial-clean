@@ -64,6 +64,24 @@ RewriteRule ^ index.html [QSA,L]
     Deny from all
 </FilesMatch>
 
+# Block migration, setup, and fix scripts
+<FilesMatch "^(fix-|setup-|run-|migration|install).*\.php$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Block debug/info PHP files
+<FilesMatch "^(phpinfo|info|test|debug|adminer|phpmyadmin)\.php$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Block sensitive JSON files
+<FilesMatch "^(credentials|secrets|client_secret).*\.json$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
 <FilesMatch "^\.">
     Order allow,deny
     Deny from all

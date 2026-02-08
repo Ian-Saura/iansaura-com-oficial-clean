@@ -8,10 +8,16 @@ import { datasets, apiInfo } from '../../../data/datasetsData';
 
 /**
  * Genera la API key para un email (debe coincidir con el backend)
- * Esta es una versión simplificada usando la misma lógica que el servidor
+ * SECURITY: El secret se carga desde variable de entorno. En una futura
+ * iteración, mover la generación al servidor (endpoint /api/get-api-key.php)
+ * para que el secret nunca llegue al cliente.
  */
 async function generateApiKeyForEmail(email: string): Promise<string> {
-  const secret = '***REMOVED***';
+  const secret = process.env.REACT_APP_DATASETS_SECRET || '';
+  if (!secret) {
+    console.warn('REACT_APP_DATASETS_SECRET not configured');
+    return '';
+  }
   const data = email.toLowerCase() + secret;
   
   // Use Web Crypto API for SHA-256

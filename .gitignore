@@ -169,6 +169,49 @@ client_secret_*.json
 .env.database
 deploy-ferozo.sh
 
+# Security audit env file
+.env.audit
+
+# ============================================
+# SECURITY: Scripts with credentials - NEVER push
+# ============================================
+security-audit.sh
+fix-en-vivo.php
+setup-database.sh
+deploy.sh
+ftp-deploy.sh
+ftp-extract-and-setup.sh
+run-migration.php
+setup-automation-web.php
+fix-migration.php
+
+# More deploy/test scripts with credentials
+ftp-mirror-deploy.sh
+setup-production-database.sh
+setup-database-production.php
+verify-new-checkout-39.sh
+fix-en-vivo-local.php
+
+# Test files with credentials
+tests/test-production-*.php
+
+# API debug/test endpoints (should never be in prod)
+api/test-*.php
+api/view-logs.php
+api/view-webhook-logs.php
+
+# Dangerous PHP files that should never be public
+phpinfo.php
+info.php
+test.php
+debug.php
+
+# Credential files
+credentials.json
+
+# Security audit environment
+.env.audit
+
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # testing
