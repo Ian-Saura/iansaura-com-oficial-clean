@@ -1,10 +1,23 @@
 /**
  * FASES DEL ROADMAP AWS DATA ENGINEERING
- * 13 fases con progresión desde setup hasta certificación
+ * 2 Niveles:
+ *   Nivel 1: Serverless (Fases 0-6) - Lambda, Fargate, Step Functions, Free Tier priority
+ *   Nivel 2: Advanced  (Fases 7-12) - EMR, Kinesis, IaC, Monitoring, Certification
+ * 
  * Fase 0: Setup Free Tier (OBLIGATORIA)
  */
 import { AWSPhase } from './types';
 
+// ═══════════════════════════════════════════════════════════════
+// TIPO EXTENDIDO PARA NIVEL
+// ═══════════════════════════════════════════════════════════════
+export interface AWSPhaseWithLevel extends AWSPhase {
+  level: 1 | 2;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TODAS LAS FASES (legacy export para compatibilidad)
+// ═══════════════════════════════════════════════════════════════
 export const awsPhases: AWSPhase[] = [
   // FASE 0: SETUP FREE TIER (OBLIGATORIA)
   {
@@ -345,6 +358,164 @@ export const awsPhases: AWSPhase[] = [
   }
 ];
 
+// ═══════════════════════════════════════════════════════════════
+// NIVEL 1: SERVERLESS (Fases 0-6 + Lambda + Fargate)
+// Free Tier priority, enfoque en Lambda/Fargate/Step Functions
+// ═══════════════════════════════════════════════════════════════
+export const awsPhasesNivel1: AWSPhaseWithLevel[] = [
+  // Phase 0: Free Tier Setup
+  { ...awsPhases[0], level: 1 },
+  // Phase 1: Fundamentos y Seguridad (agrupa phases 1+2+3 existentes)
+  {
+    id: 'aws-n1-phase-1',
+    number: 1,
+    title: {
+      es: 'Fundamentos y Seguridad (IAM + S3)',
+      en: 'Fundamentals and Security (IAM + S3)',
+      pt: 'Fundamentos e Segurança (IAM + S3)'
+    },
+    subtitle: {
+      es: 'Almacenamiento, identidad y el Data Lake Medallion',
+      en: 'Storage, identity and the Medallion Data Lake',
+      pt: 'Armazenamento, identidade e o Data Lake Medallion'
+    },
+    description: {
+      es: 'Domina S3 (almacenamiento de objetos, durabilidad 99.999999999%, particionamiento), IAM (Least Privilege, roles de ejecución), KMS (encriptación), y Secrets Manager. Configura tu Data Lake con estructura Medallion: bronze/, silver/, gold/.',
+      en: 'Master S3 (object storage, 99.999999999% durability, partitioning), IAM (Least Privilege, execution roles), KMS (encryption), and Secrets Manager. Configure your Medallion Data Lake: bronze/, silver/, gold/.',
+      pt: 'Domine S3 (armazenamento de objetos, durabilidade 99.999999999%, particionamento), IAM (Least Privilege, roles de execução), KMS (criptografia), e Secrets Manager. Configure seu Data Lake Medallion: bronze/, silver/, gold/.'
+    },
+    icon: '🔐',
+    color: 'red',
+    estimatedDays: '10-12 días',
+    stepsCount: 27,
+    services: ['S3', 'IAM', 'KMS', 'Lake Formation', 'Secrets Manager'],
+    level: 1
+  },
+  // Phase 2: Glue Data Catalog + Athena
+  {
+    id: 'aws-n1-phase-2',
+    number: 2,
+    title: {
+      es: 'El Cerebro del Data Lake (Glue Catalog + Athena)',
+      en: 'The Data Lake Brain (Glue Catalog + Athena)',
+      pt: 'O Cérebro do Data Lake (Glue Catalog + Athena)'
+    },
+    subtitle: {
+      es: 'Schema-on-Read, SQL serverless y $0 en queries',
+      en: 'Schema-on-Read, serverless SQL and $0 queries',
+      pt: 'Schema-on-Read, SQL serverless e $0 em queries'
+    },
+    description: {
+      es: 'Hive Metastore, Schema-on-Read, optimización de almacenamiento (Parquet vs CSV), Partition Projection. Creación de tablas manuales en el catálogo (sin Crawlers costosos). Queries SQL sobre S3 con Athena. Athena cobra $5/TB: aprende a pagar $0 con LIMIT y particionamiento.',
+      en: 'Hive Metastore, Schema-on-Read, storage optimization (Parquet vs CSV), Partition Projection. Manual tables in catalog (no costly Crawlers). SQL queries over S3 with Athena.',
+      pt: 'Hive Metastore, Schema-on-Read, otimização de armazenamento (Parquet vs CSV), Partition Projection. Tabelas manuais no catálogo (sem Crawlers custosos). Queries SQL sobre S3 com Athena.'
+    },
+    icon: '🧠',
+    color: 'purple',
+    estimatedDays: '8-10 días',
+    stepsCount: 20,
+    services: ['Glue Data Catalog', 'Athena'],
+    level: 1
+  },
+  // Phase 3: Lambda
+  {
+    id: 'aws-n1-phase-3',
+    number: 3,
+    title: {
+      es: 'Procesamiento por Eventos (AWS Lambda)',
+      en: 'Event-Driven Processing (AWS Lambda)',
+      pt: 'Processamento por Eventos (AWS Lambda)'
+    },
+    subtitle: {
+      es: 'FaaS, S3 triggers, Bronze→Silver, Secrets Manager',
+      en: 'FaaS, S3 triggers, Bronze→Silver, Secrets Manager',
+      pt: 'FaaS, S3 triggers, Bronze→Silver, Secrets Manager'
+    },
+    description: {
+      es: 'FaaS, cold starts, S3 triggers como motor de ingesta, handlers Python para validar schemas, limpiar datos y convertir a Parquet. Lambda Layers para dependencias. SQS/SNS para error handling. Secrets Manager para credenciales seguras. Boto3 avanzado con Glue Catalog, Athena y DynamoDB. GRATIS: 1M ejecuciones/mes de por vida.',
+      en: 'FaaS, cold starts, S3 triggers as ingestion engine, Python handlers for schema validation, data cleaning and Parquet conversion. Lambda Layers, SQS/SNS, Secrets Manager, advanced boto3. FREE: 1M executions/month forever.',
+      pt: 'FaaS, cold starts, S3 triggers como motor de ingestão, handlers Python para validar schemas, limpar dados e converter para Parquet. Lambda Layers, SQS/SNS, Secrets Manager, boto3 avançado. GRÁTIS: 1M execuções/mês para sempre.'
+    },
+    icon: '⚡',
+    color: 'yellow',
+    estimatedDays: '6-8 días',
+    stepsCount: 11,
+    services: ['Lambda', 'S3', 'Secrets Manager', 'SQS', 'SNS', 'DynamoDB'],
+    level: 1
+  },
+  // Phase 4: Fargate
+  {
+    id: 'aws-n1-phase-4',
+    number: 4,
+    title: {
+      es: 'Procesamiento de Larga Duración (ECS Fargate)',
+      en: 'Long-Running Processing (ECS Fargate)',
+      pt: 'Processamento de Longa Duração (ECS Fargate)'
+    },
+    subtitle: {
+      es: 'Docker para ETL, cuando Lambda no alcanza',
+      en: 'Docker for ETL, when Lambda is not enough',
+      pt: 'Docker para ETL, quando Lambda não é suficiente'
+    },
+    description: {
+      es: 'Dockerización de procesos ETL. ¿Cuándo Lambda no alcanza? (15 min, 10GB). Orquestación de contenedores sin servidores. Docker con Python/Pandas para procesar archivos pesados (+10GB). ECR, Task Definitions, Fargate launch. Se paga por CPU/RAM por segundo.',
+      en: 'Docker for ETL. When Lambda is not enough (15 min, 10GB). Serverless container orchestration. Docker with Python/Pandas for heavy files. ECR, Task Definitions, Fargate launch.',
+      pt: 'Docker para ETL. Quando Lambda não é suficiente (15 min, 10GB). Orquestração de containers serverless. Docker com Python/Pandas para arquivos pesados. ECR, Task Definitions, Fargate launch.'
+    },
+    icon: '🐳',
+    color: 'blue',
+    estimatedDays: '5-6 días',
+    stepsCount: 8,
+    services: ['ECS', 'Fargate', 'ECR', 'S3', 'CloudWatch'],
+    level: 1
+  },
+  // Phase 5: Redshift (reutiliza existente)
+  { ...awsPhases[6], level: 1, number: 5 },
+  // Phase 6: Step Functions (reutiliza existente, solo Step Functions)
+  {
+    id: 'aws-n1-phase-6',
+    number: 6,
+    title: {
+      es: 'Orquestación Visual (Step Functions)',
+      en: 'Visual Orchestration (Step Functions)',
+      pt: 'Orquestração Visual (Step Functions)'
+    },
+    subtitle: {
+      es: 'State Machines, Retry/Catch y flujos E2E',
+      en: 'State Machines, Retry/Catch and E2E flows',
+      pt: 'State Machines, Retry/Catch e fluxos E2E'
+    },
+    description: {
+      es: 'State Machines para orquestar pipelines. Manejo de errores (Retry/Catch). Flujos paralelos y de espera. Diferencia entre Standard y Express. Unir todo: Lambda → Fargate → Redshift → SNS. 4,000 transiciones gratis/mes.',
+      en: 'State Machines for pipeline orchestration. Error handling (Retry/Catch). Parallel and wait flows. Standard vs Express. Connect everything: Lambda → Fargate → Redshift → SNS.',
+      pt: 'State Machines para orquestrar pipelines. Tratamento de erros (Retry/Catch). Fluxos paralelos e de espera. Standard vs Express. Conectar tudo: Lambda → Fargate → Redshift → SNS.'
+    },
+    icon: '🎼',
+    color: 'pink',
+    estimatedDays: '4-5 días',
+    stepsCount: 8,
+    services: ['Step Functions', 'Lambda', 'SNS'],
+    level: 1
+  }
+];
+
+// ═══════════════════════════════════════════════════════════════
+// NIVEL 2: ADVANCED (Fases 7-12 existentes, intactas)
+// EMR, Kinesis, IaC, Monitoring, Certification
+// ═══════════════════════════════════════════════════════════════
+export const awsPhasesNivel2: AWSPhaseWithLevel[] = [
+  { ...awsPhases[7], level: 2 },   // Phase 7: EMR
+  { ...awsPhases[8], level: 2 },   // Phase 8: Kinesis
+  { ...awsPhases[9], level: 2 },   // Phase 9: Orchestration (MWAA, EventBridge)
+  { ...awsPhases[10], level: 2 },  // Phase 10: IaC
+  { ...awsPhases[11], level: 2 },  // Phase 11: Monitoring
+  { ...awsPhases[12], level: 2 }   // Phase 12: Certification
+];
+
+// ═══════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════
+
 // Helper para obtener fase por número
 export const getPhaseByNumber = (number: number): AWSPhase | undefined => {
   return awsPhases.find(p => p.number === number);
@@ -352,7 +523,12 @@ export const getPhaseByNumber = (number: number): AWSPhase | undefined => {
 
 // Helper para obtener fase por ID
 export const getPhaseById = (id: string): AWSPhase | undefined => {
-  return awsPhases.find(p => p.id === id);
+  return [...awsPhases, ...awsPhasesNivel1].find(p => p.id === id);
+};
+
+// Helper para obtener fases por nivel
+export const getPhasesByLevel = (level: 1 | 2): AWSPhaseWithLevel[] => {
+  return level === 1 ? awsPhasesNivel1 : awsPhasesNivel2;
 };
 
 // Estadísticas de fases
@@ -360,4 +536,19 @@ export const phaseStats = {
   totalPhases: awsPhases.length,
   totalSteps: awsPhases.reduce((sum, p) => sum + (p.stepsCount || 0), 0),
   estimatedWeeks: '8-10'
+};
+
+// Estadísticas por nivel
+export const nivel1Stats = {
+  totalPhases: awsPhasesNivel1.length,
+  totalSteps: awsPhasesNivel1.reduce((sum, p) => sum + (p.stepsCount || 0), 0),
+  estimatedWeeks: '5-6',
+  freeTierFriendly: true
+};
+
+export const nivel2Stats = {
+  totalPhases: awsPhasesNivel2.length,
+  totalSteps: awsPhasesNivel2.reduce((sum, p) => sum + (p.stepsCount || 0), 0),
+  estimatedWeeks: '4-5',
+  freeTierFriendly: false
 };

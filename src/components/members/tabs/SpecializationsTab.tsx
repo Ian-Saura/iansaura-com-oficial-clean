@@ -7,6 +7,7 @@ import {
 import { useLanguage } from '../../../i18n/LanguageContext';
 import { LocalizedContent as LC, t as tLocalized } from '../../../types/i18n';
 import { DatabricksSpecializationView } from '../DatabricksSpecializationView';
+import { AWSSpecializationView } from '../AWSSpecializationView';
 import { LockedContentPreview } from '../MembersUtils';
 // Deep Dives - Disponible ahora
 import { DeepDiveViewer } from '../DeepDiveViewer';
@@ -75,6 +76,7 @@ export const SpecializationsTab: React.FC<SpecializationsTabProps> = ({ isFreeUs
   };
 
   const [showDatabricks, setShowDatabricks] = useState(() => getActiveSpecialization() === 'databricks');
+  const [showAWS, setShowAWS] = useState(() => getActiveSpecialization() === 'aws');
   
   // Deep Dives list view - muestra todos los deep dives
   const [showDeepDives, setShowDeepDives] = useState(false);
@@ -120,6 +122,11 @@ export const SpecializationsTab: React.FC<SpecializationsTabProps> = ({ isFreeUs
   // Show Databricks specialization view (this is the default when they have started)
   if (showDatabricks) {
     return <DatabricksSpecializationView onBack={() => setShowDatabricks(false)} />;
+  }
+  
+  // Show AWS specialization view
+  if (showAWS) {
+    return <AWSSpecializationView onBack={() => setShowAWS(false)} />;
   }
   
   // 🎓 Deep Dives List - Muestra todos los deep dives disponibles
@@ -336,50 +343,62 @@ export const SpecializationsTab: React.FC<SpecializationsTabProps> = ({ isFreeUs
           )}
         </div>
 
-        {/* ☁️ AWS - PRÓXIMAMENTE */}
-        <div className="bg-gradient-to-br from-amber-500/10 to-slate-900 rounded-2xl p-6 border border-amber-500/30 relative overflow-hidden opacity-80">
-          {/* Badge Coming Soon */}
+        {/* ☁️ AWS - 2 NIVELES */}
+        <div className="bg-gradient-to-br from-amber-500/10 to-slate-900 rounded-2xl p-6 border border-amber-500/30 relative overflow-hidden">
+          {/* Badge */}
           <div className="absolute top-4 right-4">
             <span className="bg-amber-500/20 text-amber-400 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 border border-amber-500/30">
-              <Clock className="w-3 h-3" />
-              {t({ es: 'PRÓXIMAMENTE', en: 'COMING SOON', pt: 'EM BREVE' })}
+              <Star className="w-3 h-3" />
+              {t({ es: '2 NIVELES', en: '2 LEVELS', pt: '2 NÍVEIS' })}
             </span>
           </div>
 
           {/* Header */}
           <div className="flex items-center gap-4 mb-4">
-            <div className="text-6xl grayscale-[30%]">☁️</div>
+            <div className="text-6xl">☁️</div>
             <div>
               <h3 className="text-2xl font-bold text-white">
                 {t({ es: 'AWS Data Engineering', en: 'AWS Data Engineering', pt: 'AWS Data Engineering' })}
               </h3>
               <p className="text-amber-400 text-sm font-medium">
-                {t({ es: 'El cloud #1 en demanda laboral', en: 'The #1 cloud in job demand', pt: 'A nuvem #1 em demanda de emprego' })}
+                {t({ es: 'Serverless + Advanced - El cloud #1', en: 'Serverless + Advanced - The #1 cloud', pt: 'Serverless + Advanced - A nuvem #1' })}
               </p>
             </div>
           </div>
 
           {/* Description */}
-          <p className="text-slate-300 text-sm mb-6">
-            {t({ es: 'Conviértete en experto en S3, Glue, Redshift, Athena, EMR, Kinesis y Step Functions. Prepárate para la certificación AWS Data Analytics.', en: 'Become an expert in S3, Glue, Redshift, Athena, EMR, Kinesis and Step Functions. Prepare for AWS Data Analytics certification.', pt: 'Torne-se especialista em S3, Glue, Redshift, Athena, EMR, Kinesis e Step Functions. Prepare-se para a certificação AWS Data Analytics.' })}
+          <p className="text-slate-300 text-sm mb-4">
+            {t({ es: 'Lambda, Fargate, Step Functions, Secrets Manager, S3 Medallion, Athena, Redshift, EMR, Kinesis. 10 proyectos enterprise, 18 preguntas de entrevista expert.', en: 'Lambda, Fargate, Step Functions, Secrets Manager, S3 Medallion, Athena, Redshift, EMR, Kinesis. 10 enterprise projects, 18 expert interview questions.', pt: 'Lambda, Fargate, Step Functions, Secrets Manager, S3 Medallion, Athena, Redshift, EMR, Kinesis. 10 projetos enterprise, 18 perguntas de entrevista expert.' })}
           </p>
 
+          {/* Level indicators */}
+          <div className="grid grid-cols-2 gap-2 mb-4">
+            <div className="bg-emerald-500/10 rounded-lg p-2 border border-emerald-500/20">
+              <div className="text-xs font-bold text-emerald-400">{t({ es: 'Nivel 1: Serverless', en: 'Level 1: Serverless', pt: 'Nível 1: Serverless' })}</div>
+              <div className="text-xs text-slate-400">{t({ es: 'Lambda, Fargate, Free Tier', en: 'Lambda, Fargate, Free Tier', pt: 'Lambda, Fargate, Free Tier' })}</div>
+            </div>
+            <div className="bg-purple-500/10 rounded-lg p-2 border border-purple-500/20">
+              <div className="text-xs font-bold text-purple-400">{t({ es: 'Nivel 2: Advanced', en: 'Level 2: Advanced', pt: 'Nível 2: Advanced' })}</div>
+              <div className="text-xs text-slate-400">{t({ es: 'EMR, Kinesis, Certificación', en: 'EMR, Kinesis, Certification', pt: 'EMR, Kinesis, Certificação' })}</div>
+            </div>
+          </div>
+
           {/* Stats */}
-          <div className="grid grid-cols-4 gap-2 mb-6 opacity-60">
+          <div className="grid grid-cols-4 gap-2 mb-6">
             <div className="bg-slate-800/80 rounded-lg p-3 text-center">
-              <div className="text-xl font-bold text-amber-400">12</div>
+              <div className="text-xl font-bold text-amber-400">15</div>
               <div className="text-xs text-slate-400">{t({ es: 'Fases', en: 'Phases', pt: 'Fases' })}</div>
             </div>
             <div className="bg-slate-800/80 rounded-lg p-3 text-center">
-              <div className="text-xl font-bold text-blue-400">107</div>
+              <div className="text-xl font-bold text-blue-400">134</div>
               <div className="text-xs text-slate-400">{t({ es: 'Pasos', en: 'Steps', pt: 'Passos' })}</div>
             </div>
             <div className="bg-slate-800/80 rounded-lg p-3 text-center">
-              <div className="text-xl font-bold text-purple-400">35</div>
+              <div className="text-xl font-bold text-purple-400">44</div>
               <div className="text-xs text-slate-400">{t({ es: 'Ejercicios', en: 'Exercises', pt: 'Exercícios' })}</div>
             </div>
             <div className="bg-slate-800/80 rounded-lg p-3 text-center">
-              <div className="text-xl font-bold text-emerald-400">5</div>
+              <div className="text-xl font-bold text-emerald-400">10</div>
               <div className="text-xs text-slate-400">{t({ es: 'Proyectos', en: 'Projects', pt: 'Projetos' })}</div>
             </div>
           </div>
@@ -392,13 +411,13 @@ export const SpecializationsTab: React.FC<SpecializationsTabProps> = ({ isFreeUs
             <CountdownTimer targetDate="2026-03-01T00:00:00" />
           </div>
 
-          {/* Disabled Button */}
+          {/* Preview Button */}
           <button
-            disabled
-            className="w-full py-4 rounded-xl bg-slate-700 text-slate-400 font-bold text-lg cursor-not-allowed flex items-center justify-center gap-2"
+            onClick={() => setShowAWS(true)}
+            className="w-full py-4 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold text-lg transition-all flex items-center justify-center gap-2"
           >
-            <Lock className="w-5 h-5" />
-            {t({ es: 'Disponible en Marzo 2026', en: 'Available March 2026', pt: 'Disponível em Março 2026' })}
+            <BookOpen className="w-5 h-5" />
+            {t({ es: 'Ver Contenido', en: 'View Content', pt: 'Ver Conteúdo' })}
           </button>
         </div>
       </div>

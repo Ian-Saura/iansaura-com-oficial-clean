@@ -9,7 +9,230 @@ export const phase6Steps: AWSStep[] = [
   
   { id: 'aws-6-2', stepNumber: 47, title: { es: 'Crear cluster Redshift', en: 'Create Redshift cluster', pt: 'Criar cluster Redshift' }, description: { es: 'Configurar un cluster o Redshift Serverless.', en: 'Configure a cluster or Redshift Serverless.', pt: 'Configurar um cluster ou Redshift Serverless.' }, theory: { es: `## Crear Cluster Redshift\n\n### Opciones de creación\n1. **Provisioned**: Cluster con nodos fijos\n2. **Serverless**: Capacidad automática\n\n### Configuración básica\n\`\`\`yaml\nCluster: my-dwh-cluster\n  Node type: dc2.large\n  Number of nodes: 2\n  Database name: analytics\n  Admin user: admin\n  VPC: vpc-prod\n  Security Group: sg-redshift\n  Encrypted: Yes (KMS)\n  Enhanced VPC Routing: Yes\n\`\`\`\n\n### Conexión\n\`\`\`bash\n# Con psql\npsql -h cluster.xyz.us-east-1.redshift.amazonaws.com -p 5439 -U admin -d analytics\n\n# JDBC URL\njdbc:redshift://cluster.xyz.us-east-1.redshift.amazonaws.com:5439/analytics\n\`\`\``, en: `## Create Redshift Cluster\n\n### Creation options\n1. **Provisioned**: Cluster with fixed nodes\n2. **Serverless**: Automatic capacity\n\n### Basic configuration\n\`\`\`yaml\nCluster: my-dwh-cluster\n  Node type: dc2.large\n  Number of nodes: 2\n  Database name: analytics\n  Admin user: admin\n  VPC: vpc-prod\n  Security Group: sg-redshift\n  Encrypted: Yes (KMS)\n  Enhanced VPC Routing: Yes\n\`\`\`\n\n### Connection\n\`\`\`bash\n# With psql\npsql -h cluster.xyz.us-east-1.redshift.amazonaws.com -p 5439 -U admin -d analytics\n\n# JDBC URL\njdbc:redshift://cluster.xyz.us-east-1.redshift.amazonaws.com:5439/analytics\n\`\`\``, pt: `## Criar Cluster Redshift\n\n### Opções de criação\n1. **Provisioned**: Cluster com nós fixos\n2. **Serverless**: Capacidade automática\n\n### Configuração básica\n\`\`\`yaml\nCluster: my-dwh-cluster\n  Node type: dc2.large\n  Number of nodes: 2\n  Database name: analytics\n  Admin user: admin\n  VPC: vpc-prod\n  Security Group: sg-redshift\n  Encrypted: Yes (KMS)\n  Enhanced VPC Routing: Yes\n\`\`\`\n\n### Conexão\n\`\`\`bash\n# Com psql\npsql -h cluster.xyz.us-east-1.redshift.amazonaws.com -p 5439 -U admin -d analytics\n\n# JDBC URL\njdbc:redshift://cluster.xyz.us-east-1.redshift.amazonaws.com:5439/analytics\n\`\`\`` }, practicalTips: [{ es: '💰 dc2.large es suficiente para aprender - NO crees clusters grandes', en: '💰 dc2.large is enough for learning - DON\'T create large clusters', pt: '💰 dc2.large é suficiente para aprender - NÃO crie clusters grandes' }], externalLinks: [{ title: 'Getting Started with Redshift', url: 'https://docs.aws.amazon.com/redshift/latest/gsg/getting-started.html', type: 'aws_docs' }], checkpoint: { es: '✅ ¿Creaste un cluster Serverless o dc2.large y te conectaste?', en: '✅ Did you create a Serverless or dc2.large cluster and connect?', pt: '✅ Você criou um cluster Serverless ou dc2.large e se conectou?' }, xpReward: 60, estimatedMinutes: 35, services: ['Redshift'] },
   
-  { id: 'aws-6-3', stepNumber: 48, title: { es: 'COPY: Carga masiva de datos', en: 'COPY: Bulk data loading', pt: 'COPY: Carga massiva de dados' }, description: { es: 'Cargar datos desde S3 con COPY command.', en: 'Load data from S3 with COPY command.', pt: 'Carregar dados do S3 com COPY command.' }, theory: { es: `## COPY Command - Carga de Datos\n\n### Sintaxis básica\n\`\`\`sql\nCOPY sales\nFROM 's3://bucket/data/sales/'\nIAM_ROLE 'arn:aws:iam::123:role/RedshiftS3Role'\nFORMAT AS PARQUET;\n\`\`\`\n\n### Opciones comunes\n\`\`\`sql\nCOPY users\nFROM 's3://bucket/users.csv'\nIAM_ROLE 'arn:aws:iam::123:role/RedshiftRole'\nCSV\nIGNOREHEADER 1\nDELIMITER ','\nREGION 'us-east-1'\nGZIP\nMAXERROR 100;\n\`\`\`\n\n### Best practices\n1. **Divide archivos**: Múltiples archivos = carga paralela\n2. **Usa MANIFEST**: Lista exacta de archivos\n3. **Comprime datos**: Gzip reduce tiempo de transferencia\n4. **Parquet > CSV**: Más eficiente`, en: `## COPY Command - Data Loading\n\n### Basic syntax\n\`\`\`sql\nCOPY sales\nFROM 's3://bucket/data/sales/'\nIAM_ROLE 'arn:aws:iam::123:role/RedshiftS3Role'\nFORMAT AS PARQUET;\n\`\`\`\n\n### Common options\n\`\`\`sql\nCOPY users\nFROM 's3://bucket/users.csv'\nIAM_ROLE 'arn:aws:iam::123:role/RedshiftRole'\nCSV\nIGNOREHEADER 1\nDELIMITER ','\nREGION 'us-east-1'\nGZIP\nMAXERROR 100;\n\`\`\`\n\n### Best practices\n1. **Split files**: Multiple files = parallel load\n2. **Use MANIFEST**: Exact file list\n3. **Compress data**: Gzip reduces transfer time\n4. **Parquet > CSV**: More efficient`, pt: `## COPY Command - Carga de Dados\n\n### Sintaxe básica\n\`\`\`sql\nCOPY sales\nFROM 's3://bucket/data/sales/'\nIAM_ROLE 'arn:aws:iam::123:role/RedshiftS3Role'\nFORMAT AS PARQUET;\n\`\`\`\n\n### Opções comuns\n\`\`\`sql\nCOPY users\nFROM 's3://bucket/users.csv'\nIAM_ROLE 'arn:aws:iam::123:role/RedshiftRole'\nCSV\nIGNOREHEADER 1\nDELIMITER ','\nREGION 'us-east-1'\nGZIP\nMAXERROR 100;\n\`\`\`\n\n### Best practices\n1. **Divida arquivos**: Múltiplos arquivos = carga paralela\n2. **Use MANIFEST**: Lista exata de arquivos\n3. **Comprima dados**: Gzip reduz tempo de transferência\n4. **Parquet > CSV**: Mais eficiente` }, practicalTips: [{ es: '⚡ Divide archivos grandes en partes del mismo tamaño para carga paralela óptima', en: '⚡ Split large files into same-size parts for optimal parallel loading', pt: '⚡ Divida arquivos grandes em partes do mesmo tamanho para carga paralela ótima' }], externalLinks: [{ title: 'COPY Command Reference', url: 'https://docs.aws.amazon.com/redshift/latest/dg/r_COPY.html', type: 'aws_docs' }], checkpoint: { es: '✅ ¿Cargaste datos de S3 a Redshift con COPY?', en: '✅ Did you load data from S3 to Redshift with COPY?', pt: '✅ Você carregou dados do S3 para Redshift com COPY?' }, xpReward: 65, estimatedMinutes: 40, services: ['Redshift', 'S3'] },
+  { id: 'aws-6-3', stepNumber: 48, title: { es: 'COPY: El Comando Más Importante de Redshift', en: 'COPY: The Most Important Redshift Command', pt: 'COPY: O Comando Mais Importante do Redshift' }, description: { es: 'COPY es 10-100x más rápido que INSERT. Es la ÚNICA forma correcta de cargar datos masivos. Aprovecha MPP para cargar en paralelo desde S3.', en: 'COPY is 10-100x faster than INSERT. It is the ONLY correct way to bulk load data. It leverages MPP to load in parallel from S3.', pt: 'COPY é 10-100x mais rápido que INSERT. É a ÚNICA forma correta de carregar dados massivos. Aproveita MPP para carregar em paralelo do S3.' }, theory: { es: `## COPY: El Comando Más Importante de Redshift
+
+### ¿Por Qué COPY es Clave?
+COPY es **10-100x más rápido** que INSERT porque aprovecha la arquitectura MPP (Massively Parallel Processing):
+
+\`\`\`
+INSERT (MALO - fila por fila):
+  App → Leader Node → 1 Compute Node → disco
+  1 millón de filas = 1 millón de operaciones secuenciales
+  Tiempo: ~30 minutos
+
+COPY (BUENO - paralelo masivo):
+  S3 → Leader Node → TODOS los Compute Nodes en paralelo
+  1 millón de filas = repartidas entre N nodos simultáneamente
+  Tiempo: ~30 segundos (60x más rápido)
+\`\`\`
+
+**REGLA DE ORO: NUNCA uses INSERT para cargas de más de 100 filas. Siempre COPY.**
+
+### Sintaxis Básica
+\`\`\`sql
+-- Desde Parquet (RECOMENDADO - más rápido, tipos nativos)
+COPY sales
+FROM 's3://mi-datalake/silver/sales/'
+IAM_ROLE 'arn:aws:iam::123456789012:role/RedshiftS3Role'
+FORMAT AS PARQUET;
+
+-- Desde CSV comprimido
+COPY users
+FROM 's3://mi-datalake/bronze/users/'
+IAM_ROLE 'arn:aws:iam::123456789012:role/RedshiftS3Role'
+CSV
+IGNOREHEADER 1
+DELIMITER ','
+GZIP
+REGION 'us-east-1'
+MAXERROR 100
+COMPUPDATE ON
+STATUPDATE ON;
+\`\`\`
+
+### Optimización: Dividir Archivos para Carga Paralela
+La regla más importante: **número de archivos = múltiplo del número de slices**.
+
+\`\`\`
+Cluster con 2 nodos dc2.large (2 slices cada uno) = 4 slices total
+
+❌ MALO: 1 archivo de 10GB
+   → Solo 1 slice trabaja, los otros 3 esperan
+
+✅ BUENO: 4 archivos de 2.5GB
+   → Cada slice carga 1 archivo en paralelo (4x más rápido)
+
+✅ MEJOR: 8 archivos de 1.25GB
+   → 2 rondas, cada slice siempre ocupado
+
+Regla: archivos de 100MB-1GB, cantidad = múltiplo de slices
+\`\`\`
+
+\`\`\`bash
+# Ver cuántos slices tiene tu cluster
+SELECT node, COUNT(*) as slices FROM stv_slices GROUP BY node;
+\`\`\`
+
+### MANIFEST: Control Exacto de Archivos
+\`\`\`json
+// manifest.json en S3
+{
+  "entries": [
+    {"url": "s3://bucket/data/part-00000.parquet", "mandatory": true},
+    {"url": "s3://bucket/data/part-00001.parquet", "mandatory": true},
+    {"url": "s3://bucket/data/part-00002.parquet", "mandatory": true},
+    {"url": "s3://bucket/data/part-00003.parquet", "mandatory": true}
+  ]
+}
+\`\`\`
+
+\`\`\`sql
+-- COPY con MANIFEST (carga SOLO los archivos listados)
+COPY sales
+FROM 's3://bucket/data/manifest.json'
+IAM_ROLE 'arn:aws:iam::123:role/RedshiftS3Role'
+FORMAT AS PARQUET
+MANIFEST;
+\`\`\`
+
+### Debugging: Cuando COPY Falla
+\`\`\`sql
+-- Ver errores de la última carga
+SELECT * FROM stl_load_errors ORDER BY starttime DESC LIMIT 20;
+
+-- Ver columnas problemáticas
+SELECT colname, type, col_length, err_reason
+FROM stl_load_errors 
+WHERE filename LIKE '%sales%'
+ORDER BY starttime DESC LIMIT 10;
+
+-- Errores comunes:
+-- "Delimiter not found" → archivo no tiene el delimiter correcto
+-- "String length exceeds DDL length" → VARCHAR muy corto
+-- "Invalid digit" → columna INT tiene texto
+\`\`\`
+
+### Opciones Avanzadas
+\`\`\`sql
+COPY sales
+FROM 's3://bucket/data/'
+IAM_ROLE 'arn:aws:iam::123:role/RedshiftS3Role'
+FORMAT AS PARQUET
+COMPUPDATE ON        -- Aplica encoding óptimo automáticamente
+STATUPDATE ON        -- Actualiza estadísticas para el optimizer
+MAXERROR 1000        -- Permite hasta 1000 errores antes de fallar
+TRUNCATECOLUMNS      -- Trunca strings que excedan VARCHAR length
+TIMEFORMAT 'auto'    -- Detecta formato de timestamps automáticamente
+ACCEPTINVCHARS ' '   -- Reemplaza caracteres inválidos con espacio
+BLANKSASNULL;        -- Trata blanks como NULL
+\`\`\`
+
+### COPY vs INSERT vs UNLOAD - Cuándo Usar Cada Uno
+| Operación | Comando | Velocidad | Cuándo |
+|-----------|---------|-----------|--------|
+| S3 → Redshift | **COPY** | ⚡⚡⚡ | SIEMPRE para cargas bulk |
+| Redshift → S3 | **UNLOAD** | ⚡⚡⚡ | Exportar resultados/Gold |
+| Fila individual | INSERT | ⚡ | Solo para < 100 filas |
+| Tabla a tabla | INSERT INTO...SELECT | ⚡⚡ | Transformaciones internas |
+
+### Costo: COPY es GRATIS
+COPY no tiene costo adicional. Solo pagas por el compute de Redshift que ya está corriendo. La transferencia desde S3 en la misma región es gratis. Es la operación con mejor relación costo/rendimiento en todo AWS.
+
+### Post-COPY: VACUUM y ANALYZE
+\`\`\`sql
+-- Después de COPY o DELETE, SIEMPRE ejecutar:
+VACUUM sales;    -- Recupera espacio de filas eliminadas, re-sort
+ANALYZE sales;   -- Actualiza estadísticas para query optimizer
+
+-- VACUUM FULL vs SORT ONLY
+VACUUM FULL sales;       -- Recupera espacio + re-sort (más lento)
+VACUUM SORT ONLY sales;  -- Solo re-sort (más rápido)
+VACUUM DELETE ONLY sales; -- Solo recuperar espacio
+\`\`\``, en: `## COPY: The Most Important Redshift Command
+
+### Why COPY is Key
+COPY is **10-100x faster** than INSERT because it leverages MPP (Massively Parallel Processing):
+
+\`\`\`
+INSERT (BAD - row by row):
+  App → Leader Node → 1 Compute Node → disk
+  1 million rows = 1 million sequential operations
+  Time: ~30 minutes
+
+COPY (GOOD - massive parallel):
+  S3 → Leader Node → ALL Compute Nodes in parallel
+  1 million rows = distributed across N nodes simultaneously
+  Time: ~30 seconds (60x faster)
+\`\`\`
+
+**GOLDEN RULE: NEVER use INSERT for loads of more than 100 rows. Always COPY.**
+
+### Basic Syntax
+\`\`\`sql
+-- From Parquet (RECOMMENDED)
+COPY sales
+FROM 's3://my-datalake/silver/sales/'
+IAM_ROLE 'arn:aws:iam::123:role/RedshiftS3Role'
+FORMAT AS PARQUET;
+
+-- From compressed CSV
+COPY users
+FROM 's3://my-datalake/bronze/users/'
+IAM_ROLE 'arn:aws:iam::123:role/RedshiftS3Role'
+CSV IGNOREHEADER 1 GZIP MAXERROR 100
+COMPUPDATE ON STATUPDATE ON;
+\`\`\`
+
+### Optimization: Split Files for Parallel Loading
+Most important rule: **number of files = multiple of slice count**.
+
+### Debugging: When COPY Fails
+\`\`\`sql
+SELECT * FROM stl_load_errors ORDER BY starttime DESC LIMIT 20;
+\`\`\`
+
+### Post-COPY: VACUUM and ANALYZE
+\`\`\`sql
+VACUUM sales;   -- Reclaim space from deleted rows, re-sort
+ANALYZE sales;  -- Update statistics for query optimizer
+\`\`\`
+
+### COPY is FREE
+No additional cost. You only pay for Redshift compute already running. S3 transfer in same region is free.`, pt: `## COPY: O Comando Mais Importante do Redshift
+
+### Por Que COPY é Chave
+COPY é **10-100x mais rápido** que INSERT porque aproveita a arquitetura MPP:
+
+\`\`\`
+INSERT (RUIM - linha por linha):
+  App → Leader Node → 1 Compute Node → disco
+  1 milhão de linhas = 1 milhão de operações sequenciais
+
+COPY (BOM - paralelo massivo):
+  S3 → Leader Node → TODOS os Compute Nodes em paralelo
+  1 milhão de linhas = distribuídas entre N nós simultaneamente
+\`\`\`
+
+**REGRA DE OURO: NUNCA use INSERT para cargas de mais de 100 linhas. Sempre COPY.**
+
+### Sintaxe Básica
+\`\`\`sql
+COPY sales
+FROM 's3://meu-datalake/silver/sales/'
+IAM_ROLE 'arn:aws:iam::123:role/RedshiftS3Role'
+FORMAT AS PARQUET;
+\`\`\`
+
+### Otimização: Dividir Arquivos
+Regra: número de arquivos = múltiplo do número de slices.
+
+### Debugging
+\`\`\`sql
+SELECT * FROM stl_load_errors ORDER BY starttime DESC LIMIT 20;
+\`\`\`
+
+### COPY é GRÁTIS
+Sem custo adicional. Transferência do S3 na mesma região é grátis.` }, practicalTips: [{ es: '⚡ NUNCA uses INSERT para más de 100 filas - COPY es 10-100x más rápido porque carga en paralelo usando todos los nodos del cluster', en: '⚡ NEVER use INSERT for more than 100 rows - COPY is 10-100x faster because it loads in parallel using all cluster nodes', pt: '⚡ NUNCA use INSERT para mais de 100 linhas - COPY é 10-100x mais rápido porque carrega em paralelo usando todos os nós do cluster' }, { es: '📦 Divide archivos en múltiplos del número de slices (ej: cluster de 4 slices → 4, 8, 12 archivos). Archivos de 100MB-1GB cada uno.', en: '📦 Split files into multiples of slice count (e.g.: 4 slice cluster → 4, 8, 12 files). Files of 100MB-1GB each.', pt: '📦 Divida arquivos em múltiplos do número de slices (ex: cluster de 4 slices → 4, 8, 12 arquivos). Arquivos de 100MB-1GB cada.' }, { es: '🆓 COPY no tiene costo extra - solo pagas el compute de Redshift que ya está corriendo. La transferencia desde S3 en la misma región es gratis.', en: '🆓 COPY has no extra cost - you only pay for Redshift compute already running. S3 transfer in same region is free.', pt: '🆓 COPY não tem custo extra - você só paga pelo compute do Redshift que já está rodando. Transferência do S3 na mesma região é grátis.' }, { es: '🔍 Si COPY falla, revisa stl_load_errors para ver exactamente qué fila y columna causó el error', en: '🔍 If COPY fails, check stl_load_errors to see exactly which row and column caused the error', pt: '🔍 Se COPY falhar, verifique stl_load_errors para ver exatamente qual linha e coluna causou o erro' }], interviewTips: [{ es: '🎯 "¿Cómo cargarías 100 millones de filas en Redshift?" → NUNCA con INSERT. Siempre COPY desde S3. Dividir los datos en archivos de 100MB-1GB, cantidad = múltiplo de slices. Usar Parquet con Snappy para máxima eficiencia. COPY es 10-100x más rápido que INSERT porque aprovecha MPP para cargar en paralelo en todos los nodos.', en: '🎯 "How would you load 100 million rows into Redshift?" → NEVER with INSERT. Always COPY from S3. Split data into 100MB-1GB files, count = multiple of slices. Use Parquet with Snappy. COPY is 10-100x faster than INSERT because it leverages MPP.', pt: '🎯 "Como você carregaria 100 milhões de linhas no Redshift?" → NUNCA com INSERT. Sempre COPY do S3. Dividir dados em arquivos de 100MB-1GB, quantidade = múltiplo de slices. Usar Parquet com Snappy. COPY é 10-100x mais rápido que INSERT.' }, { es: '🎯 "¿Qué haces después de un COPY o DELETE en Redshift?" → VACUUM para recuperar espacio de filas eliminadas y re-sortear. ANALYZE para actualizar estadísticas del query optimizer. Sin VACUUM, las queries se degradan progresivamente. Sin ANALYZE, el optimizer toma decisiones subóptimas.', en: '🎯 "What do you do after a COPY or DELETE in Redshift?" → VACUUM to reclaim space and re-sort. ANALYZE to update optimizer statistics. Without VACUUM, queries degrade progressively. Without ANALYZE, optimizer makes suboptimal decisions.', pt: '🎯 "O que você faz depois de um COPY ou DELETE no Redshift?" → VACUUM para recuperar espaço e re-ordenar. ANALYZE para atualizar estatísticas do optimizer. Sem VACUUM, queries degradam progressivamente.' }, { es: '🎯 "¿Cómo debuggearías un COPY que falla?" → Consultar stl_load_errors para ver fila exacta, columna y motivo del error. Errores comunes: tipos de datos incompatibles, VARCHAR muy corto, caracteres inválidos. Usar MAXERROR para tolerar N errores. Usar MANIFEST para control exacto de qué archivos cargar.', en: '🎯 "How would you debug a failing COPY?" → Query stl_load_errors for exact row, column and error reason. Common errors: incompatible data types, VARCHAR too short, invalid characters. Use MAXERROR to tolerate N errors.', pt: '🎯 "Como você debuggaria um COPY que falha?" → Consultar stl_load_errors para ver linha exata, coluna e motivo do erro.' }], commonMistakes: [{ es: '❌ Usar INSERT INTO para cargas masivas - es 10-100x más lento que COPY', en: '❌ Using INSERT INTO for bulk loads - it is 10-100x slower than COPY', pt: '❌ Usar INSERT INTO para cargas massivas - é 10-100x mais lento que COPY' }, { es: '❌ Cargar un solo archivo enorme - dividir en múltiplos del número de slices', en: '❌ Loading a single huge file - split into multiples of slice count', pt: '❌ Carregar um único arquivo enorme - dividir em múltiplos do número de slices' }, { es: '❌ No ejecutar VACUUM/ANALYZE después de COPY con DELETE previo', en: '❌ Not running VACUUM/ANALYZE after COPY with prior DELETE', pt: '❌ Não executar VACUUM/ANALYZE depois de COPY com DELETE anterior' }], externalLinks: [{ title: 'COPY Command Reference', url: 'https://docs.aws.amazon.com/redshift/latest/dg/r_COPY.html', type: 'aws_docs' }, { title: 'COPY Best Practices', url: 'https://docs.aws.amazon.com/redshift/latest/dg/c_loading-data-best-practices.html', type: 'aws_docs' }, { title: 'STL_LOAD_ERRORS', url: 'https://docs.aws.amazon.com/redshift/latest/dg/r_STL_LOAD_ERRORS.html', type: 'aws_docs' }], checkpoint: { es: '✅ ¿Cargaste 1M+ filas con COPY y verificaste que fue paralelo revisando slices?', en: '✅ Did you load 1M+ rows with COPY and verify it was parallel by checking slices?', pt: '✅ Você carregou 1M+ linhas com COPY e verificou que foi paralelo checando slices?' }, xpReward: 75, estimatedMinutes: 50, services: ['Redshift', 'S3'] },
   
   { id: 'aws-6-4', stepNumber: 49, title: { es: 'Distribution y Sort Keys', en: 'Distribution and Sort Keys', pt: 'Distribution e Sort Keys' }, description: { es: 'Optimizar tablas con distribution y sort keys.', en: 'Optimize tables with distribution and sort keys.', pt: 'Otimizar tabelas com distribution e sort keys.' }, theory: { es: `## Distribution y Sort Keys\n\n### Distribution Styles\n1. **AUTO**: Redshift elige (recomendado para empezar)\n2. **EVEN**: Distribuye filas uniformemente\n3. **KEY**: Por valor de columna (bueno para JOINs)\n4. **ALL**: Copia tabla a todos los nodos (tablas pequeñas)\n\n### Sort Keys\n1. **COMPOUND**: Múltiples columnas, orden importa\n2. **INTERLEAVED**: Múltiples columnas, orden no importa (deprecated)\n\n### Ejemplo optimizado\n\`\`\`sql\nCREATE TABLE sales (\n  sale_id BIGINT,\n  customer_id INT,\n  sale_date DATE,\n  amount DECIMAL(10,2)\n)\nDISTKEY(customer_id)  -- JOIN frecuente con customers\nSORTKEY(sale_date);   -- Filtro frecuente por fecha\n\`\`\`\n\n### Cuándo usar qué\n- **DISTKEY**: Columna de JOIN más frecuente\n- **SORTKEY**: Columna de filtro más frecuente`, en: `## Distribution and Sort Keys\n\n### Distribution Styles\n1. **AUTO**: Redshift chooses (recommended to start)\n2. **EVEN**: Distributes rows evenly\n3. **KEY**: By column value (good for JOINs)\n4. **ALL**: Copies table to all nodes (small tables)\n\n### Sort Keys\n1. **COMPOUND**: Multiple columns, order matters\n2. **INTERLEAVED**: Multiple columns, order doesn't matter (deprecated)\n\n### Optimized example\n\`\`\`sql\nCREATE TABLE sales (\n  sale_id BIGINT,\n  customer_id INT,\n  sale_date DATE,\n  amount DECIMAL(10,2)\n)\nDISTKEY(customer_id)  -- Frequent JOIN with customers\nSORTKEY(sale_date);   -- Frequent filter by date\n\`\`\`\n\n### When to use what\n- **DISTKEY**: Most frequent JOIN column\n- **SORTKEY**: Most frequent filter column`, pt: `## Distribution e Sort Keys\n\n### Distribution Styles\n1. **AUTO**: Redshift escolhe (recomendado para começar)\n2. **EVEN**: Distribui linhas uniformemente\n3. **KEY**: Por valor de coluna (bom para JOINs)\n4. **ALL**: Copia tabela para todos os nós (tabelas pequenas)\n\n### Sort Keys\n1. **COMPOUND**: Múltiplas colunas, ordem importa\n2. **INTERLEAVED**: Múltiplas colunas, ordem não importa (deprecated)\n\n### Exemplo otimizado\n\`\`\`sql\nCREATE TABLE sales (\n  sale_id BIGINT,\n  customer_id INT,\n  sale_date DATE,\n  amount DECIMAL(10,2)\n)\nDISTKEY(customer_id)  -- JOIN frequente com customers\nSORTKEY(sale_date);   -- Filtro frequente por data\n\`\`\`\n\n### Quando usar o quê\n- **DISTKEY**: Coluna de JOIN mais frequente\n- **SORTKEY**: Coluna de filtro mais frequente` }, practicalTips: [{ es: '📊 Analiza tus queries más frecuentes antes de elegir keys', en: '📊 Analyze your most frequent queries before choosing keys', pt: '📊 Analise suas queries mais frequentes antes de escolher keys' }], externalLinks: [{ title: 'Table Design Best Practices', url: 'https://docs.aws.amazon.com/redshift/latest/dg/c_best-practices-best-dist-key.html', type: 'aws_docs' }], checkpoint: { es: '✅ ¿Creaste tablas con DISTKEY y SORTKEY apropiados?', en: '✅ Did you create tables with appropriate DISTKEY and SORTKEY?', pt: '✅ Você criou tabelas com DISTKEY e SORTKEY apropriados?' }, xpReward: 70, estimatedMinutes: 45, services: ['Redshift'] },
   

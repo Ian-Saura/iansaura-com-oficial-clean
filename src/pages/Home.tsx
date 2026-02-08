@@ -637,6 +637,133 @@ export default function Home({ user }: HomeProps) {
         </div>
       </section>
 
+      {/* ☁️ COMING SOON - AWS Data Engineering Specialization */}
+      <section className="py-20 bg-gradient-to-br from-slate-900 via-slate-900/95 to-amber-900/10 relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-amber-500/30 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-10 w-72 h-72 bg-orange-500/30 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="max-w-6xl mx-auto px-6 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <div className="text-center mb-10">
+              <div className="inline-flex items-center gap-2 bg-amber-500/20 text-amber-400 px-4 py-2 rounded-full text-sm font-semibold mb-4 border border-amber-500/30">
+                <Clock className="w-4 h-4" />
+                {({ es: 'PROXIMAMENTE - MARZO 2026', en: 'COMING SOON - MARCH 2026', pt: 'EM BREVE - MARÇO 2026' } as any)[language]}
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                {({ es: 'Especialización en', en: 'Specialization in', pt: 'Especialização em' } as any)[language]}{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">AWS Data Engineering</span>
+              </h2>
+              <p className="text-xl text-amber-400 font-medium mb-4">
+                {({ es: '2 Niveles: Serverless + Advanced', en: '2 Levels: Serverless + Advanced', pt: '2 Níveis: Serverless + Advanced' } as any)[language]}
+              </p>
+              <p className="text-slate-400 max-w-2xl mx-auto">
+                {({ 
+                  es: 'Domina AWS desde cero hasta nivel expert. Lambda, Fargate, Step Functions, Redshift, EMR y más. 10 proyectos enterprise con arquitectura Medallion y 18 preguntas de entrevista.', 
+                  en: 'Master AWS from zero to expert level. Lambda, Fargate, Step Functions, Redshift, EMR and more. 10 enterprise projects with Medallion architecture and 18 interview questions.', 
+                  pt: 'Domine AWS do zero ao nível expert. Lambda, Fargate, Step Functions, Redshift, EMR e mais. 10 projetos enterprise com arquitetura Medallion e 18 perguntas de entrevista.' 
+                } as any)[language]}
+              </p>
+            </div>
+
+            {/* Countdown Timer */}
+            <div className="max-w-md mx-auto mb-10">
+              <div className="bg-slate-800/80 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/30">
+                <p className="text-amber-400 text-sm font-semibold mb-4 text-center">
+                  {({ es: '🚀 Lanzamiento: 1 de Marzo 2026', en: '🚀 Launch: March 1, 2026', pt: '🚀 Lançamento: 1 de Março 2026' } as any)[language]}
+                </p>
+                <SpecializationCountdown 
+                  specialization={specializations.find(s => s.id === 'spec-aws')!} 
+                  compact={true} 
+                />
+              </div>
+            </div>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-4xl mx-auto mb-10">
+              {[
+                { value: '15', label: ({ es: 'Fases', en: 'Phases', pt: 'Fases' } as any)[language], color: 'text-amber-400', border: 'border-amber-500/20' },
+                { value: '134', label: ({ es: 'Pasos', en: 'Steps', pt: 'Passos' } as any)[language], color: 'text-blue-400', border: 'border-blue-500/20' },
+                { value: '44', label: ({ es: 'Ejercicios', en: 'Exercises', pt: 'Exercícios' } as any)[language], color: 'text-purple-400', border: 'border-purple-500/20' },
+                { value: '10', label: ({ es: 'Proyectos', en: 'Projects', pt: 'Projetos' } as any)[language], color: 'text-emerald-400', border: 'border-emerald-500/20' },
+                { value: '18', label: ({ es: 'Entrevistas', en: 'Interview Q', pt: 'Entrevistas' } as any)[language], color: 'text-red-400', border: 'border-red-500/20' },
+              ].map((stat, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  viewport={{ once: true }}
+                  className={`bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 text-center border ${stat.border}`}
+                >
+                  <div className={`text-3xl font-bold ${stat.color}`}>{stat.value}</div>
+                  <div className="text-slate-400 text-sm">{stat.label}</div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* What's included */}
+            <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto mb-10">
+              <div className="bg-emerald-500/10 rounded-xl p-4 border border-emerald-500/20">
+                <div className="text-sm font-bold text-emerald-400 mb-2">
+                  {({ es: 'Nivel 1: Serverless (Free Tier)', en: 'Level 1: Serverless (Free Tier)', pt: 'Nível 1: Serverless (Free Tier)' } as any)[language]}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {['S3 Medallion', 'Lambda', 'Fargate', 'Step Functions', 'Athena', 'Secrets Manager'].map(s => (
+                    <span key={s} className="bg-emerald-500/10 text-emerald-300 text-xs px-2 py-1 rounded-full border border-emerald-500/20">{s}</span>
+                  ))}
+                </div>
+              </div>
+              <div className="bg-purple-500/10 rounded-xl p-4 border border-purple-500/20">
+                <div className="text-sm font-bold text-purple-400 mb-2">
+                  {({ es: 'Nivel 2: Advanced', en: 'Level 2: Advanced', pt: 'Nível 2: Advanced' } as any)[language]}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {['EMR', 'Kinesis', 'Redshift', 'MWAA', 'CloudFormation', 'Certificación'].map(s => (
+                    <span key={s} className="bg-purple-500/10 text-purple-300 text-xs px-2 py-1 rounded-full border border-purple-500/20">{s}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              viewport={{ once: true }}
+              className="text-center"
+            >
+              <Button
+                onClick={() => {
+                  trackCTAClick('landing_aws_cta');
+                  if (user) {
+                    navigate('/members?tab=especializaciones');
+                  } else {
+                    navigate('/auth?redirect=/members?tab=especializaciones');
+                  }
+                }}
+                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white px-8 py-4 text-lg font-bold rounded-xl shadow-lg shadow-amber-500/30 hover:scale-105 transition-all"
+              >
+                <Clock className="w-5 h-5 mr-2" />
+                {({ es: 'Ver Preview del Contenido', en: 'Preview Content', pt: 'Ver Preview do Conteúdo' } as any)[language]}
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+              <p className="text-slate-500 text-sm mt-4">
+                {({ es: '✨ Incluido gratis con tu suscripción Premium', en: '✨ Included free with your Premium subscription', pt: '✨ Incluído grátis com sua assinatura Premium' } as any)[language]}
+              </p>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* 🎓 NUEVO - Fundamentos Teóricos (Deep Dives) */}
       <section className="py-16 bg-gradient-to-br from-slate-900 via-violet-900/10 to-slate-900 relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">

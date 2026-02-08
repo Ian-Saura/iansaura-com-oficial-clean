@@ -78,40 +78,41 @@ export const specializations: Specialization[] = [
       projects: 5
     }
   },
-  // 2. AWS - MARZO 2026 - Después de Fundamentos Teóricos
+  // 2. AWS - MARZO 2026 - 2 NIVELES: Serverless + Advanced
   {
     id: 'spec-aws',
     title: { es: 'Especialización en AWS Data Engineering', en: 'AWS Data Engineering Specialization', pt: 'Especialização em AWS Data Engineering' },
-    subtitle: { es: 'El cloud #1 en demanda laboral', en: 'The #1 cloud in job demand', pt: 'A nuvem #1 em demanda de emprego' },
-    description: { es: 'Conviértete en experto en el stack de datos de AWS. 12 fases, 107 pasos, 10 Labs hands-on, 35 ejercicios, 5 proyectos. Aprenderás S3, Glue, Redshift, Athena, EMR, Kinesis, y Step Functions. Te prepara para la certificación AWS Data Analytics Specialty.', en: 'Become an expert in the AWS data stack. 12 phases, 107 steps, 10 hands-on Labs, 35 exercises, 5 projects. You will learn S3, Glue, Redshift, Athena, EMR, Kinesis, and Step Functions. Prepares you for the AWS Data Analytics Specialty certification.', pt: 'Torne-se um especialista no stack de dados da AWS. 12 fases, 107 passos, 10 Labs hands-on, 35 exercícios, 5 projetos. Você aprenderá S3, Glue, Redshift, Athena, EMR, Kinesis e Step Functions. Prepara você para a certificação AWS Data Analytics Specialty.' },
+    subtitle: { es: 'El cloud #1 en demanda laboral - 2 niveles', en: 'The #1 cloud in job demand - 2 levels', pt: 'A nuvem #1 em demanda de emprego - 2 níveis' },
+    description: { es: '2 niveles complementarios: Nivel 1 Serverless (Lambda, Fargate, Step Functions, Free Tier) y Nivel 2 Advanced (EMR, Kinesis, IaC, Certificación). 15 fases, 134 pasos, 44 ejercicios, 10 proyectos enterprise Medallion, 18 preguntas de entrevista expert, y Secrets Manager integrado. Cada paso incluye teoría profunda, código real y tips de entrevista.', en: '2 complementary levels: Level 1 Serverless (Lambda, Fargate, Step Functions, Free Tier) and Level 2 Advanced (EMR, Kinesis, IaC, Certification). 15 phases, 134 steps, 44 exercises, 10 enterprise Medallion projects, 18 expert interview questions, and Secrets Manager integrated.', pt: '2 níveis complementares: Nível 1 Serverless (Lambda, Fargate, Step Functions, Free Tier) e Nível 2 Advanced (EMR, Kinesis, IaC, Certificação). 15 fases, 134 passos, 44 exercícios, 10 projetos enterprise Medallion, 18 perguntas de entrevista expert, e Secrets Manager integrado.' },
     icon: '☁️',
     color: 'amber',
     status: 'coming_soon',
-    isNext: false,
-    isHidden: false, // ✅ VISIBLE como coming soon
+    isNext: true,
+    isHidden: false,
     releaseDate: '1 de Marzo 2026',
     releaseDateISO: '2026-03-01T00:00:00',
     prerequisites: ['level-2'],
-    duration: '8-10 semanas',
+    duration: '10-12 semanas',
     skills: [
-      { es: 'S3 (storage, partitioning, lifecycle)', en: 'S3 (storage, partitioning, lifecycle)', pt: 'S3 (storage, partitioning, lifecycle)' },
-      { es: 'AWS Glue (ETL, Catalog, Crawlers)', en: 'AWS Glue (ETL, Catalog, Crawlers)', pt: 'AWS Glue (ETL, Catalog, Crawlers)' },
-      { es: 'Amazon Redshift (warehouse)', en: 'Amazon Redshift (warehouse)', pt: 'Amazon Redshift (warehouse)' },
-      { es: 'Athena (serverless SQL)', en: 'Athena (serverless SQL)', pt: 'Athena (SQL serverless)' },
-      { es: 'EMR (Spark en AWS)', en: 'EMR (Spark on AWS)', pt: 'EMR (Spark na AWS)' },
-      { es: 'Kinesis (streaming)', en: 'Kinesis (streaming)', pt: 'Kinesis (streaming)' },
-      { es: 'Step Functions (orchestration)', en: 'Step Functions (orchestration)', pt: 'Step Functions (orquestração)' },
-      { es: 'IAM & Security best practices', en: 'IAM & Security best practices', pt: 'IAM & Melhores práticas de segurança' }
+      { es: 'S3 (Data Lake Medallion, partitioning)', en: 'S3 (Medallion Data Lake, partitioning)', pt: 'S3 (Data Lake Medallion, partitioning)' },
+      { es: 'Lambda (ETL serverless, S3 triggers)', en: 'Lambda (serverless ETL, S3 triggers)', pt: 'Lambda (ETL serverless, S3 triggers)' },
+      { es: 'ECS Fargate (Docker ETL para archivos grandes)', en: 'ECS Fargate (Docker ETL for large files)', pt: 'ECS Fargate (Docker ETL para arquivos grandes)' },
+      { es: 'Secrets Manager (credenciales seguras)', en: 'Secrets Manager (secure credentials)', pt: 'Secrets Manager (credenciais seguras)' },
+      { es: 'Step Functions (orquestación visual)', en: 'Step Functions (visual orchestration)', pt: 'Step Functions (orquestração visual)' },
+      { es: 'Glue Data Catalog + Athena (SQL serverless)', en: 'Glue Data Catalog + Athena (serverless SQL)', pt: 'Glue Data Catalog + Athena (SQL serverless)' },
+      { es: 'Amazon Redshift (data warehouse)', en: 'Amazon Redshift (data warehouse)', pt: 'Amazon Redshift (data warehouse)' },
+      { es: 'EMR + Kinesis (Big Data + Streaming)', en: 'EMR + Kinesis (Big Data + Streaming)', pt: 'EMR + Kinesis (Big Data + Streaming)' },
+      { es: 'IAM & Security best practices', en: 'IAM & Security best practices', pt: 'IAM & Melhores práticas de segurança' },
+      { es: 'Preparación entrevistas nivel expert', en: 'Expert-level interview preparation', pt: 'Preparação entrevistas nível expert' }
     ],
-    projects: 5,
-    // Extended data reference
+    projects: 10,
     dataPath: '../specializations/aws',
     stats: {
-      phases: 12,
-      steps: 107,
+      phases: 15,
+      steps: 134,
       labs: 10,
-      exercises: 35,
-      projects: 5
+      exercises: 44,
+      projects: 10
     }
   },
   // 3. ANALYTICS ENGINEERING (dbt + Snowflake) - ABRIL 2026

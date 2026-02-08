@@ -1,12 +1,15 @@
 /**
  * AWS DATA ENGINEERING SPECIALIZATION
- * Roadmap completo de 107 pasos para dominar AWS Data Engineering
+ * 2 NIVELES:
+ *   Nivel 1: Serverless - Lambda, Fargate, Step Functions (Free Tier)
+ *   Nivel 2: Advanced - EMR, Kinesis, IaC, Monitoring, Certification
  * 
  * Estructura:
- * - 12 fases de aprendizaje progresivo
- * - 107 pasos con teoría, tips y ejercicios
- * - 35 ejercicios prácticos
- * - 5 proyectos de portfolio
+ * - 13 fases originales + 2 fases nuevas (Lambda, Fargate)
+ * - 130+ pasos con teoría profunda, código, tips de entrevista
+ * - 44 ejercicios prácticos
+ * - 10 proyectos (5 por nivel)
+ * - 18+ preguntas de entrevista de nivel experto
  * - 45+ recursos externos verificados
  * 
  * Idiomas: Español, English, Português
@@ -15,10 +18,11 @@
 // Types
 export * from './types';
 
-// Phases con steps integrados
-export { awsPhases } from './phases';
+// Phases - original + reestructuradas por nivel
+export { awsPhases, awsPhasesNivel1, awsPhasesNivel2, getPhasesByLevel, nivel1Stats, nivel2Stats } from './phases';
+export type { AWSPhaseWithLevel } from './phases';
 
-// Steps individuales por fase
+// Steps individuales por fase (originales)
 export { phase0Steps, FREE_TIER_INFO, PHASE_COSTS } from './steps/phase0-freetier';
 export { phase1Steps } from './steps/phase1-intro';
 export { phase2Steps } from './steps/phase2-s3';
@@ -33,11 +37,20 @@ export { phase10Steps } from './steps/phase10-iac';
 export { phase11Steps } from './steps/phase11-monitoring';
 export { phase12Steps } from './steps/phase12-certification';
 
+// Steps nuevos - Nivel 1
+export { phaseLambdaSteps, LAMBDA_PHASE_INFO } from './steps/phase-lambda';
+export { phaseFargateSteps, FARGATE_PHASE_INFO } from './steps/phase-fargate';
+
 // Exercises
 export { awsExercises, getExercisesByPhase, getExercisesByDifficulty, exerciseStats } from './exercises';
 
-// Projects
+// Projects - ambos niveles
 export { awsProjects, getProjectById, projectStats } from './projects';
+export { awsProjectsNivel1, getProjectNivel1ById, projectNivel1Stats } from './projects-nivel1';
+
+// Interview Questions
+export { interviewQuestions, getQuestionsByModule, getQuestionsByDifficulty, interviewStats } from './interview-questions';
+export type { InterviewQuestion } from './interview-questions';
 
 // Resources
 export { awsResources, getResourcesByType, getResourcesByService, getFreeResources, resourceStats } from './resources';
@@ -51,28 +64,49 @@ export { getLabStepsForPhase, getAllLabSteps, labsByPhase, labStepsStats } from 
 // Metadata de la especialización
 export const AWS_SPECIALIZATION = {
   id: 'spec-aws',
-  version: '1.1.0',
+  version: '2.0.0',
   
-  // Estadísticas del contenido
-  totalPhases: 13, // Incluye Fase 0 (Free Tier Setup)
-  totalSteps: 115, // +8 de Fase 0
-  totalExercises: 35,
-  totalProjects: 5,
-  totalLabs: 10,         // Mini-proyectos guiados de 1-2h
+  // Estructura de 2 niveles
+  levels: {
+    nivel1: {
+      name: { es: 'Nivel 1: Serverless', en: 'Level 1: Serverless', pt: 'Nível 1: Serverless' },
+      description: { es: 'Lambda, Fargate, Step Functions - Free Tier priority', en: 'Lambda, Fargate, Step Functions - Free Tier priority', pt: 'Lambda, Fargate, Step Functions - Free Tier priority' },
+      phases: 7,
+      projects: 5,
+      estimatedWeeks: '5-6',
+      freeTierFriendly: true
+    },
+    nivel2: {
+      name: { es: 'Nivel 2: Advanced', en: 'Level 2: Advanced', pt: 'Nível 2: Advanced' },
+      description: { es: 'EMR, Kinesis, IaC, Monitoring, Certification', en: 'EMR, Kinesis, IaC, Monitoring, Certification', pt: 'EMR, Kinesis, IaC, Monitoring, Certificação' },
+      phases: 6,
+      projects: 5,
+      estimatedWeeks: '4-5',
+      freeTierFriendly: false
+    }
+  },
+  
+  // Estadísticas del contenido (totales)
+  totalPhases: 13 + 2, // 13 originales + Lambda + Fargate
+  totalSteps: 134, // 115 originales + 11 Lambda + 8 Fargate
+  totalExercises: 44, // 35 originales + 9 nuevos
+  totalProjects: 10, // 5 Nivel 1 + 5 Nivel 2
+  totalInterviewQuestions: 18,
+  totalLabs: 10,
   totalResources: 45,
   
   // Tiempo estimado
-  estimatedDuration: '8-10 semanas',
-  estimatedHours: 120,
+  estimatedDuration: '10-12 semanas (ambos niveles)',
+  estimatedHours: 150,
   
   // Dificultad
   difficulty: 'intermediate-advanced',
   
   // Prerrequisitos
   prerequisites: [
-    'level-2',           // Nivel 2 del roadmap principal
-    'python-basics',     // Python básico
-    'sql-intermediate'   // SQL intermedio
+    'level-2',
+    'python-basics',
+    'sql-intermediate'
   ],
   
   // Certificación objetivo
@@ -82,34 +116,29 @@ export const AWS_SPECIALIZATION = {
     url: 'https://aws.amazon.com/certification/certified-data-analytics-specialty/'
   },
   
-  // Servicios cubiertos
+  // Servicios cubiertos (actualizado)
   services: [
-    'S3',
-    'IAM',
-    'KMS',
-    'Glue',
-    'Athena',
-    'Redshift',
-    'EMR',
-    'Kinesis',
-    'Lambda',
-    'Step Functions',
-    'EventBridge',
-    'Lake Formation',
-    'CloudWatch',
-    'CloudTrail',
-    'CloudFormation',
-    'Terraform'
+    'S3', 'IAM', 'KMS', 'Glue', 'Athena', 'Redshift',
+    'EMR', 'Kinesis', 'Lambda', 'Step Functions',
+    'EventBridge', 'Lake Formation', 'CloudWatch', 'CloudTrail',
+    'CloudFormation', 'Terraform',
+    // Nuevos en Nivel 1
+    'Secrets Manager', 'ECS', 'Fargate', 'ECR',
+    'SQS', 'SNS', 'DynamoDB', 'X-Ray'
   ],
   
   // Skills que se desarrollan
   skills: {
     technical: [
-      'Data Lake architecture',
+      'Data Lake architecture (Medallion)',
+      'Serverless ETL (Lambda + Fargate)',
+      'Event-driven pipelines',
       'ETL with PySpark',
       'SQL analytics',
       'Streaming processing',
       'Data warehousing',
+      'Container orchestration',
+      'Secrets management',
       'Infrastructure as Code',
       'Data governance',
       'Monitoring & observability'
@@ -118,26 +147,27 @@ export const AWS_SPECIALIZATION = {
       'System design',
       'Cost optimization',
       'Security best practices',
+      'Interview preparation',
       'Documentation'
     ]
   },
   
   // XP totales disponibles
   totalXP: {
-    steps: 5350,       // XP de todos los pasos
-    exercises: 2700,   // XP de todos los ejercicios
-    projects: 4100,    // XP de todos los proyectos
-    labs: 2000,        // XP de todos los labs
-    total: 14150       // XP total
+    steps: 6560,       // 5350 originales + 610 Lambda + 500 Fargate + 100 interview
+    exercises: 3400,   // 2700 originales + 700 nuevos
+    projects: 7300,    // 4100 Nivel 2 + 3200 Nivel 1
+    labs: 2000,
+    total: 19260
   },
   
   // Metadata
-  lastUpdated: '2024-12-08',
+  lastUpdated: '2026-02-08',
   authors: ['Ian Saura Data Engineering Platform'],
   
   // Estado de la especialización
   status: 'coming_soon',
-  releaseDate: 'Febrero 2026'
+  releaseDate: 'Marzo 2026'
 };
 
 // Helper para obtener todos los steps en orden (incluyendo labs integrados)

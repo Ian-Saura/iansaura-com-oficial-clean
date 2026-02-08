@@ -651,6 +651,74 @@ export default function Suscripcion({ user }: SuscripcionProps) {
         </div>
       </section>
 
+      {/* ☁️ AWS Data Engineering - COMING SOON Highlight */}
+      <section className="py-16 px-6 bg-gradient-to-br from-slate-900 via-amber-900/5 to-slate-900">
+        <div className="max-w-5xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <div className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-3xl p-8 border border-amber-500/30 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl" />
+              
+              <div className="relative">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-5xl">☁️</span>
+                  <div>
+                    <div className="inline-flex items-center gap-2 bg-amber-500/20 text-amber-400 px-3 py-1 rounded-full text-xs font-semibold mb-1 border border-amber-500/30">
+                      {({ es: 'MARZO 2026', en: 'MARCH 2026', pt: 'MARÇO 2026' } as any)[language]}
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-bold text-white">
+                      {({ es: 'Especialización AWS Data Engineering', en: 'AWS Data Engineering Specialization', pt: 'Especialização AWS Data Engineering' } as any)[language]}
+                    </h3>
+                  </div>
+                </div>
+
+                <p className="text-slate-300 mb-6 max-w-3xl">
+                  {({ 
+                    es: '2 niveles complementarios: Serverless (Lambda, Fargate, Step Functions) + Advanced (EMR, Kinesis, Certificación). 10 proyectos enterprise con arquitectura Medallion, 18 preguntas de entrevista expert, y Secrets Manager integrado.', 
+                    en: '2 complementary levels: Serverless (Lambda, Fargate, Step Functions) + Advanced (EMR, Kinesis, Certification). 10 enterprise projects with Medallion architecture, 18 expert interview questions, and Secrets Manager integrated.', 
+                    pt: '2 níveis complementares: Serverless (Lambda, Fargate, Step Functions) + Advanced (EMR, Kinesis, Certificação). 10 projetos enterprise com arquitetura Medallion, 18 perguntas de entrevista expert e Secrets Manager integrado.' 
+                  } as any)[language]}
+                </p>
+
+                {/* Stats row */}
+                <div className="grid grid-cols-5 gap-3 mb-6">
+                  {[
+                    { value: '15', label: ({ es: 'Fases', en: 'Phases', pt: 'Fases' } as any)[language] },
+                    { value: '134', label: ({ es: 'Pasos', en: 'Steps', pt: 'Passos' } as any)[language] },
+                    { value: '44', label: ({ es: 'Ejercicios', en: 'Exercises', pt: 'Exercícios' } as any)[language] },
+                    { value: '10', label: ({ es: 'Proyectos', en: 'Projects', pt: 'Projetos' } as any)[language] },
+                    { value: '18', label: ({ es: 'Entrevistas', en: 'Interview Q', pt: 'Entrevistas' } as any)[language] },
+                  ].map((stat, i) => (
+                    <div key={i} className="bg-slate-800/60 rounded-lg p-2 text-center">
+                      <div className="text-lg font-bold text-amber-400">{stat.value}</div>
+                      <div className="text-xs text-slate-400">{stat.label}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Services tags */}
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {['S3', 'Lambda', 'Fargate', 'Step Functions', 'Athena', 'Redshift', 'EMR', 'Kinesis', 'Secrets Manager'].map(s => (
+                    <span key={s} className="bg-amber-500/10 text-amber-300 text-xs px-3 py-1 rounded-full border border-amber-500/20">
+                      {s}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-2 text-emerald-400 text-sm">
+                  <CheckCircle className="w-4 h-4" />
+                  {({ es: 'Incluido con tu suscripción Premium', en: 'Included with your Premium subscription', pt: 'Incluído na sua assinatura Premium' } as any)[language]}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* 🚀 Coming Soon - Specializaciones Section */}
       {(() => {
         const nextSpecs = specializations.filter(s => s.isNext && !s.isHidden);
