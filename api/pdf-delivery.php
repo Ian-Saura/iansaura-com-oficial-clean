@@ -55,6 +55,10 @@ function logPDFDelivery($message, $data = []) {
 
 // SMTP Email function
 function sendPDFEmail($to, $name, $pdfPath) {
+    // Fix UTF-8 encoding for accented names
+    require_once __DIR__ . '/email-helper.php';
+    $name = ensureUtf8($name);
+    
     // Use correct Ferozo SMTP settings
     $smtpHost = 'c2621673.ferozo.com';
     $smtpPort = defined('SMTP_PORT') ? SMTP_PORT : 465;
@@ -273,6 +277,8 @@ function sendPDFEmail($to, $name, $pdfPath) {
 
 // Alternative: Send notification without attachment
 function sendNotificationEmail($to, $name, $token) {
+    require_once __DIR__ . '/email-helper.php';
+    $name = ensureUtf8($name);
     $subject = "📚 Tu libro: Fundamentos Prácticos de Programación con Python";
     $from = "info@iansaura.com";
     

@@ -85,6 +85,12 @@ function logWaitlist($message, $data = []) {
 
 // SMTP Email function for Ferozo (same as contact.php)
 function sendSMTPEmail($host, $port, $username, $password, $to, $subject, $body, $replyTo, $fromName, &$errorMessage = null) {
+    // Fix UTF-8 encoding for accented names
+    require_once __DIR__ . '/email-helper.php';
+    $subject = encodeEmailSubject(ensureUtf8($subject));
+    $body = ensureUtf8($body);
+    $fromName = ensureUtf8($fromName);
+    
     $errorMessage = null;
 
     $socket = @fsockopen("ssl://$host", $port, $errno, $errstr, 30);

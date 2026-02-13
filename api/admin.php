@@ -2716,6 +2716,11 @@ function readSMTPResponse($socket) {
 
 // Función de envío de email SMTP (corregida para leer multilinea)
 function sendTrialEmailSMTP($to, $subject, $body) {
+    // Fix UTF-8 encoding for accented names (Agustín, María, José, etc.)
+    require_once __DIR__ . '/email-helper.php';
+    $subject = encodeEmailSubject(ensureUtf8($subject));
+    $body = ensureUtf8($body);
+    
     $host = 'c2621673.ferozo.com';
     $port = defined('SMTP_PORT') ? SMTP_PORT : 465;
     $username = defined('SMTP_USER') ? SMTP_USER : 'info@iansaura.com';

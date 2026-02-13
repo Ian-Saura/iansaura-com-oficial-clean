@@ -55,6 +55,10 @@ function logSQLDelivery($message, $data = []) {
 
 // SMTP Email function for SQL book
 function sendSQLPDFEmail($to, $name, $pdfPath) {
+    // Fix UTF-8 encoding for accented names
+    require_once __DIR__ . '/email-helper.php';
+    $name = ensureUtf8($name);
+    
     // Use correct Ferozo SMTP settings
     $smtpHost = 'c2621673.ferozo.com';
     $smtpPort = defined('SMTP_PORT') ? SMTP_PORT : 465;

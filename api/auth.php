@@ -61,6 +61,10 @@ checkAuthRateLimit($clientIP, 10, 300); // 10 requests per 5 minutes
  * SMTP Email function - EXACT COPY from test-email.php that works
  */
 function sendVerificationEmailSMTP($toEmail, $firstName, $verificationLink) {
+    // Fix UTF-8 encoding for accented names (Agustín, María, José, etc.)
+    require_once __DIR__ . '/email-helper.php';
+    $firstName = ensureUtf8($firstName);
+    
     $host = defined('SMTP_HOST') ? SMTP_HOST : 'c2621673.ferozo.com';
     $port = defined('SMTP_PORT') ? SMTP_PORT : 465;
     $username = defined('SMTP_USER') ? SMTP_USER : 'info@iansaura.com';
@@ -438,8 +442,9 @@ try {
     $pdo = getDBConnection();
     
     if ($action === 'register') {
-        // Registration
-        $name = trim($input['name'] ?? '');
+        // Registration - ensure name is valid UTF-8
+        require_once __DIR__ . '/email-helper.php';
+        $name = trim(ensureUtf8($input['name'] ?? ''));
         if (empty($name)) {
             throw new Exception('Nombre requerido');
         }
@@ -603,16 +608,17 @@ try {
             // Column might not exist
         }
         
-        // Get display name
+        // Get display name - fix UTF-8 encoding for accented names
+        require_once __DIR__ . '/email-helper.php';
         $displayName = $user['full_name'] ?: $user['name'] ?: ($user['first_name'] . ' ' . $user['last_name']);
         
         // Return user data
         $userData = [
             'id' => $user['id'],
             'email' => $user['email'],
-            'name' => trim($displayName),
-            'first_name' => $user['first_name'],
-            'last_name' => $user['last_name'],
+            'name' => trim(ensureUtf8($displayName)),
+            'first_name' => ensureUtf8($user['first_name']),
+            'last_name' => ensureUtf8($user['last_name']),
             'subscribed' => $hasSubscription,
             'bootcamp_access' => $hasBootcampAccess,
             'email_verified' => true,

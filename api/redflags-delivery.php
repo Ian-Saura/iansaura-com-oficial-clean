@@ -62,6 +62,11 @@ function logRedFlags($message, $data = []) {
 
 // SMTP Email function with attachment support
 function sendSMTPEmailWithAttachment($host, $port, $username, $password, $to, $subject, $body, $attachmentPath, $attachmentName, &$errorMessage = null) {
+    // Fix UTF-8 encoding for accented names
+    require_once __DIR__ . '/email-helper.php';
+    $subject = encodeEmailSubject(ensureUtf8($subject));
+    $body = ensureUtf8($body);
+    
     $errorMessage = null;
 
     // Read the attachment

@@ -38,7 +38,9 @@ try {
         throw new Exception('Valid email is required');
     }
     
-    $name = trim($googleUser['name'] ?? '');
+    // Fix UTF-8 encoding for accented names (Agustín, María, José, etc.)
+    require_once __DIR__ . '/email-helper.php';
+    $name = trim(ensureUtf8($googleUser['name'] ?? ''));
     $googleId = trim($googleUser['id'] ?? '');
     $picture = trim($googleUser['picture'] ?? '');
     
@@ -136,9 +138,9 @@ try {
         $userData = [
             'id' => $existingUser['id'],
             'email' => $existingUser['email'],
-            'name' => $existingUser['full_name'] ?: $name,
-            'first_name' => $existingUser['first_name'],
-            'last_name' => $existingUser['last_name'],
+            'name' => ensureUtf8($existingUser['full_name'] ?: $name),
+            'first_name' => ensureUtf8($existingUser['first_name']),
+            'last_name' => ensureUtf8($existingUser['last_name']),
             'subscribed' => $hasSubscription,
             'is_trial' => $isTrial,
             'is_oneinfinite_trial' => $isOneInfiniteTrial, // true = con tarjeta, acceso completo sin banners

@@ -279,8 +279,11 @@ function sendReengagementEmail($user, $type, $testMode = false) {
     }
     
     $to = $user['email'];
-    $subject = $template['subject'];
-    $message = $template['html'];
+    
+    // Fix UTF-8 encoding for accented names (Agustín, María, etc.)
+    require_once __DIR__ . '/email-helper.php';
+    $subject = encodeEmailSubject(ensureUtf8($template['subject']));
+    $message = ensureUtf8($template['html']);
     
     $headers = [
         'MIME-Version: 1.0',
@@ -297,7 +300,8 @@ function sendReengagementEmail($user, $type, $testMode = false) {
  * Templates de emails
  */
 function getEmailTemplate($type, $user) {
-    $firstName = $user['first_name'] ?: explode(' ', $user['full_name'] ?? '')[0] ?: 'Crack';
+    $rawName = $user['first_name'] ?: explode(' ', $user['full_name'] ?? '')[0] ?: 'Crack';
+    $firstName = function_exists('ensureUtf8') ? ensureUtf8($rawName) : $rawName;
     $xp = $user['xp'] ?? 0;
     $streak = $user['longest_streak'] ?? 0;
     

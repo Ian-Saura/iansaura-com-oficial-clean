@@ -4,10 +4,56 @@
  * Utility functions for sending emails
  */
 
+// Ensure UTF-8 is the default encoding for all mb_ functions
+mb_internal_encoding('UTF-8');
+
+/**
+ * Encode a string for use in email subject (RFC 2047)
+ * Fixes accented characters like "Agustín" appearing as "AgustÃ­n"
+ */
+function encodeEmailSubject($subject) {
+    // Only encode if there are non-ASCII characters
+    if (mb_check_encoding($subject, 'ASCII')) {
+        return $subject;
+    }
+    return '=?UTF-8?B?' . base64_encode($subject) . '?=';
+}
+
+/**
+ * Ensure a string is valid UTF-8 (fix double-encoding issues)
+ * Handles names stored with wrong encoding in the database
+ */
+function ensureUtf8($string) {
+    if (empty($string)) return $string;
+    
+    // Detect if the string is already valid UTF-8
+    if (mb_check_encoding($string, 'UTF-8')) {
+        // Check for double-encoding: UTF-8 bytes interpreted as Latin-1 then re-encoded
+        // e.g., "Ã­" is the double-encoded form of "í"
+        $decoded = @iconv('UTF-8', 'ISO-8859-1//IGNORE', $string);
+        if ($decoded !== false && mb_check_encoding($decoded, 'UTF-8') && $decoded !== $string) {
+            // It was double-encoded, return the fixed version
+            return $decoded;
+        }
+        return $string;
+    }
+    
+    // Try to convert from Latin-1 to UTF-8
+    $converted = @mb_convert_encoding($string, 'UTF-8', 'ISO-8859-1');
+    return $converted ?: $string;
+}
+
 /**
  * Send an email using PHP mail() or external service
+ * Handles UTF-8 encoding properly for subject and body
  */
 function sendEmail($to, $subject, $htmlBody, $textBody = null) {
+    // Ensure subject is valid UTF-8 and encode for email header
+    $subject = encodeEmailSubject(ensureUtf8($subject));
+    
+    // Ensure body is valid UTF-8
+    $htmlBody = ensureUtf8($htmlBody);
+    
     // Headers for HTML email
     $headers = [
         'MIME-Version: 1.0',

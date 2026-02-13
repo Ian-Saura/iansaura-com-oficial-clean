@@ -260,13 +260,13 @@ A subconsulta é executada primeiro e seu resultado é usado na comparação.`
     sampleData: `
       INSERT INTO products VALUES (1, 'Laptop', 999);
       INSERT INTO products VALUES (2, 'Mouse', 29);
-      INSERT INTO products VALUES (3, 'Monitor', 299);
+      INSERT INTO products VALUES (3, 'Monitor', 449);
       INSERT INTO products VALUES (4, 'Keyboard', 79);
     `,
     expectedQuery: 'SELECT * FROM products WHERE price > (SELECT AVG(price) FROM products)',
     expectedResult: [
       [1, 'Laptop', 999],
-      [3, 'Monitor', 299],
+      [3, 'Monitor', 449],
     ],
   },
   {

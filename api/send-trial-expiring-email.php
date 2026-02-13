@@ -11,6 +11,11 @@ require_once __DIR__ . '/secure-config.php';
 
 // SMTP Email function
 function sendTrialExpiringEmail($to, $subject, $body) {
+    // Fix UTF-8 encoding for accented names in subject and body
+    require_once __DIR__ . '/email-helper.php';
+    $subject = encodeEmailSubject(ensureUtf8($subject));
+    $body = ensureUtf8($body);
+    
     $host = 'c2621673.ferozo.com';
     $port = defined('SMTP_PORT') ? SMTP_PORT : 465;
     $username = defined('SMTP_USER') ? SMTP_USER : 'info@iansaura.com';

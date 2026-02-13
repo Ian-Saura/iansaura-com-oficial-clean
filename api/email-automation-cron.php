@@ -58,6 +58,11 @@ function logAutomation($message, $data = []) {
 
 // SMTP Email function (same as redflags-delivery.php)
 function sendSMTPEmail($host, $port, $username, $password, $to, $subject, $body, &$errorMessage = null) {
+    // Fix UTF-8 encoding for accented names
+    require_once __DIR__ . '/email-helper.php';
+    $subject = encodeEmailSubject(ensureUtf8($subject));
+    $body = ensureUtf8($body);
+    
     $errorMessage = null;
     $socket = @fsockopen("ssl://$host", $port, $errno, $errstr, 30);
 

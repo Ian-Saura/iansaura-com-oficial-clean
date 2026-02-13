@@ -121,7 +121,9 @@ try {
     $adminEmail = 'iansauradata@gmail.com';
     $subject = "⚠️ Cancelación de suscripción: {$email}";
     $message = "El usuario {$email} ha cancelado su suscripción.\n\nRazón: " . ($reason ?: 'No especificada');
-    @mail($adminEmail, $subject, $message);
+    // Encode subject for UTF-8 (emojis, accented chars)
+    $encodedSubject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
+    @mail($adminEmail, $encodedSubject, $message, "Content-Type: text/plain; charset=UTF-8");
     
     echo json_encode([
         'success' => true,
