@@ -434,6 +434,9 @@ const StepComponent: React.FC<StepComponentProps> = ({ step, isCompleted, onTogg
 // ============================================
 // MAIN COMPONENT
 // ============================================
+// Project that is free for promotion purposes
+const FREE_PROJECT_ID = 'p1-etl-python';
+
 const ProjectDetail: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
@@ -443,7 +446,11 @@ const ProjectDetail: React.FC = () => {
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [completedEval, setCompletedEval] = useState<number[]>([]);
   
-  // Get user email for AI Tutor
+  // Access control state
+  const [accessChecked, setAccessChecked] = useState(false);
+  const [hasAccess, setHasAccess] = useState(false);
+  
+  // Get user from localStorage
   const userEmail = useMemo(() => {
     const userStr = localStorage.getItem('user');
     if (userStr) {
@@ -456,6 +463,48 @@ const ProjectDetail: React.FC = () => {
     }
     return '';
   }, []);
+  
+  // Access control: free project is open, others require subscription
+  useEffect(() => {
+    if (projectId === FREE_PROJECT_ID) {
+      setHasAccess(true);
+      setAccessChecked(true);
+      return;
+    }
+    
+    // Not the free project - verify subscription with server
+    if (!userEmail) {
+      setHasAccess(false);
+      setAccessChecked(true);
+      return;
+    }
+    
+    const checkAccess = async () => {
+      try {
+        const res = await fetch(`/api/check-subscriber.php?email=${encodeURIComponent(userEmail)}`);
+        if (res.ok) {
+          const data = await res.json();
+          setHasAccess(data.success && data.subscribed === true);
+        } else {
+          setHasAccess(false);
+        }
+      } catch {
+        // On error, check localStorage as fallback
+        try {
+          const cached = localStorage.getItem('user');
+          if (cached) {
+            const u = JSON.parse(cached);
+            setHasAccess(u.subscribed === true);
+          }
+        } catch {
+          setHasAccess(false);
+        }
+      }
+      setAccessChecked(true);
+    };
+    
+    checkAccess();
+  }, [projectId, userEmail]);
   
   const project = projects.find(p => p.id === projectId);
   
@@ -496,6 +545,72 @@ const ProjectDetail: React.FC = () => {
     setCompletedEval(newCompleted);
     localStorage.setItem(`project-eval-${projectId}`, JSON.stringify(newCompleted));
   };
+  
+  // Loading state while checking access
+  if (!accessChecked) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-slate-400 text-sm">
+            {language === 'en' ? 'Verifying access...' : language === 'pt' ? 'Verificando acesso...' : 'Verificando acceso...'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+  
+  // Access denied - show paywall
+  if (!hasAccess) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center px-4">
+        <div className="max-w-lg w-full text-center">
+          <div className="bg-slate-800/60 rounded-2xl border border-slate-700 p-8">
+            <Lock className="w-16 h-16 text-amber-400 mx-auto mb-6" />
+            <h1 className="text-2xl font-bold text-white mb-3">
+              {language === 'en' ? 'Premium Project' : language === 'pt' ? 'Projeto Premium' : 'Proyecto Premium'}
+            </h1>
+            <p className="text-slate-400 mb-6">
+              {language === 'en' 
+                ? 'This guided project is available for premium subscribers. Subscribe to access all projects, roadmaps, exercises and more.'
+                : language === 'pt'
+                ? 'Este projeto guiado está disponível para assinantes premium. Assine para acessar todos os projetos, roadmaps, exercícios e mais.'
+                : 'Este proyecto guiado está disponible para suscriptores premium. Suscribite para acceder a todos los proyectos, roadmaps, ejercicios y más.'}
+            </p>
+            <div className="space-y-3">
+              {!userEmail ? (
+                <button
+                  onClick={() => navigate('/auth')}
+                  className="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-xl transition-colors"
+                >
+                  {language === 'en' ? 'Log In / Sign Up' : language === 'pt' ? 'Entrar / Cadastrar' : 'Iniciar Sesión / Registrarse'}
+                </button>
+              ) : (
+                <button
+                  onClick={() => navigate('/suscripcion')}
+                  className="w-full py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-semibold rounded-xl transition-colors"
+                >
+                  {language === 'en' ? 'Subscribe Now' : language === 'pt' ? 'Assinar Agora' : 'Suscribirme'}
+                </button>
+              )}
+              <button
+                onClick={() => navigate('/project/p1-etl-python')}
+                className="w-full py-3 bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium rounded-xl transition-colors text-sm"
+              >
+                {language === 'en' ? '🎁 Try Free Project: ETL with Python' : language === 'pt' ? '🎁 Experimente Grátis: ETL com Python' : '🎁 Probá Gratis: ETL con Python'}
+              </button>
+              <button
+                onClick={() => navigate(-1)}
+                className="text-slate-500 hover:text-slate-400 text-sm transition-colors"
+              >
+                ← {language === 'en' ? 'Go back' : language === 'pt' ? 'Voltar' : 'Volver'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
   
   if (!project) {
     return (
@@ -1070,6 +1185,40 @@ const ProjectDetail: React.FC = () => {
           userEmail={userEmail}
           floating={true}
         />
+      )}
+      
+      {/* CTA Banner - Only for non-logged-in users on free project */}
+      {!userEmail && projectId === FREE_PROJECT_ID && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-t border-emerald-500/30 shadow-2xl shadow-emerald-500/10">
+          <div className="max-w-4xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="text-center sm:text-left">
+              <p className="text-white font-semibold text-sm sm:text-base">
+                {language === 'en' ? '🚀 Liked this project? There are 25+ more waiting for you' 
+                  : language === 'pt' ? '🚀 Gostou deste projeto? Há mais de 25 te esperando' 
+                  : '🚀 ¿Te gustó este proyecto? Hay 25+ más esperándote'}
+              </p>
+              <p className="text-slate-400 text-xs sm:text-sm">
+                {language === 'en' ? 'Plus roadmaps, 200+ exercises, AI tutor, datasets & Discord community' 
+                  : language === 'pt' ? 'Mais roadmaps, 200+ exercícios, tutor IA, datasets e comunidade Discord' 
+                  : 'Más roadmaps, 200+ ejercicios, tutor IA, datasets y comunidad Discord'}
+              </p>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => navigate('/auth')}
+                className="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-semibold rounded-xl transition-all text-sm whitespace-nowrap"
+              >
+                {language === 'en' ? 'Start Free' : language === 'pt' ? 'Começar Grátis' : 'Empezar Gratis'}
+              </button>
+              <button
+                onClick={() => navigate('/suscripcion')}
+                className="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium rounded-xl transition-colors text-sm whitespace-nowrap"
+              >
+                {language === 'en' ? 'See Plans' : language === 'pt' ? 'Ver Planos' : 'Ver Planes'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );
