@@ -24,7 +24,7 @@ import { DatabricksSpecialization } from './types';
 import { ALL_DATABRICKS_PHASES, PHASE_STATS } from './phases';
 import { ALL_DATABRICKS_EXERCISES, EXERCISE_STATS } from './exercises';
 import { ALL_DATABRICKS_PROJECTS, PROJECT_STATS } from './projects';
-import { DATABRICKS_RESOURCES, STARTER_RESOURCES, RESOURCE_STATS } from './resources';
+import { RESOURCE_STATS } from './resources';
 import { ALL_DATABRICKS_LABS, LABS_STATS } from './labs';
 
 /**

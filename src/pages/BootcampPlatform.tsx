@@ -1285,7 +1285,7 @@ export default function BootcampPlatform({ user }: BootcampPlatformProps) {
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+            <div className="flex gap-2 mb-6 overflow-x-auto pb-2" style={{ WebkitOverflowScrolling: 'touch' }}>
               {[
                 { id: 'clases', label: 'Clases', icon: Video },
                 { id: 'proyecto', label: 'Proyecto Final', icon: Trophy },

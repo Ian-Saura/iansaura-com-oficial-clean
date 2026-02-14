@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Zap, Clock, Crown, ArrowRight, Sparkles } from 'lucide-react';
 import { FREE_LIMITS } from '../hooks/useEnergySystem';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 interface EnergyLimitModalProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ export const EnergyLimitModal: React.FC<EnergyLimitModalProps> = ({
   limitType,
   timeUntilReset,
 }) => {
+  useBodyScrollLock(isOpen);
   if (!isOpen) return null;
 
   const isExercise = limitType === 'exercise';
@@ -30,7 +32,7 @@ export const EnergyLimitModal: React.FC<EnergyLimitModalProps> = ({
       />
       
       {/* Modal */}
-      <div className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl max-w-md w-full border border-slate-700 shadow-2xl overflow-hidden">
+      <div className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto border border-slate-700 shadow-2xl" style={{ WebkitOverflowScrolling: 'touch' }}>
         {/* Decorative glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-amber-500/20 rounded-full blur-3xl" />
         

@@ -3,11 +3,11 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import MembersNavigation from '../components/MembersNavigation';
 import {
-  Database, Map, Video, CheckCircle, Lock,
-  ChevronRight, ChevronDown, Star, Target, Rocket,
-  Clock, X, MoreHorizontal,
+  Database, Map, Video, Lock,
+  ChevronRight, ChevronDown, Target, Rocket,
+  X, MoreHorizontal,
   Code, Crown, TrendingUp,
-  ShoppingBag, Search, Bell, Layers, Zap
+  ShoppingBag, Search, Layers, Zap
 } from 'lucide-react';
 
 // Data imports
@@ -20,7 +20,6 @@ import { useUserProgress } from '../hooks/useUserProgress';
 import { useCelebration } from '../hooks/useCelebration';
 import { useDailyMissions } from '../hooks/useDailyMissions';
 import { useEnergySystem } from '../hooks/useEnergySystem';
-import { useAnalytics } from '../hooks/useAnalytics';
 
 // Components
 import Shop from '../components/members/Shop';
@@ -40,7 +39,7 @@ import { DatasetsTab as ExtractedDatasetsTab } from '../components/members/tabs/
 import RoadmapTab from '../components/members/tabs/RoadmapTab';
 import { SpecializationsTab } from '../components/members/tabs/SpecializationsTab';
 import { BadgeModal } from '../components/members/BadgeModal';
-import { AchievementToast, CountdownTimer, LockedContentPreview, AchievementNotification } from '../components/members/MembersUtils';
+import { AchievementToast, LockedContentPreview, AchievementNotification } from '../components/members/MembersUtils';
 import { LeaderboardSection as ExtractedLeaderboardSection } from '../components/members/LeaderboardSection';
 import { QuickWinChallenge } from '../components/members/QuickWinChallenge';
 import { ExitIntentPopup } from '../components/ExitIntentPopup';
@@ -300,8 +299,6 @@ const Members: React.FC<MembersProps> = ({ user }) => {
     levelTitle: string;
   } | null>(null);
   const progress = useUserProgress();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { trackStepCompleted, trackExerciseCompleted, trackProjectStarted } = useAnalytics(user?.email);
   const { language, t: translateKey } = useLanguage();
   
   // Translation helper that uses current language
@@ -314,13 +311,22 @@ const Members: React.FC<MembersProps> = ({ user }) => {
 
   // Close more dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (moreDropdownRef.current && !moreDropdownRef.current.contains(event.target as Node)) {
+        // Also check if the tap was on the mobile dropdown
+        const mobileDropdown = document.querySelector('[data-mobile-more-dropdown]');
+        const mobileMoreBtn = document.querySelector('[data-mobile-more-btn]');
+        if (mobileDropdown && mobileDropdown.contains(event.target as Node)) return;
+        if (mobileMoreBtn && mobileMoreBtn.contains(event.target as Node)) return;
         setShowMoreDropdown(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
   }, []);
   
   // 🔧 FIX: Memoize position change handler to prevent infinite re-render loop
@@ -739,7 +745,7 @@ const Members: React.FC<MembersProps> = ({ user }) => {
             className="absolute inset-0 bg-black/80 backdrop-blur-sm"
             onClick={() => setShowLevel0CompleteModal(false)}
           />
-          <div className="relative bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900 rounded-2xl border border-purple-500/30 p-8 max-w-lg w-full shadow-2xl animate-in fade-in zoom-in duration-300">
+          <div className="relative bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900 rounded-2xl border border-purple-500/30 p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-in fade-in zoom-in duration-300" style={{ WebkitOverflowScrolling: 'touch' }}>
             {/* Confetti effect on open */}
             <div className="absolute -top-20 left-1/2 -translate-x-1/2 text-6xl animate-bounce">
               🎉
@@ -1226,7 +1232,7 @@ const Members: React.FC<MembersProps> = ({ user }) => {
         </div>
 
         {/* Mobile Bottom Navigation - Fixed (5 items max) */}
-        <div className="fixed bottom-0 left-0 right-0 bg-slate-950/98 backdrop-blur-md border-t border-slate-800 z-50 md:hidden safe-area-bottom">
+        <div className="fixed bottom-0 left-0 right-0 bg-slate-950/98 backdrop-blur-md border-t border-slate-800 z-50 md:hidden" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
           <nav className="flex justify-around items-center py-1 px-1">
             {[
               { id: 'dashboard', icon: TrendingUp, label: 'Home', locked: false },
@@ -1237,6 +1243,7 @@ const Members: React.FC<MembersProps> = ({ user }) => {
             ].map((tab) => (
               <button
                 key={tab.id}
+                {...('isMore' in tab && tab.isMore ? { 'data-mobile-more-btn': true } : {})}
                 onClick={() => {
                   if ('isMore' in tab && tab.isMore) {
                     setShowMoreDropdown(!showMoreDropdown);
@@ -1267,13 +1274,14 @@ const Members: React.FC<MembersProps> = ({ user }) => {
 
           {/* Mobile More Dropdown */}
           {showMoreDropdown && (
-            <>
-              {/* Backdrop to close dropdown */}
+            <div data-mobile-more-dropdown className="absolute bottom-full left-0 right-0 z-[60]">
+              {/* Scrim backdrop - sits behind the dropdown panel */}
               <div 
-                className="fixed inset-0 z-40" 
+                className="fixed inset-0 bg-black/40 -z-10" 
+                onTouchStart={() => setShowMoreDropdown(false)}
                 onClick={() => setShowMoreDropdown(false)}
               />
-              <div className="absolute bottom-full left-0 right-0 bg-slate-900 border-t border-slate-700 rounded-t-2xl shadow-xl pb-2 z-50 animate-in slide-in-from-bottom duration-200">
+              <div className="relative bg-slate-900 border-t border-slate-700 rounded-t-2xl shadow-xl pb-2">
                 {/* Handle bar for visual feedback */}
                 <div className="flex justify-center py-2">
                   <div className="w-10 h-1 bg-slate-700 rounded-full" />
@@ -1310,12 +1318,12 @@ const Members: React.FC<MembersProps> = ({ user }) => {
                   ))}
                 </div>
               </div>
-            </>
+            </div>
           )}
         </div>
 
-        {/* Content - Extra bottom padding for mobile nav */}
-        <div className="max-w-7xl mx-auto px-4 py-8 pb-24 md:pb-8">
+        {/* Content - Extra bottom padding for mobile nav + safe area */}
+        <div className="max-w-7xl mx-auto px-4 py-8 pb-28 md:pb-8">
           {/* Free User Upgrade Banner */}
           {isFreeUser && (
             <div className="mb-6 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 rounded-2xl p-6 text-white relative overflow-hidden">
@@ -1408,7 +1416,7 @@ const Members: React.FC<MembersProps> = ({ user }) => {
             navigate(`/members?tab=roadmap&level=${pos.level}&phase=${pos.phaseIndex}${pos.stepId ? `&step=${pos.stepId}` : ''}`);
             setActiveTab('roadmap');
           }}
-          className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white rounded-full shadow-lg shadow-violet-500/30 transition-all hover:scale-105 group"
+          className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-40 flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white rounded-full shadow-lg shadow-violet-500/30 transition-all hover:scale-105 group"
         >
           <svg className="w-5 h-5 rotate-180 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

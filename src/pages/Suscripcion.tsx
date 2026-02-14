@@ -330,7 +330,7 @@ export default function Suscripcion({ user }: SuscripcionProps) {
                   href="https://iansaura.gumroad.com/l/dgyzxi"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-bold py-4 px-12 rounded-xl text-xl transition-all transform hover:scale-105 shadow-lg shadow-emerald-500/30 animate-pulse"
+                  className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-bold py-4 px-6 sm:px-12 rounded-xl text-lg sm:text-xl transition-all transform hover:scale-105 shadow-lg shadow-emerald-500/30 animate-pulse"
                 >
                   🚀 {t('subscriptionPage.hero.subscribe')}
                   <ArrowRight className="w-6 h-6" />
@@ -383,7 +383,7 @@ export default function Suscripcion({ user }: SuscripcionProps) {
                 <div className="text-center mb-6">
                   <div className="text-slate-400 text-sm mb-2">{t('subscriptionPage.plans.monthly')}</div>
                   <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-5xl font-bold text-white">$30</span>
+                    <span className="text-4xl md:text-5xl font-bold text-white">$30</span>
                     <span className="text-slate-400 text-lg">{t('subscriptionPage.plans.perMonth')}</span>
                   </div>
                   <p className="text-emerald-400 text-xs mt-2">{t('subscriptionPage.plans.launchPrice')}</p>
@@ -418,7 +418,7 @@ export default function Suscripcion({ user }: SuscripcionProps) {
                 <div className="text-center mb-6 mt-2">
                   <div className="text-emerald-400 text-sm mb-2 font-medium">{t('subscriptionPage.plans.sixMonths')}</div>
                   <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-5xl font-bold text-white">$150</span>
+                    <span className="text-4xl md:text-5xl font-bold text-white">$150</span>
                     <span className="text-slate-400 text-lg">USD</span>
                   </div>
                   <p className="text-slate-300 text-sm mt-1">= $25/{t('common.month')}</p>
@@ -451,7 +451,7 @@ export default function Suscripcion({ user }: SuscripcionProps) {
                 <div className="text-center mb-6">
                   <div className="text-purple-400 text-sm mb-2 font-medium">{t('subscriptionPage.plans.twelveMonths')}</div>
                   <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-5xl font-bold text-white">$240</span>
+                    <span className="text-4xl md:text-5xl font-bold text-white">$240</span>
                     <span className="text-slate-400 text-lg">USD</span>
                   </div>
                   <p className="text-slate-300 text-sm mt-1">= $20/{t('common.month')}</p>
@@ -665,7 +665,7 @@ export default function Suscripcion({ user }: SuscripcionProps) {
               
               <div className="relative">
                 <div className="flex items-center gap-3 mb-4">
-                  <span className="text-5xl">☁️</span>
+                  <span className="text-3xl md:text-5xl">☁️</span>
                   <div>
                     <div className="inline-flex items-center gap-2 bg-amber-500/20 text-amber-400 px-3 py-1 rounded-full text-xs font-semibold mb-1 border border-amber-500/30">
                       {({ es: 'MARZO 2026', en: 'MARCH 2026', pt: 'MARÇO 2026' } as any)[language]}
@@ -685,7 +685,7 @@ export default function Suscripcion({ user }: SuscripcionProps) {
                 </p>
 
                 {/* Stats row */}
-                <div className="grid grid-cols-5 gap-3 mb-6">
+                <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 mb-6">
                   {[
                     { value: '15', label: ({ es: 'Fases', en: 'Phases', pt: 'Fases' } as any)[language] },
                     { value: '134', label: ({ es: 'Pasos', en: 'Steps', pt: 'Passos' } as any)[language] },
@@ -990,12 +990,12 @@ export default function Suscripcion({ user }: SuscripcionProps) {
       </footer>
 
       {/* 📱 STICKY CTA - Solo Mobile */}
-      <div className="fixed bottom-0 left-0 right-0 md:hidden bg-gradient-to-t from-slate-950 via-slate-950 to-transparent pt-4 pb-4 px-4 z-50">
+      <div className="fixed bottom-0 left-0 right-0 md:hidden bg-gradient-to-t from-slate-950 via-slate-950 to-transparent pt-4 px-4 z-50" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom, 1rem))' }}>
         <a
           href="https://iansaura.gumroad.com/l/dgyzxi"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-bold py-4 rounded-xl text-lg shadow-lg shadow-emerald-500/30"
+          className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-bold py-4 rounded-xl text-lg shadow-lg shadow-emerald-500/30 touch-manipulation"
         >
           🚀 Suscribirme - $30/mes
         </a>

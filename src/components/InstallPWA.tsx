@@ -89,7 +89,7 @@ export default function InstallPWA() {
   if (isIOS && showIOSInstructions) {
     return (
       <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 p-4">
-        <div className="bg-slate-900 rounded-2xl p-6 max-w-sm w-full border border-slate-700 shadow-2xl">
+        <div className="bg-slate-900 rounded-2xl p-6 max-w-sm w-full max-h-[90vh] overflow-y-auto border border-slate-700 shadow-2xl" style={{ WebkitOverflowScrolling: 'touch' }}>
           <div className="flex justify-between items-start mb-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center">

@@ -273,12 +273,7 @@ const Admin: React.FC<AdminProps> = ({ user }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loadingReferrals, setLoadingReferrals] = useState(false);
   const [datasetSuggestions, setDatasetSuggestions] = useState<any[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [retentionMetrics, setRetentionMetrics] = useState<any>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [conversionMetrics, setConversionMetrics] = useState<any>(null);
-  const [analyticsMetrics, setAnalyticsMetrics] = useState<any>(null);
-  const [loadingMetrics, setLoadingMetrics] = useState(false);
+  const [loadingMetrics] = useState(false);
   const [activityTimeline, setActivityTimeline] = useState<any>(null);
   const [loadingTimeline, setLoadingTimeline] = useState(false);
   const [bootcampStudents, setBootcampStudents] = useState<BootcampStudent[]>([]);
@@ -1125,9 +1120,6 @@ const Admin: React.FC<AdminProps> = ({ user }) => {
         setReferralStats(referralsData);
       }
 
-      // Cargar métricas de retención y conversión
-      loadRetentionMetrics();
-
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error loading data');
     } finally {
@@ -1135,50 +1127,8 @@ const Admin: React.FC<AdminProps> = ({ user }) => {
     }
   };
 
-  // Cargar métricas de retención y conversión
-  const loadRetentionMetrics = async () => {
-    setLoadingMetrics(true);
-    setError(null);
-    try {
-      // Cargar nuevas métricas de analytics completas
-      const adminKey = ADMIN_EMAILS.map(e => generateAdminKey(e)).find(Boolean) || '';
-      const analyticsRes = await fetch(`/api/analytics-metrics.php?key=${encodeURIComponent(adminKey)}`);
-      if (analyticsRes.ok) {
-        const analyticsData = await analyticsRes.json();
-        if (!analyticsData.error) {
-          setAnalyticsMetrics(analyticsData);
-        }
-      }
-      
-      // Cargar métricas de retención (legacy)
-      const retentionKey = ADMIN_EMAILS.map(e => generateAdminKey(e)).find(Boolean) || '';
-      const res = await fetch(`/api/retention-metrics.php?key=${encodeURIComponent(retentionKey)}`);
-      if (res.ok) {
-        const data = await res.json();
-        if (data.error) {
-          console.error('Metrics API error:', data);
-        } else {
-          setRetentionMetrics(data);
-        }
-      }
-      
-      // Cargar métricas de conversión (Nivel 0)
-      const convRes = await fetch(`/api/conversion-metrics.php`);
-      if (convRes.ok) {
-        const convData = await convRes.json();
-        if (convData.success) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          setConversionMetrics(convData);
-        }
-      }
-    } catch (err) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      console.error('Error loading metrics:', err);
-    } finally {
-      setLoadingMetrics(false);
-    }
-  };
+  // Métricas de retención removidas (APIs no funcionales)
+  const loadRetentionMetrics = async () => {};
 
   // Cargar timeline de actividad
   const loadActivityTimeline = async () => {
@@ -1308,7 +1258,7 @@ const Admin: React.FC<AdminProps> = ({ user }) => {
       {/* Add User Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-slate-900 rounded-xl p-6 border border-slate-700 max-w-md w-full">
+          <div className="bg-slate-900 rounded-xl p-6 border border-slate-700 max-w-md w-full max-h-[90vh] overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
             <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
               <UserPlus className="w-5 h-5 text-emerald-400" />
               Agregar Usuario Manual
@@ -1441,7 +1391,7 @@ const Admin: React.FC<AdminProps> = ({ user }) => {
       {/* Trial Invitation Modal */}
       {showTrialModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-slate-900 rounded-xl p-6 border border-slate-700 max-w-md w-full">
+          <div className="bg-slate-900 rounded-xl p-6 border border-slate-700 max-w-md w-full max-h-[90vh] overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
             <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
               {trialUser?.is_trial ? '✏️ Editar Trial' : trialUser ? '🎁 Enviar Trial Gratuito' : '🎁 Enviar Trial Masivo'}
             </h2>
@@ -1507,7 +1457,7 @@ const Admin: React.FC<AdminProps> = ({ user }) => {
               {/* Duración */}
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">Duración del Trial</label>
-                <div className="grid grid-cols-6 gap-2">
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                   {[1, 3, 5, 7, 14, 30].map((days) => (
                     <button
                       key={days}
@@ -1920,7 +1870,6 @@ const Admin: React.FC<AdminProps> = ({ user }) => {
                         const totalPaid = (subscriberCounts.paid_gumroad || 0) + (subscriberCounts.paid_oneinfinite || 0);
                         const activeTrials = subscribers.filter(s => s.is_trial && !s.is_expired).length;
                         
-                        const mrrActual = totalPaid * 22;
                         const mrrPotencial = (totalPaid + activeTrials) * 22;
                         
                         return (
@@ -3154,7 +3103,7 @@ const Admin: React.FC<AdminProps> = ({ user }) => {
             {/* Metrics Tab - Full Analytics Dashboard */}
             {activeTab === 'metrics' && (
               <MetricsTab 
-                analyticsMetrics={analyticsMetrics}
+                analyticsMetrics={null}
                 loadingMetrics={loadingMetrics}
                 setSuccessMessage={setSuccessMessage}
                 error={error}

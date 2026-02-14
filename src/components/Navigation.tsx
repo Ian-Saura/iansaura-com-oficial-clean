@@ -225,10 +225,18 @@ export default function Navigation({ user }: NavigationProps) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="md:hidden relative bg-white/95 backdrop-blur-xl border-b border-gray-200/50 overflow-hidden"
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            className="md:hidden relative bg-white/95 backdrop-blur-md border-b border-gray-200/50"
+            style={{ overflow: 'hidden' }}
+            onAnimationComplete={(definition: any) => {
+              // After open animation, allow scrolling inside menu
+              if (definition?.opacity === 1) {
+                const el = document.querySelector('[data-mobile-menu]');
+                if (el) (el as HTMLElement).style.overflow = 'visible';
+              }
+            }}
           >
-            <div className="px-6 py-4 space-y-2">
+            <div data-mobile-menu className="px-6 py-4 space-y-2 max-h-[80vh] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
               {/* Main Links */}
               {mainLinks.map((link, index) => (
                 <motion.div

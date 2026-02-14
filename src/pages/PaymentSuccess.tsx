@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle } from 'lucide-react';
@@ -13,6 +13,13 @@ export default function PaymentSuccess({ onLogin, user }: PaymentSuccessProps) {
   const navigate = useNavigate();
   const [showConfetti, setShowConfetti] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Cache viewport dimensions once on mount to avoid layout thrashing in render
+  const viewportDims = useMemo(() => ({
+    width: window.innerWidth,
+    height: window.innerHeight,
+    isMobile: window.innerWidth < 768,
+  }), []);
 
   // If user is already logged in, redirect to members
   useEffect(() => {
@@ -43,27 +50,27 @@ export default function PaymentSuccess({ onLogin, user }: PaymentSuccessProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-900/20 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-900/20 to-slate-900 flex items-center justify-center p-4 relative">
       {/* Animated background */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-teal-500/20 rounded-full blur-3xl animate-pulse delay-1000" />
       </div>
 
-      {/* Confetti effect */}
+      {/* Confetti effect - reduced count on mobile for performance */}
       {showConfetti && (
         <div className="fixed inset-0 pointer-events-none z-50">
-          {[...Array(50)].map((_, i) => (
+          {[...Array(viewportDims.isMobile ? 18 : 50)].map((_, i) => (
             <motion.div
               key={i}
               initial={{ 
                 y: -20, 
-                x: Math.random() * window.innerWidth,
+                x: Math.random() * viewportDims.width,
                 rotate: 0,
                 opacity: 1
               }}
               animate={{ 
-                y: window.innerHeight + 20,
+                y: viewportDims.height + 20,
                 rotate: Math.random() * 360,
                 opacity: 0
               }}
@@ -77,6 +84,7 @@ export default function PaymentSuccess({ onLogin, user }: PaymentSuccessProps) {
               }`}
               style={{
                 borderRadius: Math.random() > 0.5 ? '50%' : '0%',
+                willChange: 'transform, opacity',
               }}
             />
           ))}

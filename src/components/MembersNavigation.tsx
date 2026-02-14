@@ -240,7 +240,7 @@ const MembersNavigation: React.FC<MembersNavigationProps> = ({ user, displayName
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="sm:hidden border-t border-slate-800 bg-slate-950">
+        <div className="sm:hidden border-t border-slate-800 bg-slate-950 max-h-[calc(100vh-4rem)] overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
           <div className="p-4 space-y-2">
             {/* Admin Panel - Only for admins */}
             {isAdmin && (
@@ -325,7 +325,7 @@ const MembersNavigation: React.FC<MembersNavigationProps> = ({ user, displayName
       {/* Password Change Modal */}
       {showPasswordModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <div className="bg-slate-900 rounded-2xl max-w-md w-full p-6 border border-slate-700">
+          <div className="bg-slate-900 rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto p-6 border border-slate-700" style={{ WebkitOverflowScrolling: 'touch' }}>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold text-white flex items-center gap-2">
                 <Key className="w-5 h-5 text-emerald-400" />

@@ -3,6 +3,7 @@ import { X, Rocket, Play, ArrowRight, Star, Award, BookOpen, Code } from 'lucide
 import { useLanguage } from '../i18n/LanguageContext';
 import { LocalizedContent as LC, t as tLocalized } from '../types/i18n';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 interface LaunchAnnouncementPopupProps {
   onClose: () => void;
@@ -39,6 +40,7 @@ export const LaunchAnnouncementPopup: React.FC<LaunchAnnouncementPopupProps> = (
   onGoToSpecialization
 }) => {
   const { language } = useLanguage();
+  useBodyScrollLock(true);
   
   const t = (content: LC | string): string => {
     if (typeof content === 'string') return content;
@@ -69,7 +71,8 @@ export const LaunchAnnouncementPopup: React.FC<LaunchAnnouncementPopupProps> = (
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.9, opacity: 0, y: 20 }}
           transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-          className="relative w-full max-w-lg bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl border border-orange-500/30 shadow-2xl shadow-orange-500/20 overflow-hidden"
+          className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl border border-orange-500/30 shadow-2xl shadow-orange-500/20"
+          style={{ WebkitOverflowScrolling: 'touch' }}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Animated background effect */}

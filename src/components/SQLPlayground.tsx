@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { Play, CheckCircle, XCircle, Lightbulb, RotateCcw, ChevronRight, Trophy, Clock, Database, BookOpen, ChevronDown, Zap, Table, Maximize2, Minimize2, PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen } from 'lucide-react';
+import { Play, CheckCircle, XCircle, Lightbulb, RotateCcw, ChevronRight, Trophy, Clock, Database, BookOpen, ChevronDown, Zap, Table, Maximize2, Minimize2, PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen, List } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { ALL_SQL_EXERCISES, SQL_CATEGORIES, t as tExercise } from '../data/exercises';
 // import { LockedContentOverlay, LockBadge } from './LockedContentOverlay';
@@ -778,6 +778,9 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
     expert: t('practice.difficulty.expert'),
   };
 
+  // Mobile sidebar toggle (must be before all early returns)
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+
   if (isLoading) {
     return (
       <div className="bg-slate-900 rounded-2xl p-8 border border-slate-700">
@@ -798,9 +801,56 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
   }
 
   return (
-    <div className="flex gap-6 min-h-[600px]">
-      {/* SIDEBAR - Categorías y ejercicios */}
-      <div className="w-72 flex-shrink-0 space-y-4">
+    <div className="flex flex-col md:flex-row gap-4 md:gap-6">
+      {/* MOBILE EXERCISE NAVIGATOR - Only visible on mobile */}
+      <div className="md:hidden space-y-3">
+        <div className="bg-slate-800/80 rounded-xl p-3 border border-slate-700">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-lg">🗄️</span>
+              <span className="text-sm font-bold text-white">{progressStats.completed}/{progressStats.total}</span>
+              <div className="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden min-w-[40px]">
+                <div className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500" style={{ width: `${Math.round((progressStats.completed / progressStats.total) * 100) || 0}%` }} />
+              </div>
+            </div>
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <button onClick={() => { if (exerciseIndex > 0 && !isTransitioning) setExerciseIndex(exerciseIndex - 1); }} disabled={exerciseIndex === 0} className="p-1.5 rounded-lg bg-slate-700 text-white disabled:opacity-30 text-sm">←</button>
+              <span className="text-xs text-white font-bold px-1">{exerciseIndex + 1}/{filteredExercises.length}</span>
+              <button onClick={() => { if (exerciseIndex < filteredExercises.length - 1 && !isTransitioning) setExerciseIndex(exerciseIndex + 1); }} disabled={exerciseIndex >= filteredExercises.length - 1} className="p-1.5 rounded-lg bg-slate-700 text-white disabled:opacity-30 text-sm">→</button>
+            </div>
+            <button onClick={() => setShowMobileSidebar(!showMobileSidebar)} className={`p-2 rounded-lg transition-colors flex-shrink-0 ${showMobileSidebar ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-700 text-slate-400'}`}>
+              <List className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="mt-2 flex gap-1.5 overflow-x-auto pb-1" style={{ WebkitOverflowScrolling: 'touch' }}>
+            <button onClick={() => { setSelectedCategory('all'); setExerciseIndex(0); }} className={`flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${selectedCategory === 'all' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-slate-700 text-slate-400'}`}>{t('practice.all')}</button>
+            {SQL_CATEGORIES.map(cat => (
+              <button key={cat.id} onClick={() => { setSelectedCategory(cat.id); setExerciseIndex(0); }} className={`flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${selectedCategory === cat.id ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-slate-700 text-slate-400'}`}>
+                {cat.icon} {tExercise(cat.name, language).split(' ')[0]}
+              </button>
+            ))}
+          </div>
+        </div>
+        {showMobileSidebar && (
+          <div className="bg-slate-800/80 rounded-xl border border-slate-700 max-h-[50vh] overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+            {filteredExercises.map((ex, idx) => {
+              const isCompleted = completedExercises.includes(ex.id);
+              const hasSavedAnswer = !isCompleted && !!savedQueries[ex.id];
+              const isCurrent = idx === exerciseIndex;
+              return (
+                <button key={ex.id} onClick={() => { if (!isTransitioning) { setExerciseIndex(idx); setShowMobileSidebar(false); } }} className={`w-full p-3 text-left flex items-center gap-2 transition-all border-b border-slate-700/50 last:border-0 ${isCurrent ? 'bg-emerald-500/10' : isCompleted ? 'bg-emerald-500/5' : hasSavedAnswer ? 'bg-amber-500/5' : ''}`}>
+                  <span className="text-sm w-5 text-center">{isCompleted ? '✅' : hasSavedAnswer ? '✏️' : isCurrent ? '⚡' : '○'}</span>
+                  <span className={`text-sm truncate flex-1 ${isCurrent ? 'text-emerald-300 font-bold' : isCompleted ? 'text-emerald-300' : 'text-white'}`}>{ex.title}</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${ex.difficulty === 'easy' ? 'bg-emerald-500/20 text-emerald-400' : ex.difficulty === 'medium' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'}`}>{ex.difficulty === 'easy' ? '🌱' : ex.difficulty === 'medium' ? '⚔️' : '🔥'}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+      
+      {/* SIDEBAR - Categorías y ejercicios (desktop only) */}
+      <div className="hidden md:block w-72 flex-shrink-0 space-y-4">
         {/* Progreso general - Épico */}
         <div className="bg-gradient-to-br from-emerald-500/20 via-cyan-500/10 to-blue-500/10 rounded-xl p-4 border border-emerald-500/30 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl" />
@@ -921,85 +971,67 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
       </div>
 
       {/* MAIN CONTENT - Ejercicio */}
-      <div className="flex-1 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl border border-slate-700 overflow-hidden">
-        {/* Header del ejercicio - ÉPICO */}
-        <div className="bg-gradient-to-r from-slate-800 via-slate-900 to-slate-800 px-6 py-5 border-b border-slate-700 relative overflow-hidden">
+      <div className="flex-1 min-w-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl border border-slate-700 overflow-hidden">
+        {/* Header del ejercicio - responsive */}
+        <div className="bg-gradient-to-r from-slate-800 via-slate-900 to-slate-800 px-4 md:px-6 py-4 md:py-5 border-b border-slate-700 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-emerald-500/5" />
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl ${
-                completedExercises.includes(currentExercise.id) 
-                  ? 'bg-gradient-to-br from-emerald-500 to-cyan-500 shadow-emerald-500/30' 
-                  : 'bg-gradient-to-br from-slate-700 to-slate-600'
-              }`}>
-                {completedExercises.includes(currentExercise.id) 
-                  ? <span className="text-2xl">🏆</span>
-                  : <Database className="w-7 h-7 text-slate-300" />
-                }
-              </div>
-              <div>
-                <h3 className="font-black text-white text-2xl tracking-tight">{currentExercise.title}</h3>
-                <div className="flex items-center gap-3 mt-2">
-                  <span className={`text-xs px-3 py-1.5 rounded-full font-black ${difficultyColors[currentExercise.difficulty]}`}>
-                    {currentExercise.difficulty === 'easy' ? '🌱 ' : currentExercise.difficulty === 'medium' ? '⚔️ ' : currentExercise.difficulty === 'hard' ? '🔥 ' : '💀 '}
-                    {difficultyLabels[currentExercise.difficulty]}
-                  </span>
-                  <span className="text-sm text-yellow-400 font-black flex items-center gap-1">
-                    <Zap className="w-4 h-4" />
-                    +{currentExercise.xpReward} XP
-                  </span>
+          <div className="relative z-10">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className={`w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center shadow-xl flex-shrink-0 ${
+                  completedExercises.includes(currentExercise.id) 
+                    ? 'bg-gradient-to-br from-emerald-500 to-cyan-500 shadow-emerald-500/30' 
+                    : 'bg-gradient-to-br from-slate-700 to-slate-600'
+                }`}>
+                  {completedExercises.includes(currentExercise.id) 
+                    ? <span className="text-lg md:text-2xl">🏆</span>
+                    : <Database className="w-5 h-5 md:w-7 md:h-7 text-slate-300" />
+                  }
+                </div>
+                <div className="min-w-0">
+                  <h3 className="font-black text-white text-base md:text-2xl tracking-tight truncate">{currentExercise.title}</h3>
+                  <div className="flex items-center gap-2 mt-1 flex-wrap">
+                    <span className={`text-[10px] md:text-xs px-2 md:px-3 py-1 rounded-full font-black ${difficultyColors[currentExercise.difficulty]}`}>
+                      {currentExercise.difficulty === 'easy' ? '🌱' : currentExercise.difficulty === 'medium' ? '⚔️' : currentExercise.difficulty === 'hard' ? '🔥' : '💀'} {difficultyLabels[currentExercise.difficulty]}
+                    </span>
+                    <span className="text-xs text-yellow-400 font-black flex items-center gap-1">
+                      <Zap className="w-3 h-3" />+{currentExercise.xpReward} XP
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="flex items-center gap-4">
-              {/* Timer or Start Button */}
-              {hasStartedTimer ? (
-                <div className="text-right bg-slate-800/50 rounded-xl px-4 py-2 border border-slate-700">
-                  <div className="text-3xl font-mono font-black text-white">{formatTime(elapsedTime)}</div>
-                  <div className="text-xs text-slate-400 font-medium">⏱️ {t('practice.time')}</div>
+              <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
+                {hasStartedTimer ? (
+                  <div className="text-right bg-slate-800/50 rounded-lg md:rounded-xl px-2 md:px-4 py-1 md:py-2 border border-slate-700">
+                    <div className="text-lg md:text-3xl font-mono font-black text-white">{formatTime(elapsedTime)}</div>
+                    <div className="text-[10px] md:text-xs text-slate-400 font-medium hidden md:block">⏱️ {t('practice.time')}</div>
+                  </div>
+                ) : (
+                  <button onClick={handleStartTimer} className="flex items-center gap-1.5 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-bold px-3 md:px-5 py-2 md:py-3 rounded-lg md:rounded-xl transition-all shadow-lg shadow-emerald-500/30 text-sm">
+                    <Play className="w-4 h-4" />
+                    <span className="hidden md:inline">{t('practice.start')}</span>
+                  </button>
+                )}
+                <div className="hidden md:flex items-center gap-2 bg-slate-800 rounded-xl p-1.5 border border-slate-600">
+                  <button onClick={() => { if (exerciseIndex > 0 && !isTransitioning) setExerciseIndex(exerciseIndex - 1); }} disabled={exerciseIndex === 0 || isTransitioning} className="p-2.5 rounded-lg bg-slate-700 text-white disabled:opacity-30 hover:bg-slate-600 transition-colors font-bold">←</button>
+                  <span className="text-sm text-white px-4 font-black">{exerciseIndex + 1} <span className="text-slate-500">/</span> {filteredExercises.length}</span>
+                  <button onClick={() => { if (exerciseIndex < filteredExercises.length - 1 && !isTransitioning) setExerciseIndex(exerciseIndex + 1); }} disabled={exerciseIndex >= filteredExercises.length - 1 || isTransitioning} className="p-2.5 rounded-lg bg-slate-700 text-white disabled:opacity-30 hover:bg-slate-600 transition-colors font-bold">→</button>
                 </div>
-              ) : (
-                <button
-                  onClick={handleStartTimer}
-                  className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-bold px-5 py-3 rounded-xl transition-all shadow-lg shadow-emerald-500/30"
-                >
-                  <Play className="w-5 h-5" />
-                  {t('practice.start')}
-                </button>
-              )}
-              <div className="flex items-center gap-2 bg-slate-800 rounded-xl p-1.5 border border-slate-600">
-                <button
-                  onClick={() => { if (exerciseIndex > 0 && !isTransitioning) setExerciseIndex(exerciseIndex - 1); }}
-                  disabled={exerciseIndex === 0 || isTransitioning}
-                  className="p-2.5 rounded-lg bg-slate-700 text-white disabled:opacity-30 hover:bg-slate-600 transition-colors font-bold"
-                >
-                  ←
-                </button>
-                <span className="text-sm text-white px-4 font-black">
-                  {exerciseIndex + 1} <span className="text-slate-500">/</span> {filteredExercises.length}
-                </span>
-                <button
-                  onClick={() => { if (exerciseIndex < filteredExercises.length - 1 && !isTransitioning) setExerciseIndex(exerciseIndex + 1); }}
-                  disabled={exerciseIndex >= filteredExercises.length - 1 || isTransitioning}
-                  className="p-2.5 rounded-lg bg-slate-700 text-white disabled:opacity-30 hover:bg-slate-600 transition-colors font-bold"
-                >
-                  →
-                </button>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="p-6 space-y-5">
+        <div className="p-4 md:p-6 space-y-4 md:space-y-5">
           {/* Descripción - ÉPICA */}
-          <div className="bg-gradient-to-r from-slate-800/50 to-slate-900/50 rounded-xl p-6 border border-slate-700 relative overflow-hidden">
+          <div className="bg-gradient-to-r from-slate-800/50 to-slate-900/50 rounded-xl p-4 md:p-6 border border-slate-700 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-cyan-500 to-emerald-500" />
-            <div className="flex items-start gap-4">
-              <span className="text-3xl">🎯</span>
+            <div className="flex items-start gap-3 md:gap-4">
+              <span className="text-2xl md:text-3xl">🎯</span>
               <div>
-                <h4 className="text-sm font-black text-cyan-400 mb-2 uppercase tracking-wider">{t('playground.mission')}</h4>
-                <p className="text-slate-200 text-lg leading-relaxed">{currentExercise.description}</p>
+                <h4 className="text-xs md:text-sm font-black text-cyan-400 mb-1 md:mb-2 uppercase tracking-wider">{t('playground.mission')}</h4>
+                <p className="text-slate-200 text-sm md:text-lg leading-relaxed">{currentExercise.description}</p>
               </div>
             </div>
           </div>
@@ -1249,6 +1281,143 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
           {/* MODO INMERSIVO SQL PREMIUM - Fullscreen focus mode */}
           {isExpanded && (
             <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col">
+              {/* === MOBILE FOCUSED MODE === */}
+              <div className="md:hidden flex flex-col h-full">
+                {/* Mobile Header */}
+                <div className="flex items-center justify-between px-3 py-2 bg-slate-900/90 border-b border-slate-700/50 flex-shrink-0 safe-area-inset-top">
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <button onClick={() => { if (exerciseIndex > 0) setExerciseIndex(exerciseIndex - 1); }} disabled={exerciseIndex === 0} className="p-1.5 rounded-lg bg-slate-800 text-white disabled:opacity-30 touch-manipulation"><ChevronDown className="w-4 h-4 rotate-90" /></button>
+                    <span className="text-emerald-400 font-mono font-bold text-xs">{exerciseIndex + 1}/{filteredExercises.length}</span>
+                    <button onClick={() => { if (exerciseIndex < filteredExercises.length - 1) setExerciseIndex(exerciseIndex + 1); }} disabled={exerciseIndex === filteredExercises.length - 1} className="p-1.5 rounded-lg bg-slate-800 text-white disabled:opacity-30 touch-manipulation"><ChevronDown className="w-4 h-4 -rotate-90" /></button>
+                    <span className="font-semibold text-white truncate text-xs flex-1">{currentExercise.title}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    {hasStartedTimer && (
+                      <span className="font-mono text-slate-300 text-xs bg-slate-800 px-2 py-1 rounded-lg">{formatTime(elapsedTime)}</span>
+                    )}
+                    <button onClick={() => setIsExpanded(false)} className="p-2 text-slate-400 bg-slate-800 rounded-lg touch-manipulation" aria-label="Cerrar"><Minimize2 className="w-4 h-4" /></button>
+                  </div>
+                </div>
+
+                {/* Mobile scrollable content */}
+                <div className="flex-1 overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
+                  <div className="p-3 space-y-3">
+                    {/* Collapsible Consigna */}
+                    <details open className="bg-slate-800/50 rounded-xl border border-slate-700/50 overflow-hidden group">
+                      <summary className="flex items-center justify-between px-3 py-2.5 cursor-pointer touch-manipulation">
+                        <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">📋 {t('playground.mission')}</span>
+                        <ChevronDown className="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform" />
+                      </summary>
+                      <div className="px-3 pb-3 border-t border-slate-700/30">
+                        <p className="text-slate-300 text-sm leading-relaxed mt-2">{currentExercise.description}</p>
+                      </div>
+                    </details>
+
+                    {/* Collapsible Input Data */}
+                    {originalTablesData.length > 0 && (
+                      <details className="bg-sky-500/10 rounded-xl border border-sky-500/20 overflow-hidden group">
+                        <summary className="flex items-center justify-between px-3 py-2.5 cursor-pointer touch-manipulation">
+                          <span className="text-xs font-bold text-sky-400 flex items-center gap-1.5">📊 {language === 'es' ? 'DATOS' : 'DATA'} <span className="text-[10px] text-slate-400 font-normal">({originalTablesData.reduce((sum, t) => sum + t.rows.length, 0)} {t('datasets.rows')})</span></span>
+                          <ChevronDown className="w-4 h-4 text-sky-400 group-open:rotate-180 transition-transform" />
+                        </summary>
+                        <div className="px-3 pb-3 border-t border-sky-500/20 space-y-2 mt-2">
+                          {originalTablesData.map((tableData, tableIdx) => (
+                            <div key={tableIdx}>
+                              <span className="text-[10px] font-bold text-sky-300 mb-1 block">{tableData.tableName}</span>
+                              <div className="overflow-x-auto rounded-lg border border-sky-600/30 max-h-32">
+                                <table className="w-full text-[10px]">
+                                  <thead className="bg-slate-800 sticky top-0"><tr>{tableData.columns.map((col, i) => <th key={i} className="px-2 py-1 text-left text-sky-300 font-bold whitespace-nowrap">{col}</th>)}</tr></thead>
+                                  <tbody className="bg-slate-800/30">{tableData.rows.map((row, rowIdx) => <tr key={rowIdx} className="border-b border-sky-700/20">{row.map((val, colIdx) => <td key={colIdx} className="px-2 py-1 text-white whitespace-nowrap font-mono">{val === null ? <span className="text-slate-500">NULL</span> : String(val)}</td>)}</tr>)}</tbody>
+                                </table>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </details>
+                    )}
+
+                    {/* Collapsible Expected Result */}
+                    {currentExercise.expectedResult && currentExercise.expectedResult.length > 0 && (
+                      <details className="bg-emerald-500/10 rounded-xl border border-emerald-500/20 overflow-hidden group">
+                        <summary className="flex items-center justify-between px-3 py-2.5 cursor-pointer touch-manipulation">
+                          <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">🎯 {language === 'es' ? 'ESPERADO' : 'EXPECTED'} <span className="text-[10px] text-slate-400 font-normal">({currentExercise.expectedResult.length} {language === 'es' ? 'filas' : 'rows'})</span></span>
+                          <ChevronDown className="w-4 h-4 text-emerald-400 group-open:rotate-180 transition-transform" />
+                        </summary>
+                        <div className="px-3 pb-3 border-t border-emerald-500/20 mt-2">
+                          <div className="overflow-x-auto rounded-lg border border-emerald-600/30 max-h-32">
+                            <table className="w-full text-[10px]">
+                              <thead className="bg-emerald-900 sticky top-0"><tr>{currentExercise.expectedResult[0]?.map((_, i) => <th key={i} className="px-2 py-1 text-left text-emerald-300 font-bold whitespace-nowrap text-[9px]">COL_{i + 1}</th>)}</tr></thead>
+                              <tbody className="bg-slate-800/30">{currentExercise.expectedResult.map((row, rowIdx) => <tr key={rowIdx} className="border-b border-emerald-700/20">{row.map((val, colIdx) => <td key={colIdx} className="px-2 py-1 text-white whitespace-nowrap font-mono">{val === null ? <span className="text-slate-500">NULL</span> : String(val)}</td>)}</tr>)}</tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </details>
+                    )}
+
+                    {/* Editor */}
+                    <div className="bg-slate-900 rounded-xl border border-slate-700/50 overflow-hidden">
+                      <div className="flex items-center justify-between px-3 py-1.5 bg-slate-800/50 border-b border-slate-700/50">
+                        <span className="text-xs text-slate-400">query.sql</span>
+                        <div className="flex gap-1"><div className="w-2 h-2 rounded-full bg-red-500/50" /><div className="w-2 h-2 rounded-full bg-yellow-500/50" /><div className="w-2 h-2 rounded-full bg-green-500/50" /></div>
+                      </div>
+                      <textarea value={query} onChange={(e) => setQuery(e.target.value)} placeholder="SELECT * FROM ..." className="w-full h-40 bg-transparent text-emerald-400 font-mono text-sm p-3 focus:outline-none resize-y min-h-[120px]" spellCheck={false} style={{ touchAction: 'pan-y' }} />
+                    </div>
+
+                    {/* Output */}
+                    <div className="bg-slate-900 rounded-xl border border-slate-700/50 overflow-hidden">
+                      <div className="flex items-center justify-between px-3 py-1.5 bg-slate-800/50 border-b border-slate-700/50">
+                        <div className="flex items-center gap-2"><Table className="w-3 h-3 text-slate-400" /><span className="text-xs text-slate-400">{t('playground.output')}</span></div>
+                        {isCorrect !== null && <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${isCorrect ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>{isCorrect ? `✅ ${t('playground.correct')}` : `❌ ${t('playground.incorrect')}`}</span>}
+                      </div>
+                      <div className="p-2 overflow-auto text-xs min-h-[60px] max-h-[200px]" style={{ WebkitOverflowScrolling: 'touch' }}>
+                        {error ? <span className="text-red-400 font-mono text-xs">{error}</span> : result ? (
+                          <div className="overflow-x-auto"><table className="w-full"><thead><tr>{result.columns.map((col, i) => <th key={i} className="px-2 py-1 text-left text-emerald-400 border-b border-slate-700 whitespace-nowrap text-xs">{col}</th>)}</tr></thead>
+                          <tbody>{result.values.map((row, i) => <tr key={i}>{row.map((cell, j) => <td key={j} className="px-2 py-1 text-slate-300 whitespace-nowrap text-xs">{String(cell ?? 'NULL')}</td>)}</tr>)}</tbody></table></div>
+                        ) : <span className="text-slate-600 italic text-xs">{language === 'es' ? 'Ejecutá tu query...' : 'Run your query...'}</span>}
+                      </div>
+                    </div>
+
+                    {/* Hint & Solution toggles */}
+                    <div className="flex gap-2">
+                      {currentExercise.hint && (
+                        <button onClick={() => setShowHint(!showHint)} className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-medium transition-all touch-manipulation ${showHint ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' : 'bg-slate-800 text-slate-400 border border-slate-700'}`}>
+                          <Lightbulb className="w-3 h-3" /> {t('playground.hint')}
+                        </button>
+                      )}
+                      {currentExercise.expectedQuery && (
+                        <button onClick={() => setShowSolution(!showSolution)} className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-medium transition-all touch-manipulation ${showSolution ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' : 'bg-slate-800 text-slate-400 border border-slate-700'}`}>
+                          🔑 {t('playground.solution')}
+                        </button>
+                      )}
+                    </div>
+                    {showHint && currentExercise.hint && (
+                      <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3">
+                        <p className="text-yellow-200 text-sm">{currentExercise.hint}</p>
+                      </div>
+                    )}
+                    {showSolution && currentExercise.expectedQuery && (
+                      <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-3">
+                        <pre className="text-emerald-400 font-mono text-xs whitespace-pre-wrap break-all select-text">{currentExercise.expectedQuery}</pre>
+                      </div>
+                    )}
+
+                    {/* Spacer for bottom bar */}
+                    <div className="h-16" />
+                  </div>
+                </div>
+
+                {/* Mobile sticky bottom action bar */}
+                <div className="flex-shrink-0 flex items-center justify-between px-3 py-2.5 bg-slate-900/95 backdrop-blur-sm border-t border-slate-700/50" style={{ paddingBottom: 'max(0.625rem, env(safe-area-inset-bottom, 0.625rem))' }}>
+                  <div className="flex items-center gap-2">
+                    <button onClick={executeQuery} disabled={!query.trim()} className="flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-cyan-600 disabled:from-slate-700 disabled:to-slate-700 text-white font-bold py-2.5 px-4 rounded-xl text-sm touch-manipulation"><Play className="w-4 h-4" /> {t('playground.run')}</button>
+                    <button onClick={() => { setQuery(''); setResult(null); setError(null); setIsCorrect(null); }} className="p-2.5 bg-slate-800 text-slate-300 rounded-xl touch-manipulation"><RotateCcw className="w-4 h-4" /></button>
+                  </div>
+                  <button onClick={() => { if (exerciseIndex < filteredExercises.length - 1) setExerciseIndex(exerciseIndex + 1); }} disabled={exerciseIndex === filteredExercises.length - 1} className={`flex items-center gap-1 py-2.5 px-4 rounded-xl text-sm font-bold touch-manipulation ${isCorrect ? 'bg-gradient-to-r from-emerald-600 to-cyan-600 text-white' : 'bg-slate-800 text-slate-300 disabled:opacity-30'}`}>{t('playground.nextExercise')} <ChevronRight className="w-4 h-4" /></button>
+                </div>
+              </div>
+
+              {/* === DESKTOP FOCUSED MODE === */}
+              <div className="hidden md:flex flex-col h-full">
               {/* Header compacto */}
               <div className="flex items-center justify-between px-4 py-2 bg-slate-900/80 backdrop-blur-sm border-b border-slate-700/50">
                 <div className="flex items-center gap-4">
@@ -1289,7 +1458,7 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
               </div>
 
               {/* Contenido principal */}
-              <div className="flex-1 flex overflow-hidden">
+              <div className="flex-1 flex overflow-hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
                 {/* Panel ejercicios */}
                 {showExerciseList && (
                   <div className="bg-slate-900/30 border-r border-slate-700/50 flex flex-col overflow-hidden relative" style={{ width: exerciseListWidth, minWidth: 150, maxWidth: 500 }}>
@@ -1566,11 +1735,11 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
                       <span className="text-xs text-slate-400">query.sql</span>
                       <div className="flex gap-1"><div className="w-2.5 h-2.5 rounded-full bg-red-500/50" /><div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" /><div className="w-2.5 h-2.5 rounded-full bg-green-500/50" /></div>
                     </div>
-                    <textarea value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) executeQuery(); if (e.key === 'Escape') setIsExpanded(false); }} placeholder="SELECT * FROM ..." className="flex-1 w-full bg-transparent text-emerald-400 font-mono text-sm p-3 focus:outline-none resize-none" spellCheck={false} autoFocus />
+                    <textarea value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) executeQuery(); if (e.key === 'Escape') setIsExpanded(false); }} placeholder="SELECT * FROM ..." className="flex-1 w-full bg-transparent text-emerald-400 font-mono text-sm p-3 focus:outline-none resize-none" spellCheck={false} autoFocus style={{ touchAction: 'pan-y' }} />
                   </div>
 
                   {/* Output - debajo del editor */}
-                  <div className="h-[160px] bg-slate-900 rounded-xl border border-slate-700/50 overflow-hidden flex flex-col">
+                  <div className="h-[160px] bg-slate-900 rounded-xl border border-slate-700/50 overflow-hidden flex flex-col" style={{ WebkitOverflowScrolling: 'touch' }}>
                     <div className="flex items-center justify-between px-3 py-1.5 bg-slate-800/50 border-b border-slate-700/50">
                       <div className="flex items-center gap-2"><Table className="w-3 h-3 text-slate-400" /><span className="text-xs text-slate-400">{t('playground.output')}</span></div>
                       {isCorrect !== null && <span className={`text-[10px] px-2 py-0.5 rounded-full ${isCorrect ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>{isCorrect ? t('playground.correct') : t('playground.incorrect')}</span>}
@@ -1595,6 +1764,7 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
                     </div>
                   </div>
                 </div>
+              </div>
               </div>
             </div>
           )}
@@ -1627,33 +1797,34 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
           </div>
 
           {/* Botones de acción */}
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 md:gap-3">
             <button
               onClick={executeQuery}
               disabled={!query.trim()}
-              className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 disabled:from-slate-700 disabled:to-slate-700 disabled:text-slate-500 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg shadow-emerald-500/20"
+              className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 disabled:from-slate-700 disabled:to-slate-700 disabled:text-slate-500 text-white font-bold py-2.5 md:py-3 px-4 md:px-6 rounded-xl transition-all shadow-lg shadow-emerald-500/20 touch-manipulation"
             >
-              <Play className="w-5 h-5" />
+              <Play className="w-4 h-4 md:w-5 md:h-5" />
               {t('playground.run')}
             </button>
 
             <button
               onClick={() => setShowHint(!showHint)}
-              className={`flex items-center gap-2 py-3 px-5 rounded-xl font-medium transition-all ${
+              className={`flex items-center gap-1.5 py-2.5 md:py-3 px-3 md:px-5 rounded-xl font-medium transition-all touch-manipulation text-sm ${
                 showHint ? 'bg-yellow-500 text-slate-900' : 'bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30 border border-yellow-500/30'
               }`}
             >
               <Lightbulb className="w-4 h-4" />
-              {t('playground.hint')}
+              <span className="hidden sm:inline">{t('playground.hint')}</span>
             </button>
 
             <button
               onClick={() => setShowSolution(!showSolution)}
-              className={`flex items-center gap-2 py-3 px-5 rounded-xl font-medium transition-all ${
+              className={`flex items-center gap-1.5 py-2.5 md:py-3 px-3 md:px-5 rounded-xl font-medium transition-all touch-manipulation text-sm ${
                 showSolution ? 'bg-purple-500 text-white' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
               }`}
             >
-              {t('playground.solution')}
+              <span className="hidden sm:inline">{t('playground.solution')}</span>
+              <span className="sm:hidden">🔑</span>
             </button>
 
             <button
@@ -1668,7 +1839,7 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
                 setStartTime(Date.now());
                 setElapsedTime(0);
               }}
-              className="flex items-center gap-2 bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium py-3 px-5 rounded-xl transition-all"
+              className="flex items-center gap-2 bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium p-2.5 md:py-3 md:px-5 rounded-xl transition-all touch-manipulation"
               title={t('playground.reset')}
             >
               <RotateCcw className="w-4 h-4" />
@@ -1677,9 +1848,9 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
             {isCorrect && (
               <button
                 onClick={nextExercise}
-                className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white font-bold py-3 px-6 rounded-xl transition-all ml-auto shadow-lg"
+                className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white font-bold py-2.5 md:py-3 px-4 md:px-6 rounded-xl transition-all ml-auto shadow-lg touch-manipulation text-sm"
               >
-                {t('playground.nextExercise')} <ChevronRight className="w-5 h-5" />
+                {t('playground.nextExercise')} <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
               </button>
             )}
           </div>

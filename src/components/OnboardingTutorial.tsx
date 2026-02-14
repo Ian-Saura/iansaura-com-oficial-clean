@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { LocalizedContent, t as tLocalized } from '../types/i18n';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 interface OnboardingStep {
   id: string;
@@ -34,6 +35,7 @@ export const OnboardingTutorial: React.FC<Props> = ({
   const { t, language } = useLanguage();
   const [isVisible, setIsVisible] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  useBodyScrollLock(isVisible);
   
   // Helper for localized content
   const tl = (content: LocalizedContent | string | undefined) => {
@@ -284,7 +286,8 @@ export const OnboardingTutorial: React.FC<Props> = ({
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="relative w-full max-w-lg bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl border border-slate-700 shadow-2xl overflow-hidden"
+          className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl border border-slate-700 shadow-2xl"
+          style={{ WebkitOverflowScrolling: 'touch' }}
         >
           {/* Progress bar */}
           <div className="h-1 bg-slate-700">

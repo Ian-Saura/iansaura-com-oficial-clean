@@ -231,38 +231,57 @@ export default function Auth({ onLogin }: AuthProps) {
     }
   };
 
+  // Preload Google Identity Services script on mount
+  useEffect(() => {
+    if (!window.google) {
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      document.head.appendChild(script);
+    }
+  }, []);
+
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     try {
-      // Load Google Identity Services
+      // Load Google Identity Services if not yet loaded
       if (!window.google) {
         await new Promise<void>((resolve, reject) => {
-          const script = document.createElement('script');
-          script.src = 'https://accounts.google.com/gsi/client';
-          script.async = true;
-          script.onload = () => resolve();
-          script.onerror = () => reject(new Error('Failed to load Google'));
-          document.head.appendChild(script);
+          const existingScript = document.querySelector('script[src*="accounts.google.com/gsi/client"]');
+          if (existingScript) {
+            existingScript.addEventListener('load', () => resolve());
+            existingScript.addEventListener('error', () => reject(new Error('Failed to load Google')));
+          } else {
+            const script = document.createElement('script');
+            script.src = 'https://accounts.google.com/gsi/client';
+            script.async = true;
+            script.onload = () => resolve();
+            script.onerror = () => reject(new Error('Failed to load Google'));
+            document.head.appendChild(script);
+          }
         });
+        // Small delay to ensure API is fully ready
+        await new Promise(resolve => setTimeout(resolve, 200));
       }
 
-      // Wait a bit for API to be ready
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      // Initialize and show Google Sign In
-      window.google.accounts.id.initialize({
+      // Use OAuth2 token client - opens Google popup IMMEDIATELY on click
+      const tokenClient = window.google.accounts.oauth2.initTokenClient({
         client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID || '',
-        callback: async (response: any) => {
+        scope: 'email profile openid',
+        callback: async (tokenResponse: any) => {
           try {
-            // Decode JWT to get user info
-            const payload = JSON.parse(atob(response.credential.split('.')[1]));
-            
+            if (tokenResponse.error) {
+              throw new Error(tokenResponse.error);
+            }
+
+            // Use access token to get user info from Google
+            const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+              headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+            });
+            const payload = await userInfoResponse.json();
+
             console.log('Google user:', payload.email);
-            
-            // Remove the popup container if it exists
-            const popupContainer = document.getElementById('google-btn-container');
-            if (popupContainer) popupContainer.remove();
-            
+
             // Call backend to register/login user
             const apiResponse = await fetch('/api/google-auth.php', {
               method: 'POST',
@@ -280,7 +299,7 @@ export default function Auth({ onLogin }: AuthProps) {
             });
 
             const data = await apiResponse.json();
-            
+
             if (!data.success) {
               throw new Error(data.error || 'Error en autenticación');
             }
@@ -296,7 +315,7 @@ export default function Auth({ onLogin }: AuthProps) {
             };
 
             onLogin(user);
-            
+
             // Navigate based on subscription
             if (needsUpgrade || wantsSubscription) {
               if (user.subscribed) {
@@ -314,50 +333,19 @@ export default function Auth({ onLogin }: AuthProps) {
           } catch (error: any) {
             console.error('Google auth callback error:', error);
             alert('Error: ' + (error.message || 'Inténtalo de nuevo'));
+          } finally {
             setGoogleLoading(false);
           }
         },
+        error_callback: (error: any) => {
+          console.error('Google OAuth error:', error);
+          setGoogleLoading(false);
+        },
       });
 
-      // Prompt the user to sign in
-      window.google.accounts.id.prompt((notification: any) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          // If One Tap doesn't show, use the button flow
-          console.log('One Tap not available, using button');
-          
-          // Create a temporary container
-          const container = document.createElement('div');
-          container.id = 'google-btn-container';
-          container.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10000;background:white;padding:30px;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.3);';
-          
-          const title = document.createElement('p');
-          title.textContent = 'Seleccioná tu cuenta de Google';
-          title.style.cssText = 'margin-bottom:20px;font-weight:bold;text-align:center;';
-          container.appendChild(title);
-          
-          const btnDiv = document.createElement('div');
-          btnDiv.id = 'google-signin-btn';
-          container.appendChild(btnDiv);
-          
-          const closeBtn = document.createElement('button');
-          closeBtn.textContent = '✕ Cerrar';
-          closeBtn.style.cssText = 'margin-top:15px;width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;cursor:pointer;background:#f5f5f5;';
-          closeBtn.onclick = () => {
-            document.body.removeChild(container);
-            setGoogleLoading(false);
-          };
-          container.appendChild(closeBtn);
-          
-          document.body.appendChild(container);
-          
-          window.google.accounts.id.renderButton(btnDiv, {
-            theme: 'outline',
-            size: 'large',
-            width: 280,
-          });
-        }
-      });
-      
+      // This opens Google's account picker popup directly - no double click needed!
+      tokenClient.requestAccessToken();
+
     } catch (error: any) {
       console.error('Google auth error:', error);
       alert('Error al iniciar sesión con Google: ' + (error.message || 'Inténtalo de nuevo'));

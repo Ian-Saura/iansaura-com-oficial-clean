@@ -521,7 +521,7 @@ export const Shop: React.FC<ShopProps> = ({ progress, onPurchase, onEquip, onUne
       {/* Service Purchased Modal */}
       {selectedService && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-slate-800 rounded-2xl p-6 max-w-md w-full border border-emerald-500/50 shadow-2xl">
+          <div className="bg-slate-800 rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto border border-emerald-500/50 shadow-2xl" style={{ WebkitOverflowScrolling: 'touch' }}>
             <div className="text-center mb-6">
               <div className="text-6xl mb-4">{selectedService.icon}</div>
               <h3 className="text-2xl font-bold text-emerald-400">{t({ es: '¡Servicio Canjeado!', en: 'Service Redeemed!', pt: 'Serviço Resgatado!' })}</h3>

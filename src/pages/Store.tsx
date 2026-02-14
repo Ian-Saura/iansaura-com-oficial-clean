@@ -123,7 +123,7 @@ export default function Store({ user }: StoreProps) {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4 md:mb-6 leading-tight">
               <ShoppingCart className="w-16 h-16 inline-block mr-4 text-blue-600" />
               Tienda Digital
             </h1>
@@ -178,7 +178,7 @@ export default function Store({ user }: StoreProps) {
                       {/* Fallback design */}
                       <div className="hidden absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
                         <div className="text-center text-white p-4">
-                          <div className="text-6xl mb-4">🐍</div>
+                          <div className="text-4xl md:text-6xl mb-4">🐍</div>
                           <div className="font-bold text-lg">Python</div>
                           <div className="text-sm">Fundamentos</div>
                         </div>
@@ -275,7 +275,7 @@ export default function Store({ user }: StoreProps) {
                       {/* Fallback design */}
                       <div className="hidden absolute inset-0 bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center">
                         <div className="text-center text-white p-4">
-                          <div className="text-6xl mb-4">🗃️</div>
+                          <div className="text-4xl md:text-6xl mb-4">🗃️</div>
                           <div className="font-bold text-xl mb-2">SQL</div>
                           <div className="text-lg">desde Cero</div>
                         </div>
@@ -367,7 +367,7 @@ export default function Store({ user }: StoreProps) {
                   <div className="text-center mb-6">
                     <div className="relative mx-auto mb-4 w-48 h-64 rounded-lg overflow-hidden bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center">
                       <div className="text-center text-white">
-                        <div className="text-6xl mb-4">📊</div>
+                        <div className="text-4xl md:text-6xl mb-4">📊</div>
                         <div className="font-bold text-lg">Próximamente</div>
                       </div>
                     </div>
@@ -425,7 +425,7 @@ export default function Store({ user }: StoreProps) {
                   <div className="text-center mb-6">
                     <div className="relative mx-auto mb-4 w-48 h-64 rounded-lg overflow-hidden bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center">
                       <div className="text-center text-white">
-                        <div className="text-6xl mb-4">🎯</div>
+                        <div className="text-4xl md:text-6xl mb-4">🎯</div>
                         <div className="font-bold text-lg">Próximamente</div>
                       </div>
                     </div>
@@ -535,8 +535,8 @@ export default function Store({ user }: StoreProps) {
 
       {/* Waitlist Modal */}
       {showWaitlistModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-2xl max-w-md w-full">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-8 rounded-lg shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-2xl font-bold">Únete a la Lista de Espera</h3>
               <button onClick={() => setShowWaitlistModal(false)} className="text-gray-500 hover:text-gray-700">

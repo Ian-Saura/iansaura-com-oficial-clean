@@ -24,7 +24,6 @@ import {
   Clock
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useAnalytics } from '../hooks/useAnalytics';
 import { useLanguage } from '../i18n/LanguageContext';
 import { specializations } from '../data/roadmapData';
 import { SpecializationCountdown } from '../components/SpecializationCountdown';
@@ -35,7 +34,6 @@ interface HomeProps {
 
 export default function Home({ user }: HomeProps) {
   const navigate = useNavigate();
-  const { trackCTAClick } = useAnalytics(user?.email);
   const { t, language } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
@@ -152,9 +150,12 @@ export default function Home({ user }: HomeProps) {
       
       <Navigation user={user} />
 
+      {/* Spacer for fixed navigation */}
+      <div className="h-16" />
+
       {/* 🚨 URGENCY BANNER - Trial */}
       {!user?.subscribed && (
-        <div className="fixed top-16 left-0 right-0 z-40 bg-gradient-to-r from-emerald-600 via-cyan-600 to-emerald-600 py-2 px-4 shadow-lg">
+        <div className="sticky top-16 z-40 bg-gradient-to-r from-emerald-600 via-cyan-600 to-emerald-600 py-2 px-4 shadow-lg">
           <div className="max-w-6xl mx-auto flex items-center justify-center gap-4 flex-wrap text-center">
             <span className="text-xl">🎁</span>
             <p className="text-white font-medium text-sm md:text-base">
@@ -165,7 +166,6 @@ export default function Home({ user }: HomeProps) {
               href="https://iansaura.com/subscribe.php"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => trackCTAClick('banner_trial', 'gumroad')}
               className="bg-white text-emerald-600 px-4 py-1.5 rounded-full font-bold text-sm hover:bg-emerald-50 transition-colors flex items-center gap-1"
             >
               {t('landing.banner.startFree')} <ArrowRight className="w-4 h-4" />
@@ -176,7 +176,7 @@ export default function Home({ user }: HomeProps) {
 
       {/* Banner para usuarios registrados - Ir a su área */}
       {user && (
-        <div className={`fixed top-16 left-0 right-0 z-40 py-3 px-4 ${
+        <div className={`sticky top-16 z-40 py-3 px-4 ${
           user?.subscribed && user?.bootcamp_access 
             ? 'bg-gradient-to-r from-purple-600 to-pink-600'
             : user?.subscribed 
@@ -186,7 +186,7 @@ export default function Home({ user }: HomeProps) {
                 : 'bg-gradient-to-r from-teal-600 to-emerald-600'
         }`}>
           <div className="max-w-6xl mx-auto flex items-center justify-between flex-wrap gap-2">
-            <p className="text-white font-medium">
+            <p className="text-white font-medium text-sm">
               🎉 {t('landing.banner.hello')} {user?.name?.split(' ')[0] || 'crack'}! {t('landing.banner.hasAccess')} 
               {user?.subscribed && user?.bootcamp_access 
                 ? ` ${t('landing.banner.academyBootcamp')}`
@@ -196,7 +196,7 @@ export default function Home({ user }: HomeProps) {
                     ? ` ${t('landing.banner.bootcamp')}`
                     : ` ${t('landing.banner.academyFree')}`}
             </p>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {/* Todos los usuarios registrados pueden acceder a la Academia */}
                 <Link
                   to="/members"
@@ -219,7 +219,7 @@ export default function Home({ user }: HomeProps) {
 
       {/* Hero Section */}
       <main id="main-content" role="main">
-      <section className={`${user ? 'pt-32' : 'pt-40'} pb-16 px-6`}>
+      <section className="pt-12 md:pt-16 pb-16 px-6">
         <div className="max-w-6xl mx-auto">
                       <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -242,7 +242,6 @@ export default function Home({ user }: HomeProps) {
                       imageLoaded ? 'opacity-100' : 'opacity-0'
                     }`}
                     loading="eager"
-                    fetchPriority="high"
                     onLoad={() => setImageLoaded(true)}
                   onError={() => setImageLoaded(true)}
                   style={{ width: '128px', height: '128px' }}
@@ -250,7 +249,7 @@ export default function Home({ user }: HomeProps) {
                 </div>
               </div>
 
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6 leading-tight">
               {t('landing.hero.imIan')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Ian</span>.<br />
               <span className="text-slate-200">{t('landing.hero.dataEngineer')}</span>
               </h1>
@@ -271,7 +270,7 @@ export default function Home({ user }: HomeProps) {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
-                className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 rounded-3xl p-8 text-white border border-blue-500/30 hover:border-blue-400/50 transition-all duration-300 transform hover:scale-[1.02] relative overflow-hidden"
+                className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 rounded-2xl md:rounded-3xl p-5 md:p-8 text-white border border-blue-500/30 hover:border-blue-400/50 transition-all duration-300 transform hover:scale-[1.02] relative overflow-hidden"
               >
                 <div className="absolute top-0 left-0 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl"></div>
                 
@@ -334,7 +333,7 @@ export default function Home({ user }: HomeProps) {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4, duration: 0.5 }}
-                className="bg-gradient-to-br from-emerald-900/40 to-cyan-900/40 rounded-3xl p-8 text-white border-2 border-emerald-500/50 hover:border-emerald-400 transition-all duration-300 relative overflow-hidden"
+                className="bg-gradient-to-br from-emerald-900/40 to-cyan-900/40 rounded-2xl md:rounded-3xl p-5 md:p-8 text-white border-2 border-emerald-500/50 hover:border-emerald-400 transition-all duration-300 relative overflow-hidden"
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/20 rounded-full blur-3xl"></div>
                 
@@ -395,7 +394,6 @@ export default function Home({ user }: HomeProps) {
                         href="https://iansaura.com/subscribe.php"
                         target="_blank"
                         rel="noopener noreferrer"
-                        onClick={() => trackCTAClick('hero_trial_premium', 'gumroad')}
                         className="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-4 py-3 rounded-lg font-bold text-center transition-all flex items-center justify-center gap-2 shadow-lg"
                       >
                         {t('landing.subscriptionCard.startTrial')} <ArrowRight className="w-4 h-4" />
@@ -616,7 +614,6 @@ export default function Home({ user }: HomeProps) {
             >
               <Button
                 onClick={() => {
-                  trackCTAClick('landing_databricks_cta');
                   if (user) {
                     navigate('/members?tab=especializaciones');
                   } else {
@@ -743,7 +740,6 @@ export default function Home({ user }: HomeProps) {
             >
               <Button
                 onClick={() => {
-                  trackCTAClick('landing_aws_cta');
                   if (user) {
                     navigate('/members?tab=especializaciones');
                   } else {
@@ -846,7 +842,6 @@ export default function Home({ user }: HomeProps) {
             >
               <Button
                 onClick={() => {
-                  trackCTAClick('landing_deep_dives_cta');
                   if (user) {
                     navigate('/members?tab=especializaciones');
                   } else {
@@ -947,7 +942,7 @@ export default function Home({ user }: HomeProps) {
             </div>
 
             {/* CTA */}
-            <div className="bg-gradient-to-r from-emerald-900/50 to-cyan-900/50 rounded-3xl p-8 border border-emerald-500/30 text-center">
+            <div className="bg-gradient-to-r from-emerald-900/50 to-cyan-900/50 rounded-2xl md:rounded-3xl p-5 md:p-8 border border-emerald-500/30 text-center">
               <div className="flex items-center justify-center gap-2 mb-4">
                 <span className="text-emerald-400 font-bold">{t('landingSubscription.priceLabel')}</span>
               </div>
@@ -1097,14 +1092,14 @@ export default function Home({ user }: HomeProps) {
             viewport={{ once: true }}
           >
             <div className="text-center mb-12">
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              <h2 className="text-3xl md:text-5xl font-bold mb-4">
                 {t('about.title')}
               </h2>
               <div className="w-20 h-1 bg-gradient-to-r from-emerald-400 to-cyan-400 mx-auto"></div>
             </div>
 
-            <div className="bg-slate-800/50 rounded-3xl p-8 md:p-12 border border-slate-700">
-              <div className="grid md:grid-cols-3 gap-12 items-center">
+            <div className="bg-slate-800/50 rounded-2xl md:rounded-3xl p-5 md:p-12 border border-slate-700">
+              <div className="grid md:grid-cols-3 gap-6 md:gap-12 items-center">
                 <div className="text-center md:text-left">
                   <div className="w-48 h-48 mx-auto md:mx-0 mb-6 rounded-3xl overflow-hidden shadow-2xl relative bg-slate-700 ring-4 ring-emerald-500/20">
                     {!aboutImageLoaded && (

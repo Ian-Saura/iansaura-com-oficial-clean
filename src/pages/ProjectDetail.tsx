@@ -660,7 +660,7 @@ const ProjectDetail: React.FC = () => {
             {/* Project Header */}
             <div className="flex items-start gap-6">
               {project.icon && (
-                <div className="text-6xl">{project.icon}</div>
+                <div className="text-4xl md:text-6xl">{project.icon}</div>
               )}
               
               <div className="flex-1">
@@ -1189,7 +1189,7 @@ const ProjectDetail: React.FC = () => {
       
       {/* CTA Banner - Only for non-logged-in users on free project */}
       {!userEmail && projectId === FREE_PROJECT_ID && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-t border-emerald-500/30 shadow-2xl shadow-emerald-500/10">
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-t border-emerald-500/30 shadow-2xl shadow-emerald-500/10" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
           <div className="max-w-4xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="text-center sm:text-left">
               <p className="text-white font-semibold text-sm sm:text-base">

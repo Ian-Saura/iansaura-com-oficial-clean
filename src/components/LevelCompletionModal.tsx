@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Award, Linkedin, Check, Copy } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 interface LevelCompletionModalProps {
   isOpen: boolean;
@@ -38,6 +39,7 @@ export const LevelCompletionModal: React.FC<LevelCompletionModalProps> = ({
   const [copied, setCopied] = React.useState(false);
   const info = levelInfo[level] || levelInfo[1];
   const confettiTriggered = useRef(false);
+  useBodyScrollLock(isOpen);
 
   // Disparar confetti épico cuando se abre
   useEffect(() => {
@@ -146,7 +148,8 @@ El camino a mi primer trabajo en datos continúa.
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.9, opacity: 0 }}
           transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-          className="relative w-full max-w-lg bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl border border-slate-700 shadow-2xl overflow-hidden"
+          className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl border border-slate-700 shadow-2xl"
+          style={{ WebkitOverflowScrolling: 'touch' }}
         >
           {/* Glow effect */}
           <div className={`absolute inset-0 bg-gradient-to-r ${info.gradient} opacity-10`} />
