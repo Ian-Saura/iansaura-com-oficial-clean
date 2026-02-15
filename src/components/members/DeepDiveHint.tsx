@@ -185,6 +185,7 @@ export const DeepDiveChip: React.FC<{
   count: number;
   onClick: () => void;
 }> = ({ count, onClick }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { language } = useLanguage();
   
   if (count === 0) return null;

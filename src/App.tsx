@@ -2,6 +2,7 @@ import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { LanguageProvider } from './i18n/LanguageContext';
+import ErrorBoundary from './components/ErrorBoundary';
 import InstallPWA from './components/InstallPWA';
 import './App.css';
 
@@ -42,6 +43,7 @@ const GuiaDataEngineering = lazy(() => import('./pages/GuiaDataEngineering'));
 const Settings = lazy(() => import('./pages/Settings'));
 const VerifyCertificate = lazy(() => import('./pages/VerifyCertificate'));
 const Legal = lazy(() => import('./pages/Legal'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Loading spinner for lazy-loaded pages
 const PageLoader = () => (
@@ -140,6 +142,7 @@ function App() {
   }
 
   return (
+    <ErrorBoundary>
     <HelmetProvider>
       <LanguageProvider>
         <Router>
@@ -222,12 +225,16 @@ function App() {
                     )
                   } 
                 />
+                
+                {/* 404 - Catch all */}
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
           </div>
         </Router>
       </LanguageProvider>
     </HelmetProvider>
+    </ErrorBoundary>
   );
 }
 

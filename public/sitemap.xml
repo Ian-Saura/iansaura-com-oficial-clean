@@ -8,7 +8,7 @@
     <!-- Homepage - Main Landing -->
     <url>
         <loc>https://www.iansaura.com/</loc>
-        <lastmod>2025-11-27</lastmod>
+        <lastmod>2026-02-14</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
         <image:image>
@@ -21,7 +21,7 @@
     <!-- Bootcamps Page - High Priority -->
     <url>
         <loc>https://www.iansaura.com/bootcamps</loc>
-        <lastmod>2025-11-27</lastmod>
+        <lastmod>2026-02-14</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.95</priority>
         <image:image>
@@ -34,7 +34,7 @@
     <!-- Subscription Page - High Priority -->
     <url>
         <loc>https://www.iansaura.com/suscripcion</loc>
-        <lastmod>2025-11-27</lastmod>
+        <lastmod>2026-02-14</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.95</priority>
     </url>
@@ -42,7 +42,7 @@
     <!-- Mentorías Page -->
     <url>
         <loc>https://www.iansaura.com/mentorias</loc>
-        <lastmod>2025-11-27</lastmod>
+        <lastmod>2026-02-14</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.85</priority>
     </url>
@@ -50,7 +50,7 @@
     <!-- Capacitaciones Empresariales -->
     <url>
         <loc>https://www.iansaura.com/capacitaciones-empresariales</loc>
-        <lastmod>2025-11-27</lastmod>
+        <lastmod>2026-02-14</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.75</priority>
     </url>
@@ -58,7 +58,7 @@
     <!-- Auth/Login Page -->
     <url>
         <loc>https://www.iansaura.com/auth</loc>
-        <lastmod>2025-11-27</lastmod>
+        <lastmod>2026-02-14</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.4</priority>
     </url>
@@ -66,7 +66,7 @@
     <!-- Red Flags Lead Magnet -->
     <url>
         <loc>https://www.iansaura.com/red-flags</loc>
-        <lastmod>2025-11-27</lastmod>
+        <lastmod>2026-02-14</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
@@ -74,7 +74,7 @@
     <!-- Store Page -->
     <url>
         <loc>https://www.iansaura.com/store</loc>
-        <lastmod>2025-11-27</lastmod>
+        <lastmod>2026-02-14</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
@@ -82,7 +82,7 @@
     <!-- Guía Data Engineering - SEO Content Page -->
     <url>
         <loc>https://www.iansaura.com/guia-data-engineering</loc>
-        <lastmod>2025-11-27</lastmod>
+        <lastmod>2026-02-14</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>

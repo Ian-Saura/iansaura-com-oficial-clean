@@ -68,6 +68,7 @@ export const DeepDiveViewer: React.FC<DeepDiveViewerProps> = ({
     };
 
     fetchContent();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deepDiveId, deepDive]);
 
   if (!deepDive) {

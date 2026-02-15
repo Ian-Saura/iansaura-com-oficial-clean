@@ -169,6 +169,7 @@ export default function Store({ user }: StoreProps) {
                         src="/portada.png" 
                         alt="Fundamentos Prácticos de Programación con Python - Ian Saura" 
                         className="w-full h-full object-cover"
+                        loading="lazy"
                         onError={(e) => {
                           // Fallback if image doesn't load
                           e.currentTarget.style.display = 'none';
@@ -266,6 +267,7 @@ export default function Store({ user }: StoreProps) {
                         src="/portada_SQL.png" 
                         alt="SQL desde Cero - Ian Saura" 
                         className="w-full h-full object-cover"
+                        loading="lazy"
                         onError={(e) => {
                           // Fallback if image doesn't load
                           e.currentTarget.style.display = 'none';

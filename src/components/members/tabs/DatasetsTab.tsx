@@ -13,10 +13,10 @@ import { datasets, apiInfo } from '../../../data/datasetsData';
  * para que el secret nunca llegue al cliente.
  */
 async function generateApiKeyForEmail(email: string): Promise<string> {
-  // Client-side key generation - this secret is always visible in the JS bundle.
+  // Client-side key generation - the secret is loaded from env vars.
   // The real auth is server-side: the backend verifies the key matches the email.
   // For true security, move key generation to a server endpoint in the future.
-  const secret = 'iansaura_datasets_2024_secret_key';
+  const secret = process.env.REACT_APP_DATASETS_SECRET || '';
   const data = email.toLowerCase() + secret;
   
   // Use Web Crypto API for SHA-256

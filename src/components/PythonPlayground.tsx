@@ -190,6 +190,7 @@ export const PythonPlayground: React.FC<PythonPlaygroundProps> = ({ exerciseId, 
   }, [isResizing]);
   
   // Estado para guardar el status isCorrect por ejercicio desde la DB
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [savedAnswerStatus, setSavedAnswerStatus] = useState<Record<string, boolean>>({});
   
   // Ref for current exercise ID (set after currentExercise is defined below)

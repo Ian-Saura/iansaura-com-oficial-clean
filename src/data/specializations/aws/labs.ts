@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /**
  * LABS GUIADOS AWS DATA ENGINEERING
  * Mini-proyectos de 1-2 horas que integran múltiples servicios

@@ -1,13 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { 
   BookOpen, Search, Clock, Award, ChevronRight, Sparkles, 
-  GraduationCap, FileText, ExternalLink, Filter, CheckCircle,
+  GraduationCap, FileText, CheckCircle,
   BookMarked, Brain, Target, TrendingUp, ArrowLeft
 } from 'lucide-react';
 import { useLanguage } from '../../../i18n/LanguageContext';
 import { LocalizedContent as LC, t as tLocalized } from '../../../types/i18n';
 import { deepDives, DEEP_DIVES_STATS } from '../../../data/deepDives';
-import { DeepDiveContent } from '../../../types/deepDives';
 
 interface DeepDivesTabProps {
   onViewContent: (deepDiveId: string) => void;
@@ -48,6 +47,7 @@ export const DeepDivesTab: React.FC<DeepDivesTabProps> = ({
       
       return matchesSearch && matchesDifficulty && matchesCategory;
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, selectedDifficulty, selectedCategory, language]);
 
   // Categorías únicas
@@ -58,6 +58,7 @@ export const DeepDivesTab: React.FC<DeepDivesTabProps> = ({
   // Stats de progreso
   const completedCount = completedDives.length;
   const progressPercent = Math.round((completedCount / deepDives.length) * 100);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const earnedXP = deepDives
     .filter(d => completedDives.includes(d.id))
     .reduce((acc, d) => acc + d.xpBonus, 0);

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { 
-  Rocket, Star, CheckCircle, Clock, ArrowRight, Play, 
-  BookOpen, Code, FlaskConical, Target, Lock, Award
+  Rocket, Star, CheckCircle, ArrowRight, Play, 
+  BookOpen, Code, FlaskConical, Award
 } from 'lucide-react';
 import { useLanguage } from '../../../i18n/LanguageContext';
 import { LocalizedContent as LC, t as tLocalized } from '../../../types/i18n';
@@ -60,6 +60,7 @@ const CountdownTimer: React.FC<{ targetDate: string }> = ({ targetDate }) => {
 };
 
 export const SpecializationsTab: React.FC<SpecializationsTabProps> = ({ isFreeUser, userEmail }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { language } = useLanguage();

@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string, no-useless-escape */
 /**
  * EJERCICIOS DE AWS DATA ENGINEERING
  * 35+ ejercicios prácticos organizados por fase

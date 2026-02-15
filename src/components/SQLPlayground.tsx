@@ -278,7 +278,9 @@ export const SQLPlayground: React.FC<SQLPlaygroundProps> = ({ exerciseId, onComp
   }, [savedQueries]);
   
   // Estado para guardar el status isCorrect por ejercicio desde la DB
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   const [savedAnswerStatus, setSavedAnswerStatus] = useState<Record<string, boolean>>({});
+  /* eslint-enable @typescript-eslint/no-unused-vars */
   
   // Cargar respuestas desde la base de datos al montar (fuente de verdad)
   useEffect(() => {

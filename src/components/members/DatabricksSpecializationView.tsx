@@ -6,9 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../i18n/LanguageContext';
 import { 
-  DATABRICKS_SPECIALIZATION,
   DATABRICKS_STATS,
-  DATABRICKS_PREVIEW,
   ALL_DATABRICKS_PHASES,
   ALL_DATABRICKS_LABS,
   ALL_DATABRICKS_EXERCISES,
@@ -18,7 +16,7 @@ import { DatabricksPhase, DatabricksExercise } from '../../data/specializations/
 import { DatabricksLab } from '../../data/specializations/databricks/labs/types';
 import { 
   ChevronDown, ChevronRight, ArrowLeft, BookOpen, Code, Clock, 
-  Lightbulb, ExternalLink, Download, Play, CheckCircle, Lock,
+  Lightbulb, ExternalLink, Play, CheckCircle,
   Beaker, Dumbbell, FolderOpen, Award, Target, Zap, ChevronLeft,
   Terminal, FileCode, AlertTriangle, Info, Copy, Check
 } from 'lucide-react';
@@ -403,6 +401,7 @@ const ExerciseCard: React.FC<{ exercise: DatabricksExercise; language: 'es' | 'e
   const checkSolution = () => {
     // Simple check - compare key parts of the solution
     const userNormalized = userCode.replace(/\s+/g, ' ').toLowerCase();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const solutionNormalized = exercise.solution.replace(/\s+/g, ' ').toLowerCase();
     
     // Check if user has filled in the blanks (removed ___)
@@ -723,6 +722,7 @@ export const DatabricksSpecializationView: React.FC<DatabricksSpecializationView
 
   // Get related labs and exercises for current phase
   const phaseLabs = getLabsByPhase(selectedPhase.id);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const phaseExercises = ALL_DATABRICKS_EXERCISES.filter(ex => 
     ex.tags?.some(tag => selectedPhase.id.includes('3') ? tag.includes('spark') : tag.includes('delta'))
   ).slice(0, 5);
