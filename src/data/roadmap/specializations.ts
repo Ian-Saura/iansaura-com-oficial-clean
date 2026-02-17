@@ -1,7 +1,4 @@
 import { Specialization } from '../../types/members';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { DEEP_DIVES_STATS } from '../deepDives';
-
 // Import Databricks specialization data
 // import { DATABRICKS_STATS, DATABRICKS_PREVIEW } from '../specializations/databricks';
 

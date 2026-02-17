@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Navigation from '../components/Navigation';
 import { useLanguage } from '../i18n/LanguageContext';
-import { specializations } from '../data/roadmapData';
+import { specializations } from '../data/roadmap/specializations';
 import { SpecializationCountdown } from '../components/SpecializationCountdown';
 import { 
   CheckCircle, 
@@ -38,12 +38,14 @@ export default function Suscripcion({ user }: SuscripcionProps) {
   }, [user, navigate]);
 
   
+  const discountUrl = 'https://iansaura.gumroad.com/l/dgyzxi/15OFF';
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleSubscribe = () => {
     if (!user) {
       navigate('/auth?redirect=/suscripcion&action=subscribe');
     } else {
-      window.location.href = 'https://iansaura.com/subscribe.php';
+      window.location.href = discountUrl;
     }
   };
 
@@ -316,7 +318,7 @@ export default function Suscripcion({ user }: SuscripcionProps) {
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-emerald-500/20 to-transparent rounded-full blur-3xl" />
               
               <div className="relative text-center">
-                <div className="flex items-center justify-center gap-4 mb-4">
+                <div className="flex items-center justify-center gap-4 mb-3">
                   <span className="text-4xl">🚀</span>
                   <div>
                     <h3 className="text-2xl md:text-3xl font-bold text-white">
@@ -326,8 +328,16 @@ export default function Suscripcion({ user }: SuscripcionProps) {
                   </div>
                 </div>
 
+                {/* 15% Discount Badge */}
+                <div className="inline-flex items-center gap-2 bg-yellow-500/15 border border-yellow-500/40 rounded-full px-4 py-1.5 mb-4">
+                  <span className="text-yellow-300 font-bold text-sm">🎉 15% OFF {({ es: 'primer mes — hasta 1/03', en: 'first month — until Mar 1', pt: 'primeiro mês — até 01/03' } as any)[language]}</span>
+                  <span className="text-yellow-200/80 text-xs">—</span>
+                  <code className="bg-yellow-500/20 text-yellow-200 font-mono font-bold text-sm px-2 py-0.5 rounded">15OFF</code>
+                </div>
+
+                <div className="block">
                 <a
-                  href="https://iansaura.gumroad.com/l/dgyzxi"
+                  href={discountUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-bold py-4 px-6 sm:px-12 rounded-xl text-lg sm:text-xl transition-all transform hover:scale-105 shadow-lg shadow-emerald-500/30 animate-pulse"
@@ -335,6 +345,7 @@ export default function Suscripcion({ user }: SuscripcionProps) {
                   🚀 {t('subscriptionPage.hero.subscribe')}
                   <ArrowRight className="w-6 h-6" />
                 </a>
+                </div>
                 
                 <p className="text-slate-500 text-xs mt-3">
                   {t('subscriptionPage.hero.cancelAnytime')}
@@ -400,7 +411,7 @@ export default function Suscripcion({ user }: SuscripcionProps) {
                 </ul>
 
                 <a
-                  href="https://iansaura.gumroad.com/l/dgyzxi"
+                  href={discountUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-xl text-center transition-all"
@@ -437,7 +448,7 @@ export default function Suscripcion({ user }: SuscripcionProps) {
                 </ul>
 
                 <a
-                  href="https://iansaura.gumroad.com/l/dgyzxi"
+                  href={discountUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-bold py-3 px-6 rounded-xl text-center transition-all transform hover:scale-105 shadow-lg"
@@ -470,7 +481,7 @@ export default function Suscripcion({ user }: SuscripcionProps) {
                 </ul>
 
                 <a
-                  href="https://iansaura.gumroad.com/l/dgyzxi"
+                  href={discountUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-6 rounded-xl text-center transition-all"
@@ -930,7 +941,7 @@ export default function Suscripcion({ user }: SuscripcionProps) {
               </div>
             </div>
             <a
-              href="https://iansaura.gumroad.com/l/dgyzxi"
+              href={discountUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-bold py-4 px-10 rounded-xl text-lg transition-all transform hover:scale-105 shadow-lg shadow-emerald-500/30"
@@ -992,7 +1003,7 @@ export default function Suscripcion({ user }: SuscripcionProps) {
       {/* 📱 STICKY CTA - Solo Mobile */}
       <div className="fixed bottom-0 left-0 right-0 md:hidden bg-gradient-to-t from-slate-950 via-slate-950 to-transparent pt-4 px-4 z-50" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom, 1rem))' }}>
         <a
-          href="https://iansaura.gumroad.com/l/dgyzxi"
+          href={discountUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-bold py-4 rounded-xl text-lg shadow-lg shadow-emerald-500/30 touch-manipulation"

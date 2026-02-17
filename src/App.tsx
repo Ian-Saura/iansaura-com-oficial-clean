@@ -11,7 +11,9 @@ import './App.css';
 // Build version: v20241209-global - Updated SEO for worldwide audience
 // ============================================
 import Home from './pages/Home';
-import Suscripcion from './pages/Suscripcion';
+
+// Suscripcion - lazy loaded (not the landing page)
+const Suscripcion = lazy(() => import('./pages/Suscripcion'));
 
 // ============================================
 // LAZY LOADED - Heavy pages (loaded on demand)

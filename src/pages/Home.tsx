@@ -23,9 +23,9 @@ import {
   Target,
   Clock
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import FadeIn, { FadeInSpan } from '../components/FadeIn';
 import { useLanguage } from '../i18n/LanguageContext';
-import { specializations } from '../data/roadmapData';
+import { specializations } from '../data/roadmap/specializations';
 import { SpecializationCountdown } from '../components/SpecializationCountdown';
 
 interface HomeProps {
@@ -48,11 +48,13 @@ export default function Home({ user }: HomeProps) {
   const [aboutImageLoaded, setAboutImageLoaded] = useState(false);
 
 
+  const discountUrl = 'https://iansaura.gumroad.com/l/dgyzxi/15OFF';
+
   const handleSubscribe = () => {
     if (!user) {
       navigate('/auth?redirect=/suscripcion&action=subscribe');
     } else {
-      window.location.href = 'https://iansaura.com/subscribe.php';
+      window.location.href = discountUrl;
     }
   };
 
@@ -153,22 +155,24 @@ export default function Home({ user }: HomeProps) {
       {/* Spacer for fixed navigation */}
       <div className="h-16" />
 
-      {/* 🚨 URGENCY BANNER - Trial */}
+      {/* 🚨 URGENCY BANNER - 15% Discount */}
       {!user?.subscribed && (
-        <div className="sticky top-16 z-40 bg-gradient-to-r from-emerald-600 via-cyan-600 to-emerald-600 py-2 px-4 shadow-lg">
-          <div className="max-w-6xl mx-auto flex items-center justify-center gap-4 flex-wrap text-center">
-            <span className="text-xl">🎁</span>
+        <div className="sticky top-16 z-40 bg-gradient-to-r from-emerald-600 via-cyan-600 to-emerald-600 py-2.5 px-4 shadow-lg">
+          <div className="max-w-6xl mx-auto flex items-center justify-center gap-3 md:gap-4 flex-wrap text-center">
+            <span className="text-xl">🔥</span>
             <p className="text-white font-medium text-sm md:text-base">
-              <strong>{t('landing.banner.trial')}</strong> {t('landing.banner.trialDesc')} 
-              <span className="text-yellow-300 font-bold"> {t('landing.banner.noRisk')}</span>
+              <strong className="text-yellow-300">15% OFF</strong> {({ es: 'en tu primer mes', en: 'on your first month', pt: 'no seu primeiro mês' } as any)[language]} — 
+              <span className="hidden sm:inline">{({ es: 'Código: ', en: 'Code: ', pt: 'Código: ' } as any)[language]}</span>
+              <code className="bg-white/20 px-2 py-0.5 rounded text-yellow-200 font-mono font-bold text-sm">15OFF</code>
+              <span className="text-white/80 text-xs ml-1">⏰ {({ es: 'hasta 1/03', en: 'until Mar 1', pt: 'até 01/03' } as any)[language]}</span>
             </p>
             <a
-              href="https://iansaura.com/subscribe.php"
+              href={discountUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white text-emerald-600 px-4 py-1.5 rounded-full font-bold text-sm hover:bg-emerald-50 transition-colors flex items-center gap-1"
+              className="bg-white text-emerald-600 px-4 py-1.5 rounded-full font-bold text-sm hover:bg-emerald-50 transition-colors flex items-center gap-1 whitespace-nowrap"
             >
-              {t('landing.banner.startFree')} <ArrowRight className="w-4 h-4" />
+              {({ es: '¡Suscribirme!', en: 'Subscribe!', pt: 'Assinar!' } as any)[language]} <ArrowRight className="w-4 h-4" />
             </a>
             </div>
           </div>
@@ -221,12 +225,7 @@ export default function Home({ user }: HomeProps) {
       <main id="main-content" role="main">
       <section className="pt-12 md:pt-16 pb-16 px-6">
         <div className="max-w-6xl mx-auto">
-                      <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-center"
-            >
+                      <FadeIn from="up" duration={800} className="text-center">
             {/* Profile Image */}
               <div className="mb-8">
               <div className="w-32 h-32 mx-auto mb-8 rounded-full overflow-hidden shadow-2xl relative bg-slate-800 ring-4 ring-emerald-500/30">
@@ -236,12 +235,14 @@ export default function Home({ user }: HomeProps) {
                     </div>
                   )}
                   <img 
-                    src="/ian-saura-profile.jpg" 
+                    src="/ian-saura-profile-sm.jpg" 
                     alt="Ian Saura - Data Engineer y Educador" 
                     className={`w-full h-full object-cover transition-opacity duration-300 ${
                       imageLoaded ? 'opacity-100' : 'opacity-0'
                     }`}
                     loading="eager"
+                    width={400}
+                    height={400}
                     onLoad={() => setImageLoaded(true)}
                   onError={() => setImageLoaded(true)}
                   style={{ width: '128px', height: '128px' }}
@@ -266,10 +267,7 @@ export default function Home({ user }: HomeProps) {
             {/* Two Main CTAs: Bootcamp + Subscription */}
             <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto mt-8">
               {/* Bootcamp Card */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
+              <FadeIn from="left" distance={20} delay={300} duration={500}
                 className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 rounded-2xl md:rounded-3xl p-5 md:p-8 text-white border border-blue-500/30 hover:border-blue-400/50 transition-all duration-300 transform hover:scale-[1.02] relative overflow-hidden"
               >
                 <div className="absolute top-0 left-0 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl"></div>
@@ -326,13 +324,10 @@ export default function Home({ user }: HomeProps) {
                 </a>
               </div>
                 </div>
-              </motion.div>
+              </FadeIn>
 
               {/* Academia Card - Two options: FREE + PREMIUM TRIAL */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
+              <FadeIn from="right" distance={20} delay={400} duration={500}
                 className="bg-gradient-to-br from-emerald-900/40 to-cyan-900/40 rounded-2xl md:rounded-3xl p-5 md:p-8 text-white border-2 border-emerald-500/50 hover:border-emerald-400 transition-all duration-300 relative overflow-hidden"
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/20 rounded-full blur-3xl"></div>
@@ -379,19 +374,23 @@ export default function Home({ user }: HomeProps) {
                         ⭐ {t('landing.subscriptionCard.recommended')}
                 </div>
                       <div className="flex items-center justify-between mb-2 mt-2">
-                        <span className="text-lg font-bold text-white">🚀 Premium - {t('landing.subscriptionCard.trialDays')}</span>
+                        <span className="text-lg font-bold text-white">🚀 Premium</span>
                         <div className="text-right">
-                          <span className="text-emerald-400 font-bold">$30</span>
-                          <span className="text-slate-400 text-sm"> → $30{t('landing.subscriptionCard.perMonth')}</span>
+                          <span className="text-slate-500 line-through text-sm mr-1">$30</span>
+                          <span className="text-emerald-400 font-bold text-lg">$25.50</span>
+                          <span className="text-slate-400 text-xs"> {({ es: '1er mes', en: '1st month', pt: '1º mês' } as any)[language]}</span>
               </div>
             </div>
+                      <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg px-3 py-1.5 mb-3 text-center">
+                        <span className="text-yellow-300 text-xs font-bold">🎉 15% OFF {({ es: 'hasta 1/03', en: 'until Mar 1', pt: 'até 01/03' } as any)[language]} — {({ es: 'Código: ', en: 'Code: ', pt: 'Código: ' } as any)[language]}<code className="bg-yellow-500/20 px-1.5 py-0.5 rounded font-mono">15OFF</code></span>
+                      </div>
                       <ul className="text-sm text-slate-300 space-y-1 mb-3">
                         <li>✓ {t('landing.subscriptionCard.feature1')}</li>
                         <li>✓ {t('landing.subscriptionCard.feature4')}</li>
                         <li>✓ {t('landing.banner.noRisk')}</li>
                       </ul>
                       <a
-                        href="https://iansaura.com/subscribe.php"
+                        href={discountUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-4 py-3 rounded-lg font-bold text-center transition-all flex items-center justify-center gap-2 shadow-lg"
@@ -404,35 +403,25 @@ export default function Home({ user }: HomeProps) {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </FadeIn>
             </div>
-          </motion.div>
+          </FadeIn>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 0.5 }}
-            className="text-center mt-12"
-          >
+          <FadeIn from="none" delay={1000} duration={500} className="text-center mt-12">
             <button
               onClick={() => document.getElementById('testimonios')?.scrollIntoView({ behavior: 'smooth' })}
               className="text-slate-500 hover:text-slate-300 transition-colors animate-bounce"
             >
               <ChevronDown className="w-8 h-8" />
             </button>
-          </motion.div>
+          </FadeIn>
         </div>
       </section>
 
       {/* Testimonials Section - NEW */}
       <section id="testimonios" className="py-16 bg-slate-900/50">
         <div className="max-w-6xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
+          <FadeIn from="up">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 {t('testimonials.title')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">{t('testimonials.titleHighlight')}</span>
@@ -442,12 +431,12 @@ export default function Home({ user }: HomeProps) {
 
             <div className="grid md:grid-cols-3 gap-6 mb-8">
               {testimonials.map((testimonial, index) => (
-                <motion.div
+                <FadeIn
                   key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1, duration: 0.5 }}
-                  viewport={{ once: true }}
+                  from="up"
+                  distance={20}
+                  delay={index * 100}
+                  duration={500}
                   className={`bg-slate-800/50 rounded-2xl p-6 border transition-all ${
                     (testimonial as any).linkedIn 
                       ? 'border-blue-500/50 hover:border-blue-500/70' 
@@ -486,7 +475,7 @@ export default function Home({ user }: HomeProps) {
                       <p className="text-slate-400 text-xs">{testimonial.role}</p>
                 </div>
                   </div>
-                </motion.div>
+                </FadeIn>
               ))}
             </div>
 
@@ -505,7 +494,7 @@ export default function Home({ user }: HomeProps) {
                 <span className="text-slate-400 font-medium">{t('testimonials.remoteStartups')}</span>
                   </div>
                 </div>
-          </motion.div>
+          </FadeIn>
               </div>
       </section>
 
@@ -518,12 +507,7 @@ export default function Home({ user }: HomeProps) {
         </div>
         
         <div className="max-w-6xl mx-auto px-6 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
+          <FadeIn from="up" distance={30} duration={600}>
             <div className="text-center mb-10">
               <div className="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-400 px-4 py-2 rounded-full text-sm font-semibold mb-4 border border-emerald-500/30 animate-pulse">
                 <span>🚀</span>
@@ -546,71 +530,45 @@ export default function Home({ user }: HomeProps) {
 
             {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-10">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                viewport={{ once: true }}
+              <FadeIn from="up" distance={20} delay={100}
                 className="bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 text-center border border-orange-500/20"
               >
                 <div className="text-3xl font-bold text-orange-400">12</div>
                 <div className="text-slate-400 text-sm">{({ es: 'Fases', en: 'Phases', pt: 'Fases' } as any)[language]}</div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                viewport={{ once: true }}
+              </FadeIn>
+              <FadeIn from="up" distance={20} delay={200}
                 className="bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 text-center border border-blue-500/20"
               >
                 <div className="text-3xl font-bold text-blue-400">100+</div>
                 <div className="text-slate-400 text-sm">{({ es: 'Pasos', en: 'Steps', pt: 'Passos' } as any)[language]}</div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                viewport={{ once: true }}
+              </FadeIn>
+              <FadeIn from="up" distance={20} delay={300}
                 className="bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 text-center border border-purple-500/20"
               >
                 <div className="text-3xl font-bold text-purple-400">20</div>
                 <div className="text-slate-400 text-sm">{({ es: 'Ejercicios', en: 'Exercises', pt: 'Exercícios' } as any)[language]}</div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                viewport={{ once: true }}
+              </FadeIn>
+              <FadeIn from="up" distance={20} delay={400}
                 className="bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 text-center border border-emerald-500/20"
               >
                 <div className="text-3xl font-bold text-emerald-400">10</div>
                 <div className="text-slate-400 text-sm">Labs</div>
-              </motion.div>
+              </FadeIn>
             </div>
 
             {/* Topics */}
             <div className="flex flex-wrap justify-center gap-3 mb-10">
               {['Apache Spark', 'Delta Lake', 'Unity Catalog', 'Delta Live Tables', 'MLflow', 'Workflows', 'SQL Warehouse', 'Certificación DE'].map((topic, idx) => (
-                <motion.span
-                  key={topic}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: idx * 0.05 }}
-                  viewport={{ once: true }}
-                  className="bg-orange-500/10 text-orange-300 px-4 py-2 rounded-full text-sm font-medium border border-orange-500/20"
+                <FadeInSpan delay={idx * 50} className="bg-orange-500/10 text-orange-300 px-4 py-2 rounded-full text-sm font-medium border border-orange-500/20"
                 >
                   {topic}
-                </motion.span>
+                </FadeInSpan>
               ))}
             </div>
 
             {/* CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              viewport={{ once: true }}
-              className="text-center"
+            <FadeIn from="up" distance={20} delay={500}
+                className="text-center"
             >
               <Button
                 onClick={() => {
@@ -629,8 +587,8 @@ export default function Home({ user }: HomeProps) {
               <p className="text-slate-500 text-sm mt-4">
                 {({ es: '✨ Incluido gratis con tu suscripción Premium', en: '✨ Included free with your Premium subscription', pt: '✨ Incluído grátis com sua assinatura Premium' } as any)[language]}
               </p>
-            </motion.div>
-          </motion.div>
+            </FadeIn>
+          </FadeIn>
         </div>
       </section>
 
@@ -643,12 +601,7 @@ export default function Home({ user }: HomeProps) {
         </div>
         
         <div className="max-w-6xl mx-auto px-6 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
+          <FadeIn from="up" distance={30} duration={600}>
             <div className="text-center mb-10">
               <div className="inline-flex items-center gap-2 bg-amber-500/20 text-amber-400 px-4 py-2 rounded-full text-sm font-semibold mb-4 border border-amber-500/30">
                 <Clock className="w-4 h-4" />
@@ -692,17 +645,16 @@ export default function Home({ user }: HomeProps) {
                 { value: '10', label: ({ es: 'Proyectos', en: 'Projects', pt: 'Projetos' } as any)[language], color: 'text-emerald-400', border: 'border-emerald-500/20' },
                 { value: '18', label: ({ es: 'Entrevistas', en: 'Interview Q', pt: 'Entrevistas' } as any)[language], color: 'text-red-400', border: 'border-red-500/20' },
               ].map((stat, idx) => (
-                <motion.div
+                <FadeIn
                   key={idx}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.1 }}
-                  viewport={{ once: true }}
+                  from="up"
+                  distance={20}
+                  delay={idx * 100}
                   className={`bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 text-center border ${stat.border}`}
                 >
                   <div className={`text-3xl font-bold ${stat.color}`}>{stat.value}</div>
                   <div className="text-slate-400 text-sm">{stat.label}</div>
-                </motion.div>
+                </FadeIn>
               ))}
             </div>
 
@@ -731,12 +683,8 @@ export default function Home({ user }: HomeProps) {
             </div>
 
             {/* CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              viewport={{ once: true }}
-              className="text-center"
+            <FadeIn from="up" distance={20} delay={500}
+                className="text-center"
             >
               <Button
                 onClick={() => {
@@ -755,8 +703,8 @@ export default function Home({ user }: HomeProps) {
               <p className="text-slate-500 text-sm mt-4">
                 {({ es: '✨ Incluido gratis con tu suscripción Premium', en: '✨ Included free with your Premium subscription', pt: '✨ Incluído grátis com sua assinatura Premium' } as any)[language]}
               </p>
-            </motion.div>
-          </motion.div>
+            </FadeIn>
+          </FadeIn>
         </div>
       </section>
 
@@ -768,11 +716,7 @@ export default function Home({ user }: HomeProps) {
         </div>
         
         <div className="max-w-5xl mx-auto px-6 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
+          <FadeIn from="up" distance={30} duration={600}
             className="text-center"
           >
             <div className="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-400 px-4 py-2 rounded-full text-sm font-semibold mb-4 border border-emerald-500/30 animate-pulse">
@@ -834,12 +778,7 @@ export default function Home({ user }: HomeProps) {
             </p>
 
             {/* CTA Button */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              viewport={{ once: true }}
-            >
+            <FadeIn from="up" distance={20} delay={300}>
               <Button
                 onClick={() => {
                   if (user) {
@@ -857,20 +796,15 @@ export default function Home({ user }: HomeProps) {
               <p className="text-slate-500 text-sm mt-4">
                 {({ es: '✨ Incluido gratis con tu suscripción Premium', en: '✨ Included free with your Premium subscription', pt: '✨ Incluído grátis com sua assinatura Premium' } as any)[language]}
               </p>
-            </motion.div>
-          </motion.div>
+            </FadeIn>
+          </FadeIn>
         </div>
       </section>
 
       {/* Subscription Benefits Section */}
       <section className="py-20">
         <div className="max-w-6xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
+          <FadeIn from="up" distance={30} duration={600}>
             <div className="text-center mb-12">
               <div className="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-400 px-4 py-2 rounded-full font-medium mb-6 border border-emerald-500/30">
                 <Zap className="w-4 h-4" />
@@ -964,19 +898,14 @@ export default function Home({ user }: HomeProps) {
                 {t('landingSubscription.ctaNote')}
                 </p>
               </div>
-          </motion.div>
+          </FadeIn>
         </div>
       </section>
 
       {/* FAQ Section */}
       <section className="py-16 bg-slate-900/50">
         <div className="max-w-4xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
+          <FadeIn from="up" distance={30} duration={600}>
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 {t('faq.title').split(' ').slice(0, -1).join(' ')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">{t('faq.title').split(' ').slice(-1)[0]}</span>
@@ -1078,19 +1007,14 @@ export default function Home({ user }: HomeProps) {
                 {t('faq.askDiscord')}
               </a>
             </div>
-          </motion.div>
+          </FadeIn>
         </div>
       </section>
 
       {/* Sobre mí */}
       <section id="sobre-mi" className="py-24 bg-slate-900/50">
         <div className="max-w-5xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
+          <FadeIn from="up" distance={30} duration={600}>
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-5xl font-bold mb-4">
                 {t('about.title')}
@@ -1108,7 +1032,7 @@ export default function Home({ user }: HomeProps) {
                       </div>
                     )}
                     <img 
-                      src="/ian-saura-profile.jpg" 
+                      src="/ian-saura-profile-md.jpg" 
                       alt="Ian Saura - Data Engineer y Educador" 
                       className={`w-full h-full object-cover transition-opacity duration-300 ${
                         aboutImageLoaded ? 'opacity-100' : 'opacity-0'
@@ -1194,19 +1118,14 @@ export default function Home({ user }: HomeProps) {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </FadeIn>
         </div>
       </section>
 
       {/* Contact Section - Simplified */}
       <section id="contacto" className="py-16">
         <div className="max-w-4xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
+          <FadeIn from="up" distance={30} duration={600}>
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4">
                 {t('contact.title')}
@@ -1262,19 +1181,14 @@ export default function Home({ user }: HomeProps) {
                 </form>
               )}
             </div>
-          </motion.div>
+          </FadeIn>
         </div>
       </section>
 
       {/* 🎁 Referral Program Section */}
       <section className="py-16 bg-gradient-to-br from-purple-900/20 via-slate-900 to-pink-900/20">
         <div className="max-w-4xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
+          <FadeIn from="up" distance={20} className="text-center mb-12">
             <span className="text-5xl mb-4 block">🎁</span>
             <h2 className="text-3xl font-bold text-white mb-4">
               {t('referral.title')}
@@ -1282,16 +1196,12 @@ export default function Home({ user }: HomeProps) {
             <p className="text-slate-400 max-w-2xl mx-auto">
               {t('referral.subtitle')}
             </p>
-          </motion.div>
+          </FadeIn>
 
           <div className="grid md:grid-cols-2 gap-6">
             {/* Free User Benefit */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="bg-slate-800/50 rounded-2xl p-6 border border-purple-500/30"
-            >
+            <FadeIn from="left" distance={20} className="bg-slate-800/50 rounded-2xl p-6 border border-purple-500/30">
+
               <div className="flex items-start gap-4 mb-4">
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
                   <span className="text-2xl">👥</span>
@@ -1319,15 +1229,11 @@ export default function Home({ user }: HomeProps) {
                   {t('referral.freeUser.benefit3')}
                 </li>
               </ul>
-            </motion.div>
+            </FadeIn>
 
             {/* Premium User Benefit */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="bg-slate-800/50 rounded-2xl p-6 border border-amber-500/30"
-            >
+            <FadeIn from="right" distance={20} className="bg-slate-800/50 rounded-2xl p-6 border border-amber-500/30">
+
               <div className="flex items-start gap-4 mb-4">
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center flex-shrink-0">
                   <span className="text-2xl">👑</span>
@@ -1351,15 +1257,10 @@ export default function Home({ user }: HomeProps) {
                   {t('referral.premiumUser.benefit2')}
                 </li>
               </ul>
-            </motion.div>
+            </FadeIn>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mt-8 text-center"
-          >
+          <FadeIn from="up" distance={10} className="mt-8 text-center">
             <Link
               to="/auth"
               className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-xl hover:from-purple-500 hover:to-pink-500 transition-all transform hover:scale-105"
@@ -1370,7 +1271,7 @@ export default function Home({ user }: HomeProps) {
             <p className="text-slate-500 text-sm mt-3">
               {t('referral.note')}
             </p>
-          </motion.div>
+          </FadeIn>
         </div>
       </section>
 

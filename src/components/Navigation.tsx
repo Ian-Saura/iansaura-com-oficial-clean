@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Zap, ChevronRight, Rocket, GraduationCap } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -14,13 +13,13 @@ export default function Navigation({ user }: NavigationProps) {
   const [hasAccess, setHasAccess] = useState({ subscription: false, bootcamp: false });
   const location = useLocation();
   const { t } = useLanguage();
+  const menuRef = useRef<HTMLDivElement>(null);
   
   const isActive = (path: string) => location.pathname === path;
 
   // Verificar acceso del usuario
   useEffect(() => {
     if (user?.email) {
-      // Verificar desde localStorage primero
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
         try {
@@ -29,12 +28,9 @@ export default function Navigation({ user }: NavigationProps) {
             subscription: parsed.subscribed === true || parsed.subscribed === 1,
             bootcamp: parsed.bootcamp_access === true || parsed.bootcamp_access === 1
           });
-        } catch (e) {
-          // Si falla el parse, verificar con el servidor
-        }
+        } catch (e) {}
       }
       
-      // También verificar con el servidor para datos actualizados
       fetch(`/api/check-subscriber.php?email=${encodeURIComponent(user.email)}`)
         .then(res => res.json())
         .then(data => {
@@ -67,10 +63,7 @@ export default function Navigation({ user }: NavigationProps) {
       <div className="relative max-w-6xl mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link 
-            to="/" 
-            className="flex items-center gap-2 group"
-          >
+          <Link to="/" className="flex items-center gap-2 group">
             <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/40 transition-all duration-300">
               <span className="text-white font-bold text-sm">IS</span>
             </div>
@@ -131,7 +124,6 @@ export default function Navigation({ user }: NavigationProps) {
             {/* User Section */}
             {user ? (
               <div className="flex items-center gap-3">
-                {/* Botón prominente - Todos los usuarios registrados pueden acceder a la Academia */}
                 <Link
                   to="/members"
                   className="group flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 animate-pulse hover:animate-none"
@@ -140,7 +132,6 @@ export default function Navigation({ user }: NavigationProps) {
                   Ir a la Academia
                   <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                 </Link>
-                {/* Botón Bootcamp solo si tiene acceso */}
                 {hasAccess.bootcamp && (
                   <Link
                     to="/bootcamp-platform"
@@ -186,184 +177,149 @@ export default function Navigation({ user }: NavigationProps) {
             <LanguageSelector variant="buttons" className="ml-2" />
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile menu button - CSS transition instead of framer-motion */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden relative w-10 h-10 flex items-center justify-center rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors"
           >
-            <AnimatePresence mode="wait">
-              {mobileMenuOpen ? (
-                <motion.div
-                  key="close"
-                  initial={{ opacity: 0, rotate: -90 }}
-                  animate={{ opacity: 1, rotate: 0 }}
-                  exit={{ opacity: 0, rotate: 90 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <X className="w-5 h-5 text-gray-700" />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="menu"
-                  initial={{ opacity: 0, rotate: 90 }}
-                  animate={{ opacity: 1, rotate: 0 }}
-                  exit={{ opacity: 0, rotate: -90 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Menu className="w-5 h-5 text-gray-700" />
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <span className={`transition-all duration-200 ${mobileMenuOpen ? 'opacity-0 rotate-90 scale-75' : 'opacity-100 rotate-0 scale-100'} absolute`}>
+              <Menu className="w-5 h-5 text-gray-700" />
+            </span>
+            <span className={`transition-all duration-200 ${mobileMenuOpen ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-75'} absolute`}>
+              <X className="w-5 h-5 text-gray-700" />
+            </span>
           </button>
         </div>
       </div>
 
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
-            className="md:hidden relative bg-white/95 backdrop-blur-md border-b border-gray-200/50"
-            style={{ overflow: 'hidden' }}
-            onAnimationComplete={(definition: any) => {
-              // After open animation, allow scrolling inside menu
-              if (definition?.opacity === 1) {
-                const el = document.querySelector('[data-mobile-menu]');
-                if (el) (el as HTMLElement).style.overflow = 'visible';
-              }
-            }}
-          >
-            <div data-mobile-menu className="px-6 py-4 space-y-2 max-h-[80vh] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
-              {/* Main Links */}
-              {mainLinks.map((link, index) => (
-                <motion.div
-                  key={link.path}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                >
-                  <Link
-                    to={link.path}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                      isActive(link.path)
-                        ? link.highlight 
-                          ? 'bg-emerald-50 text-emerald-700' 
-                          : 'bg-blue-50 text-blue-700'
-                        : link.highlight
-                          ? 'text-emerald-600 hover:bg-emerald-50'
-                          : 'text-gray-700 hover:bg-gray-50'
-                    }`}
-                  >
-                    {link.highlight && <Zap className="w-4 h-4" />}
-                    <span className="font-medium">{link.label}</span>
-                  </Link>
-                </motion.div>
-              ))}
-
-              {/* Divider */}
-              <div className="border-t border-gray-100 my-3" />
-
-              {/* Secondary Links */}
-              {secondaryLinks.map((link, index) => (
-                <motion.div
-                  key={link.path}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: (mainLinks.length + index) * 0.05 }}
-                >
-                  <Link
-                    to={link.path}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                      isActive(link.path)
-                        ? 'bg-gray-100 text-gray-900'
-                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
-                    }`}
-                  >
-                    <span>{link.label}</span>
-                  </Link>
-                </motion.div>
-              ))}
-
-              {/* Divider */}
-              <div className="border-t border-gray-100 my-3" />
-
-              {/* User Section */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-                className="space-y-3"
+      {/* Mobile menu - CSS transition instead of framer-motion */}
+      <div
+        ref={menuRef}
+        className={`md:hidden bg-white/95 backdrop-blur-md border-b border-gray-200/50 overflow-hidden transition-all duration-200 ease-in-out ${
+          mobileMenuOpen ? 'max-h-[80vh] opacity-100' : 'max-h-0 opacity-0'
+        }`}
+      >
+        <div className="px-6 py-4 space-y-2 max-h-[80vh] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
+          {/* Main Links */}
+          {mainLinks.map((link, index) => (
+            <div
+              key={link.path}
+              className={`transition-all duration-300 ${mobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-5'}`}
+              style={{ transitionDelay: mobileMenuOpen ? `${index * 50}ms` : '0ms' }}
+            >
+              <Link
+                to={link.path}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                  isActive(link.path)
+                    ? link.highlight 
+                      ? 'bg-emerald-50 text-emerald-700' 
+                      : 'bg-blue-50 text-blue-700'
+                    : link.highlight
+                      ? 'text-emerald-600 hover:bg-emerald-50'
+                      : 'text-gray-700 hover:bg-gray-50'
+                }`}
               >
-                {/* Botón prominente para usuarios con acceso (móvil) */}
-                {user && (hasAccess.subscription || hasAccess.bootcamp) && (
-                  <Link
-                    to={hasAccess.subscription ? "/members" : "/bootcamp-platform"}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-emerald-500 to-cyan-500 text-white px-6 py-4 rounded-xl font-bold shadow-lg shadow-emerald-500/30 animate-pulse"
-                  >
-                    {hasAccess.subscription ? (
-                      <>
-                        <Rocket className="w-5 h-5" />
-                        🚀 Ir a la Academia
-                      </>
-                    ) : (
-                      <>
-                        <GraduationCap className="w-5 h-5" />
-                        📚 Ir al Bootcamp
-                      </>
-                    )}
-                    <ChevronRight className="w-5 h-5" />
-                  </Link>
-                )}
-                
-                {user ? (
-                  <div className="flex items-center justify-between px-4 py-3 bg-gray-50 rounded-xl">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                        <span className="text-white text-sm font-medium">
-                          {(user.name || user.email || 'U').charAt(0).toUpperCase()}
-                        </span>
-                      </div>
-                      <span className="text-sm text-gray-700 font-medium">
-                        {user.name || user.email?.split('@')[0] || 'Usuario'}
-                      </span>
-                    </div>
-                    <button
-                      onClick={() => {
-                        localStorage.removeItem('user');
-                        window.location.reload();
-                      }}
-                      className="text-sm text-red-500 font-medium"
-                    >
-                      Salir
-                    </button>
-                  </div>
-                ) : (
-                  <Link
-                    to="/auth"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white px-6 py-3.5 rounded-xl font-medium shadow-lg"
-                  >
-                    {t('nav.login')}
-                    <ChevronRight className="w-4 h-4" />
-                  </Link>
-                )}
-                
-                {/* Language Selector Mobile */}
-                <div className="pt-4 border-t border-gray-100 mt-4">
-                  <div className="text-xs font-medium text-gray-500 mb-2">Idioma / Language</div>
-                  <LanguageSelector variant="buttons" />
-                </div>
-              </motion.div>
+                {link.highlight && <Zap className="w-4 h-4" />}
+                <span className="font-medium">{link.label}</span>
+              </Link>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          ))}
+
+          {/* Divider */}
+          <div className="border-t border-gray-100 my-3" />
+
+          {/* Secondary Links */}
+          {secondaryLinks.map((link, index) => (
+            <div
+              key={link.path}
+              className={`transition-all duration-300 ${mobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-5'}`}
+              style={{ transitionDelay: mobileMenuOpen ? `${(mainLinks.length + index) * 50}ms` : '0ms' }}
+            >
+              <Link
+                to={link.path}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                  isActive(link.path)
+                    ? 'bg-gray-100 text-gray-900'
+                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+                }`}
+              >
+                <span>{link.label}</span>
+              </Link>
+            </div>
+          ))}
+
+          {/* Divider */}
+          <div className="border-t border-gray-100 my-3" />
+
+          {/* User Section */}
+          <div
+            className={`space-y-3 transition-all duration-300 ${mobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-5'}`}
+            style={{ transitionDelay: mobileMenuOpen ? '200ms' : '0ms' }}
+          >
+            {user && (hasAccess.subscription || hasAccess.bootcamp) && (
+              <Link
+                to={hasAccess.subscription ? "/members" : "/bootcamp-platform"}
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-emerald-500 to-cyan-500 text-white px-6 py-4 rounded-xl font-bold shadow-lg shadow-emerald-500/30 animate-pulse"
+              >
+                {hasAccess.subscription ? (
+                  <>
+                    <Rocket className="w-5 h-5" />
+                    Ir a la Academia
+                  </>
+                ) : (
+                  <>
+                    <GraduationCap className="w-5 h-5" />
+                    Ir al Bootcamp
+                  </>
+                )}
+                <ChevronRight className="w-5 h-5" />
+              </Link>
+            )}
+            
+            {user ? (
+              <div className="flex items-center justify-between px-4 py-3 bg-gray-50 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-sm font-medium">
+                      {(user.name || user.email || 'U').charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <span className="text-sm text-gray-700 font-medium">
+                    {user.name || user.email?.split('@')[0] || 'Usuario'}
+                  </span>
+                </div>
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('user');
+                    window.location.reload();
+                  }}
+                  className="text-sm text-red-500 font-medium"
+                >
+                  Salir
+                </button>
+              </div>
+            ) : (
+              <Link
+                to="/auth"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white px-6 py-3.5 rounded-xl font-medium shadow-lg"
+              >
+                {t('nav.login')}
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            )}
+            
+            {/* Language Selector Mobile */}
+            <div className="pt-4 border-t border-gray-100 mt-4">
+              <div className="text-xs font-medium text-gray-500 mb-2">Idioma / Language</div>
+              <LanguageSelector variant="buttons" />
+            </div>
+          </div>
+        </div>
+      </div>
     </nav>
   );
 }
